@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# MacOS memory caching
 .DS_Store
 static/.DS_Store
 
