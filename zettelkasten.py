@@ -11,9 +11,7 @@ import argparse
 app = Flask(__name__)
 input_directory = '../zettelkasten/input'
 zettelkasten_directory = '../zettelkasten/mycellium'
-startscreen = """#Zettelkasten
-These are the topics you are **probing**:
-"""
+
 
 def process_txt_file(pathname):
     filename = 'Error'
@@ -35,6 +33,15 @@ def process_files_from_input():
                     print(process_txt_file(input_directory + '/' + filename))
     else:
         logging.error("input directrory not found")
+
+def generate_list_of_zettelkasten_files():
+    zettelkasten_list = []
+    if os.path.exists(zettelkasten_directory):
+        for filename in os.listdir(zettelkasten_directory):
+            zettelkasten_list.append(filename)
+    else:
+        logging.error("zettelkasten directrory not found")
+    return zettelkasten_list
 
 def canonize_filename(filename):
     # filename extension is md
@@ -70,7 +77,7 @@ def currentTimestamp():
 
 @app.route('/<file>')
 def show_md_file(file):
-    input_file = open(file, "r")
+    input_file = open(zettelkasten_directory + '/' + file, "r")
     htmlString = markdown.markdown(
         input_file.read(), output_format='html5',
         extensions=["fenced_code",'codehilite','attr_list', 'pymdownx.arithmatex'],
@@ -84,8 +91,13 @@ def show_md_file(file):
 
 @app.route('/')
 def start():
-    htmlString = markdown.markdown(startscreen)
-    return htmlString
+    zettelkasten_list = generate_list_of_zettelkasten_files()
+    print(zettelkasten_list)
+    zettelkasten_list.sort()
+    print(zettelkasten_list)
+    return render_template('startpage.html', zettelkasten = zettelkasten_list)
+
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
