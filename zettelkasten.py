@@ -1,5 +1,5 @@
 import markdown
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from pygments.formatters import HtmlFormatter
 import re
 import os
@@ -10,7 +10,7 @@ import argparse
 
 app = Flask(__name__)
 input_directory = '../zettelkasten/input'
-zettelkasten_directory = '../zettelkasten/mycellium'
+zettelkasten_directory = '../zettelkasten/mycelium'
 
 
 def process_txt_file(pathname):
@@ -97,7 +97,9 @@ def start():
     print(zettelkasten_list)
     return render_template('startpage.html', zettelkasten = zettelkasten_list)
 
-
+@app.route('/images/<path:filename>')
+def send_image(filename):
+    return send_from_directory(app.config["MYCELIUM_IMAGES"], filename)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -112,4 +114,5 @@ if __name__ == '__main__':
         process_files_from_input()
     else:
         app.debug = True
+        app.config["MYCELIUM_IMAGES"] = "/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images"
         app.run()
