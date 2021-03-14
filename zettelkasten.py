@@ -1,14 +1,25 @@
 import markdown
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, \
+    render_template, \
+    send_from_directory, \
+    request
 from pygments.formatters import HtmlFormatter
 import re
 import os
 import logging
 from datetime import datetime
 import argparse
+from flask_wtf import Form
+from flask_pagedown.fields import PageDownField
+from wtforms.fields import SubmitField
+from flask_pagedown import PageDown
 
+class PageDownFormExample(Form):
+    pagedown = PageDownField('Enter your markdown')
+    submit = SubmitField('Submit')
 
 app = Flask(__name__)
+pagedown = PageDown(app)
 input_directory = '../zettelkasten/input'
 zettelkasten_directory = '../zettelkasten/mycelium'
 
@@ -97,6 +108,26 @@ def start():
     print(zettelkasten_list)
     return render_template('startpage.html', zettelkasten = zettelkasten_list)
 
+def write_markdown_to_file(filename, markdown_string):
+    if os.path.exists(zettelkasten_directory):
+        with open(zettelkasten_directory + '/' + filename, 'w') as markdown_file:
+            markdown_file.write(markdown_string)
+    else:
+        logging.error("zettelkasten_directory does not exist")
+
+@app.route('/edit/<filename>', methods = ['GET', 'POST'])
+def edit(filename):
+    input_file = open(zettelkasten_directory + '/' + filename, "r")
+    markdown_string = input_file.read()
+    form = PageDownFormExample()
+    form.pagedown.data = markdown_string
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            new_markdown_string = request.form['pagedown']
+            form.pagedown.data = new_markdown_string
+            write_markdown_to_file(filename,new_markdown_string)
+    return render_template('edit.html', form = form)
+
 @app.route('/images/<path:filename>')
 def send_image(filename):
     return send_from_directory(app.config["MYCELIUM_IMAGES"], filename)
@@ -113,6 +144,8 @@ if __name__ == '__main__':
     if args.batchimport:
         process_files_from_input()
     else:
+        SECRET_KEY = os.urandom(32)
+        app.config['SECRET_KEY'] = SECRET_KEY
         app.debug = True
         app.config["MYCELIUM_IMAGES"] = "/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images"
         app.run()
