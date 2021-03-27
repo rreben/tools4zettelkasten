@@ -40,7 +40,9 @@ def process_files_from_input():
             # do not process hidden files
             if not (filename[0] == '.'):
                 # txt-file?
-                if ('txt' == os.path.splitext(filename)[1][1:].strip().lower()):
+                if ('txt' == os.path.splitext(filename)[1][1:].strip().lower()
+                    or
+                    'md' == os.path.splitext(filename)[1][1:].strip().lower()):
                     print(process_txt_file(input_directory + '/' + filename))
     else:
         logging.error("input directrory not found")
