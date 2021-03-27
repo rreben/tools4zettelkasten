@@ -90,6 +90,7 @@ def currentTimestamp():
 
 @app.route('/<file>')
 def show_md_file(file):
+    filename = file
     input_file = open(zettelkasten_directory + '/' + file, "r")
     htmlString = markdown.markdown(
         input_file.read(), output_format='html5',
@@ -100,7 +101,7 @@ def show_md_file(file):
     css_string = formatter.get_style_defs()
 
     # return md_css_string + htmlString
-    return render_template("mainpage.html", codeCSSString = "<style>" + css_string + "</style>", htmlString = htmlString)
+    return render_template("mainpage.html", codeCSSString = "<style>" + css_string + "</style>", htmlString = htmlString, filename = filename)
 
 @app.route('/')
 def start():
