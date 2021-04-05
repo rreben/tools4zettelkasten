@@ -26,7 +26,7 @@
     <div class="container">
       <form method="POST">
         {{ form.hidden_tag() }}
-        {{ form.pagedown(rows=10) }}
+        {{ form.pagedown(rows=10, style='width:100%') }}
         {{ form.submit }}
       </form>
     </div>

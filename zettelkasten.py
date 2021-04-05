@@ -1,9 +1,33 @@
+# zettelkasten.py
+# The MIT License (MIT)
+#
+# Copyright (c) 2021 Rupert Rebentisch
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in
+# the Software without restriction, including without limitation the rights to
+# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is furnished to
+# do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+# THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import markdown
 from flask import Flask, \
     render_template, \
     send_from_directory, \
     request
-from pygments.formatters import HtmlFormatter
+# pygments does some magic on the import
+# therefore we able the pylint for this line of code
+from pygments.formatters import HtmlFormatter # pylint: disable=no-name-in-module
 import re
 import os
 import logging
@@ -13,6 +37,8 @@ from flask_wtf import Form
 from flask_pagedown.fields import PageDownField
 from wtforms.fields import SubmitField
 from flask_pagedown import PageDown
+from pprint import pprint
+
 
 class PageDownFormExample(Form):
     pagedown = PageDownField('Enter your markdown')
@@ -47,11 +73,64 @@ def process_files_from_input():
     else:
         logging.error("input directrory not found")
 
+def corrections_elements(list_of_keys):
+    list_of_keys_with_leading_zeros = []
+    corrections_elements_dict = {}
+    number_of_necessary_digits = len(str(abs(len(list_of_keys))))
+    for i in range(len(list_of_keys)):
+        number_of_digits = sum(c.isdigit() for c in list_of_keys[i])
+        leading_zeros = '0' * (number_of_necessary_digits - number_of_digits)
+        list_of_keys_with_leading_zeros.append([list_of_keys[i], leading_zeros + list_of_keys[i]])
+    list_of_keys_with_leading_zeros.sort(key=lambda x: x[1])
+    for i in range(len(list_of_keys_with_leading_zeros)):
+        j = i + 1
+        number_of_digits = sum(c.isdigit() for c in str(j))
+        leading_zeros = '0' * (number_of_necessary_digits - number_of_digits)
+        list_of_keys_with_leading_zeros[i].append(leading_zeros + str(j))
+        corrections_elements_dict[list_of_keys_with_leading_zeros[i][0]] = list_of_keys_with_leading_zeros[i][2]
+    return corrections_elements_dict
+
+def generate_tree(tokenized_list):
+    tree_keys = [x[0][0] for x in tokenized_list]
+    tree_keys.sort()
+    # remove duplicates
+    tree_keys = list(dict.fromkeys(tree_keys))
+    corrections_elements_dict = corrections_elements(tree_keys)
+    tree =[]
+    for tree_key in tree_keys:
+        sub_tree = []
+        sub_tokenized_list = []
+        sub_tree.append(corrections_elements_dict[tree_key])
+        for x in tokenized_list:
+            if x[0][0] == tree_key:
+                if len(x[0]) == 1:
+                    sub_tree.append(x[1])
+                else:
+                    sub_tokenized_list.append([x[0][1:],x[1]])
+                    # sub_tree.append(generate_tree([x[0][1:],x[1]]))
+        #sub_tree.append([[x[0][1:], x[1]] for x in tokenized_list if x[0][0] == tree_key])
+        if len(sub_tokenized_list) >1:
+            sub_tree.append(generate_tree(sub_tokenized_list))
+        tree.append(sub_tree)
+    tree.sort(key=lambda x: x[0])
+    return tree
+
+def generate_tokenized_list(zettelkasten_list):
+    tokenized_list = []
+    for filename in zettelkasten_list:
+        filename_components = re.split(r'_\D',filename, maxsplit=1)
+        numbering_in_filename_and_filename = [re.split(r'_',filename_components[0]), filename]
+        #if match:
+        #    trunk_filen_name = match.group()
+        tokenized_list.append(numbering_in_filename_and_filename)
+    return tokenized_list
+
 def generate_list_of_zettelkasten_files():
     zettelkasten_list = []
     if os.path.exists(zettelkasten_directory):
         for filename in os.listdir(zettelkasten_directory):
-            zettelkasten_list.append(filename)
+            if ('md' == os.path.splitext(filename)[1][1:].strip().lower()):
+                zettelkasten_list.append(filename)
     else:
         logging.error("zettelkasten directrory not found")
     return zettelkasten_list
