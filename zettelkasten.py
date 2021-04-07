@@ -109,7 +109,7 @@ def generate_tree(tokenized_list):
                     sub_tokenized_list.append([x[0][1:],x[1]])
                     # sub_tree.append(generate_tree([x[0][1:],x[1]]))
         #sub_tree.append([[x[0][1:], x[1]] for x in tokenized_list if x[0][0] == tree_key])
-        if len(sub_tokenized_list) >1:
+        if len(sub_tokenized_list) >0:
             sub_tree.append(generate_tree(sub_tokenized_list))
         tree.append(sub_tree)
     tree.sort(key=lambda x: x[0])
