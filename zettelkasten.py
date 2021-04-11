@@ -38,7 +38,8 @@ from flask_pagedown.fields import PageDownField
 from wtforms.fields import SubmitField
 from flask_pagedown import PageDown
 from pprint import pprint
-
+from pyfiglet import Figlet
+from InquirerPy import prompt
 
 class PageDownFormExample(Form):
     pagedown = PageDownField('Enter your markdown')
@@ -84,21 +85,19 @@ def reorganize_filenames(tree, path=None, final = None):
             if len(node) == 2:
                 if isinstance(node[0], str) and isinstance(node[1], str): 
                     final.append(
-                        path + node[0] + ' --> ' + node[1])
+                        [path + node[0], node[1]])
                 else:
                     reorganize_filenames(node, path=path, final=final)
             else:  
                 if len(node) == 3:
                     if isinstance(node[0], str) and isinstance(node[1], str) and isinstance(node[2], list):
-                        final.append(path + node[0] + ' --> ' + node[1] + ', ')
+                        final.append([path + node[0], node[1]])
                         reorganize_filenames(
                             node[2], path=path + node[0] + '_', final=final)
                 else:
                     reorganize_filenames(node, path=path, final=final)
         else:
             path += node + '_'
-    print('return final:')
-    pprint(final)
     return final
 
 
@@ -184,6 +183,43 @@ def canonize_filename(filename):
     filename = re.sub('[^A-Za-z0-9_]+', '', filename)
     return filename
 
+def get_filename_components(filename):
+    components = []
+    # Split by first underscore followed by a character = Non-Digit
+    ordering_filename = re.split(r'_\D', filename, maxsplit=1)[0]
+    base_filename = filename[(len(ordering_filename)+1):]
+    components = [ordering_filename, base_filename]
+    return components
+
+def reorganize_mycelium():
+    tree = []
+    tree = generate_tree(
+        generate_tokenized_list(generate_list_of_zettelkasten_files()))
+    # pprint(tree)
+    potential_changes_of_filenames = reorganize_filenames(tree)
+    changes_of_filenames = [[x[0], x[1]] for x in potential_changes_of_filenames if x[0] != re.split(r'_\D', x[1], maxsplit=1)[0]]
+    print()
+    print('The following changes will be done:')
+    pprint([x[0] + ' --> ' + x[1] for x in changes_of_filenames])
+    questions = [
+        {
+            "type": "confirm",
+            "message": "Proceed?",
+            "name": "proceed",
+            "default": False,
+        }
+    ]
+    result = prompt(questions)
+    if result["proceed"]:
+        if os.path.exists(zettelkasten_directory):
+            for x in changes_of_filenames:
+                oldfile = zettelkasten_directory + '/' + x[1]
+                newfile = zettelkasten_directory + '/' + x[0] + '_' + get_filename_components(x[1])[1]
+                os.rename(oldfile, newfile)
+                print('renamed: ', oldfile, ' with: ', newfile)
+        else:
+            logging.error("reorg-error: zettelkasten directrory not found")
+
 def evaluate_sha_256(input):
     import hashlib
     input = input.encode('utf-8')
@@ -250,10 +286,18 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="A set of tools for a simple Zettelkasten, no arguments start flask")
     # action="store_true" makes -b --batchimport to a flag so no further arguments are expected
     # the flag is true when specified in the commandline otherwise false
-    parser.add_argument('-b','--batchimport', help='process all files in the input directory', action="store_true")
+    parser.add_argument('-b', '--batchimport',
+                        help='process all files in the input directory', action="store_true")
+    parser.add_argument('-r', '--reorganize',
+                        help='rename files to reorganize directory', action="store_true")
     args = parser.parse_args()
+    
+    f = Figlet(font='slant')
+    print (f.renderText('zettelkasten tools'))
     if args.batchimport:
         process_files_from_input()
+    elif args.reorganize:
+        reorganize_mycelium()
     else:
         SECRET_KEY = os.urandom(32)
         app.config['SECRET_KEY'] = SECRET_KEY
