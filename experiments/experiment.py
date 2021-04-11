@@ -9,3 +9,7 @@ print(len(b))
 c=[['1', 'b'], '1_b_some_file']
 print(len(c))
 # %%
+isinstance([3,4],list)
+# %%
+isinstance('abc',list)
+# %%

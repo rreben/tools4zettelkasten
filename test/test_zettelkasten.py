@@ -100,6 +100,7 @@ class TestZettelTreeActions(unittest.TestCase):
         pprint(tree)
         #pprint(tree[4][1:])
         #tree=zettelkasten.generate_tree(tree[4][1:])
+        pprint(zettelkasten.reorganize_filenames(tree))
         self.assertEqual(zettelkasten.generate_tokenized_list(zettelkasten_list)[0][0][0],'5')
 
 
