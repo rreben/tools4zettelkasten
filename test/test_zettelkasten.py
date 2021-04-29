@@ -111,6 +111,24 @@ class TestZettelTreeAndReorganize(unittest.TestCase):
         self.assertEqual((zettelkasten.reorganize_filenames(tree))[20][0],'3_02')
 
 
+class TestZettelTreeConstellations(unittest.TestCase):
+    def test_generate_tree(self):
+        zettelkasten_list = [
+            'masterfile.md',
+            '1_first_topic',
+            '1_1_a_Thought_on_first_topic',
+            '1_2_another_Thought_on_first_topic',
+            '2_Second_Topic',
+            '2_1_a_Thought_on_Second_Topic']
+        tree = zettelkasten.generate_tree(
+            zettelkasten.generate_tokenized_list(zettelkasten_list))
+        pprint(tree)
+       # self.assertEqual(tree[4][1][8][2][0][1],
+       #                  '5_7_1_Some_More_Information_on_Ice_Mouse.md')
+        #tree=zettelkasten.generate_tree(tree[4][1:])
+        #self.assertEqual(
+        #    (zettelkasten.reorganize_filenames(tree))[20][0], '3_02')
+
 if __name__ == '__main__':
     logging.basicConfig(filename='testsuite.log', level=logging.INFO)
     unittest.main()
