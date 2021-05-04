@@ -39,7 +39,7 @@ class TestGetId(unittest.TestCase):
         self.assertEqual(zettelkasten.evaluate_sha_256('foo  '), '07e67ea4439b8f4513d4140fe54229ac127fe0b39ef740136892c433d311a41a')
 
     def test_currentTimestamp(self):
-        assert re.match('^[0-9]{1,14}$', zettelkasten.currentTimestamp())
+        assert re.match('^[0-9]{1,20}$', zettelkasten.currentTimestamp())
 
 class TestProcessInput(unittest.TestCase):
     def test_process_files_from_input(self):
@@ -122,12 +122,43 @@ class TestZettelTreeConstellations(unittest.TestCase):
             '2_1_a_Thought_on_Second_Topic']
         tree = zettelkasten.generate_tree(
             zettelkasten.generate_tokenized_list(zettelkasten_list))
-        pprint(tree)
-       # self.assertEqual(tree[4][1][8][2][0][1],
-       #                  '5_7_1_Some_More_Information_on_Ice_Mouse.md')
-        #tree=zettelkasten.generate_tree(tree[4][1:])
-        #self.assertEqual(
-        #    (zettelkasten.reorganize_filenames(tree))[20][0], '3_02')
+        #pprint(tree)
+        self.assertEqual(tree[0][1], 'masterfile.md')
+       
+
+class TestGenerateID(unittest.TestCase):
+    def test_generate_id(self):
+        id_a = zettelkasten.generate_id('a')
+        id_b = zettelkasten.generate_id('b')
+        assert re.match('^[0-9a-f]{9}$', id_a)
+        assert re.match('^[0-9a-f]{9}$', id_b)
+
+        self.assertNotEqual(id_a, id_b)
+
+class TestGetFilenameComponents(unittest.TestCase):
+    def test_pefect_formed_filename(self):
+        filename = '1_03_4_Some_Topic_045ef0af3.md'
+        assert re.match('.*_[0-9a-f]{9}\.md$', filename)
+        components = zettelkasten.get_filename_components(filename)
+        self.assertEqual(components[0], '1_03_4')
+        self.assertEqual(components[1], 'Some_Topic')
+        self.assertEqual(components[2], '045ef0af3')
+
+    def test_wrong_filename_ending(self):
+        filename = '1_03_4_Some_Topic_045ef0af3.txt'
+        components = zettelkasten.get_filename_components(filename)
+        self.assertEqual(components[2], '')
+
+    def test_wrong_filename_delimeter(self):
+        filename = '1_03_4_Some_Topic_045ef0af3,md'
+        components = zettelkasten.get_filename_components(filename)
+        self.assertEqual(components[2], '')
+
+    def test_non_hex_digit(self):
+        filename = '1_03_4_Some_Topic_045ef0ag3.md'
+        components = zettelkasten.get_filename_components(filename)
+        self.assertEqual(components[2], '')
+
 
 if __name__ == '__main__':
     logging.basicConfig(filename='testsuite.log', level=logging.INFO)

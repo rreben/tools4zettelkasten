@@ -170,11 +170,49 @@ def canonize_filename(filename):
 
 def get_filename_components(filename):
     components = []
+    id_filename = ''
+    if re.match('.*_[0-9a-f]{9}\.md$', filename):
+        id_filename = filename[-12:-3]
+        filename = filename[:-13]
     # Split by first underscore followed by a character = Non-Digit
     ordering_filename = re.split(r'_\D', filename, maxsplit=1)[0]
     base_filename = filename[(len(ordering_filename)+1):]
-    components = [ordering_filename, base_filename]
+    components = [ordering_filename, base_filename, id_filename]
     return components
+
+def generate_id(filename):
+    return evaluate_sha_256(filename + currentTimestamp())[:9]
+
+def attach_missing_ids():
+    questions = [
+        {
+            "type": "confirm",
+            "message": "Proceed?",
+            "name": "proceed",
+            "default": False,
+        }
+    ]
+    for filename in generate_list_of_zettelkasten_files():
+        components = get_filename_components(filename)
+        file_id = generate_id(filename)
+        if components[2] == '':
+            oldfilename = filename
+            newfilename = components[0] + '_' + components[1][:-3] + \
+                '_' + file_id + '.md'
+            print('Rename ', oldfilename, ' --> ')
+            print(newfilename, '?')
+            result = prompt(questions)
+            if result["proceed"]:          
+                rename_file(oldfilename, newfilename)
+
+def rename_file(oldfilename, newfilename):
+    if os.path.exists(zettelkasten_directory):
+        oldfile = zettelkasten_directory + '/' + oldfilename
+        newfile = zettelkasten_directory + '/' + newfilename
+        os.rename(oldfile, newfile)
+        print('renamed: ', oldfile, ' with: ', newfile)
+    else:
+        logging.error("rename-error: zettelkasten directrory not found")
 
 def reorganize_mycelium():
     tree = []
@@ -214,7 +252,7 @@ def evaluate_sha_256(input):
 
 def currentTimestamp():
     now = datetime.now()
-    return  now.strftime("%Y%m%d%H%M%S")
+    return now.strftime("%Y%m%d%H%M%S%f")
 
 
 @app.route('/<file>')
@@ -275,6 +313,8 @@ if __name__ == '__main__':
                         help='process all files in the input directory', action="store_true")
     parser.add_argument('-r', '--reorganize',
                         help='rename files to reorganize directory', action="store_true")
+    parser.add_argument('-i', '--attach_ids',
+                        help='attach missing IDs to files', action="store_true")
     args = parser.parse_args()
     
     f = Figlet(font='slant')
@@ -283,6 +323,8 @@ if __name__ == '__main__':
         process_files_from_input()
     elif args.reorganize:
         reorganize_mycelium()
+    elif args.attach_ids:
+        attach_missing_ids()
     else:
         SECRET_KEY = os.urandom(32)
         app.config['SECRET_KEY'] = SECRET_KEY
