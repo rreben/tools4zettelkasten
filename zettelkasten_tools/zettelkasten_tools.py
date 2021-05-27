@@ -12,7 +12,8 @@ from flask import Flask, \
     request
 # pygments does some magic on the import
 # therefore we able the pylint for this line of code
-from pygments.formatters import HtmlFormatter # pylint: disable=no-name-in-module
+from pygments.formatters import HtmlFormatter
+# pylint: disable=no-name-in-module
 import re
 import os
 import logging
@@ -26,11 +27,14 @@ from pprint import pprint
 from pyfiglet import Figlet
 from InquirerPy import prompt
 
+
 class PageDownFormExample(Form):
     pagedown = PageDownField('Enter your markdown')
     submit = SubmitField('Submit')
 
-app = Flask(__name__)
+
+app = Flask(__name__, template_folder='../flask_frontend/templates',
+            static_folder='../flask_frontend/static')
 pagedown = PageDown(app)
 input_directory = '../zettelkasten/input'
 zettelkasten_directory = '../zettelkasten/mycelium'
@@ -48,7 +52,6 @@ def process_txt_file(pathname):
 def process_files_from_input():
     if os.path.exists(input_directory):
         for filename in os.listdir(input_directory):
-            print('process file: ' + filename)
             # do not process hidden files
             if not (filename[0] == '.'):
                 # txt-file?
@@ -137,6 +140,7 @@ def generate_tokenized_list(zettelkasten_list):
         #    trunk_filen_name = match.group()
         tokenized_list.append(numbering_in_filename_and_filename)
     return tokenized_list
+
 
 def generate_list_of_zettelkasten_files():
     zettelkasten_list = []
@@ -273,9 +277,9 @@ def show_md_file(file):
 @app.route('/')
 def start():
     zettelkasten_list = generate_list_of_zettelkasten_files()
-    print(zettelkasten_list)
+    # print(zettelkasten_list)
     zettelkasten_list.sort()
-    print(zettelkasten_list)
+    # print(zettelkasten_list)
     return render_template('startpage.html', zettelkasten = zettelkasten_list)
 
 def write_markdown_to_file(filename, markdown_string):

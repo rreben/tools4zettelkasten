@@ -1,4 +1,5 @@
 import mistune
+import plugin_wiki
 
 """
     Markdown renderer
@@ -188,12 +189,22 @@ class MdRenderer(Renderer):
     return text
 
 
-markdown = mistune.Markdown(renderer=MdRenderer())
+# markdown = mistune.Markdown(renderer=MdRenderer(), plugins=[plugin_wiki])
+markdown = mistune.Markdown(
+    renderer=mistune.Renderer(), plugins=['plugin_wiki'])
+# markdown = mistune.Markdown(plugins=['plugin_wiki'])
 
 print (markdown("""
+---
+layout: post
+title: Blogging Like a Hacker
+---
+
 # A Title
 some text
 
 and a [[wikilink]]
+
+[[wikilink|link]]
 """
 ))
