@@ -1,3 +1,15 @@
+.. zettelkasten_tools documentation master file, created by
+   sphinx-quickstart on Thu May 27 23:35:39 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to zettelkasten_tools's documentation!
+==============================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
 Why zettelkasten_tools
 ======================
 
@@ -10,3 +22,10 @@ zettelkasten_tools provide some tools to make handling of "markdown zettel files
 - helps to keep all files with a consistent naming convention
 - helps reorganizing the file hierachy
 - show your zettel notes in a browser as html
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
