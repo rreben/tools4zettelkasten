@@ -7,6 +7,9 @@ __pycache__/
 .DS_Store
 static/.DS_Store
 
+# temporary experiments
+experiments/
+
 # C extensions
 *.so
 
