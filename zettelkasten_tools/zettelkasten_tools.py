@@ -49,6 +49,7 @@ def process_txt_file(pathname):
             filename = canonize_filename(filename)
         os.rename(pathname, input_directory + '/' + filename + '.md')
 
+
 def process_files_from_input():
     if os.path.exists(input_directory):
         for filename in os.listdir(input_directory):
