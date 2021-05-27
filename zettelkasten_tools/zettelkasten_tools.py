@@ -63,20 +63,20 @@ def process_files_from_input():
         logging.error("input directrory not found")
 
 
-def reorganize_filenames(tree, path=None, final = None):
+def reorganize_filenames(tree, path=None, final=None):
     if final is None:
         final = []
     if path is None:
-        path =''
+        path = ''
     for node in tree:
-        if isinstance(node,list):
+        if isinstance(node, list):
             if len(node) == 2:
                 if isinstance(node[0], str) and isinstance(node[1], str): 
                     final.append(
                         [path + node[0], node[1]])
                 else:
                     reorganize_filenames(node, path=path, final=final)
-            else:  
+            else:
                 if len(node) == 3:
                     if isinstance(node[0], str) and isinstance(node[1], str) and isinstance(node[2], list):
                         final.append([path + node[0], node[1]])
@@ -106,6 +106,7 @@ def corrections_elements(list_of_keys):
         corrections_elements_dict[list_of_keys_with_leading_zeros[i][0]] = list_of_keys_with_leading_zeros[i][2]
     return corrections_elements_dict
 
+
 def generate_tree(tokenized_list):
     tree_keys = [x[0][0] for x in tokenized_list]
     tree_keys.sort()
@@ -131,6 +132,7 @@ def generate_tree(tokenized_list):
     tree.sort(key=lambda x: x[0])
     return tree
 
+
 def generate_tokenized_list(zettelkasten_list):
     tokenized_list = []
     for filename in zettelkasten_list:
@@ -152,6 +154,7 @@ def generate_list_of_zettelkasten_files():
         logging.error("zettelkasten directrory not found")
     return zettelkasten_list
 
+
 def canonize_filename(filename):
     # filename extension is md
     # remove leading and trailing whitespaces
@@ -172,6 +175,7 @@ def canonize_filename(filename):
     filename = re.sub('[^A-Za-z0-9_]+', '', filename)
     return filename
 
+
 def get_filename_components(filename):
     components = []
     id_filename = ''
@@ -184,8 +188,10 @@ def get_filename_components(filename):
     components = [ordering_filename, base_filename, id_filename]
     return components
 
+
 def generate_id(filename):
     return evaluate_sha_256(filename + currentTimestamp())[:9]
+
 
 def attach_missing_ids():
     questions = [
@@ -209,6 +215,7 @@ def attach_missing_ids():
             if result["proceed"]:          
                 rename_file(oldfilename, newfilename)
 
+
 def rename_file(oldfilename, newfilename):
     if os.path.exists(zettelkasten_directory):
         oldfile = zettelkasten_directory + '/' + oldfilename
@@ -217,6 +224,7 @@ def rename_file(oldfilename, newfilename):
         print('renamed: ', oldfile, ' with: ', newfile)
     else:
         logging.error("rename-error: zettelkasten directrory not found")
+
 
 def reorganize_mycelium():
     tree = []
@@ -247,12 +255,14 @@ def reorganize_mycelium():
         else:
             logging.error("reorg-error: zettelkasten directrory not found")
 
+
 def evaluate_sha_256(input):
     import hashlib
     input = input.encode('utf-8')
     hash_object = hashlib.sha256(input)
     hex_dig = hash_object.hexdigest()
     return(hex_dig)
+
 
 def currentTimestamp():
     now = datetime.now()
@@ -265,14 +275,23 @@ def show_md_file(file):
     input_file = open(zettelkasten_directory + '/' + file, "r")
     htmlString = markdown.markdown(
         input_file.read(), output_format='html5',
-        extensions=["fenced_code",'codehilite','attr_list', 'pymdownx.arithmatex'],
-        extension_configs = {'pymdownx.arithmatex':{'generic':True}}
+        extensions=[
+            "fenced_code",
+            'codehilite',
+            'attr_list',
+            'pymdownx.arithmatex'],
+        extension_configs={'pymdownx.arithmatex': {'generic': True}}
     )
-    formatter = HtmlFormatter(style="emacs",full=True,cssclass="codehilite")
+    formatter = HtmlFormatter(style="emacs", full=True, cssclass="codehilite")
     css_string = formatter.get_style_defs()
 
     # return md_css_string + htmlString
-    return render_template("mainpage.html", codeCSSString = "<style>" + css_string + "</style>", htmlString = htmlString, filename = filename)
+    return render_template(
+        "mainpage.html",
+        codeCSSString="<style>" + css_string + "</style>",
+        htmlString=htmlString,
+        filename=filename)
+
 
 @app.route('/')
 def start():
@@ -280,7 +299,8 @@ def start():
     # print(zettelkasten_list)
     zettelkasten_list.sort()
     # print(zettelkasten_list)
-    return render_template('startpage.html', zettelkasten = zettelkasten_list)
+    return render_template('startpage.html', zettelkasten=zettelkasten_list)
+
 
 def write_markdown_to_file(filename, markdown_string):
     if os.path.exists(zettelkasten_directory):
@@ -289,7 +309,8 @@ def write_markdown_to_file(filename, markdown_string):
     else:
         logging.error("zettelkasten_directory does not exist")
 
-@app.route('/edit/<filename>', methods = ['GET', 'POST'])
+
+@app.route('/edit/<filename>', methods=['GET', 'POST'])
 def edit(filename):
     input_file = open(zettelkasten_directory + '/' + filename, "r")
     markdown_string = input_file.read()
@@ -299,12 +320,14 @@ def edit(filename):
         if request.method == 'POST':
             new_markdown_string = request.form['pagedown']
             form.pagedown.data = new_markdown_string
-            write_markdown_to_file(filename,new_markdown_string)
-    return render_template('edit.html', form = form)
+            write_markdown_to_file(filename, new_markdown_string)
+    return render_template('edit.html', form=form)
+
 
 @app.route('/images/<path:filename>')
 def send_image(filename):
     return send_from_directory(app.config["MYCELIUM_IMAGES"], filename)
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -313,8 +336,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="A set of tools for a simple Zettelkasten, no arguments start flask")
     # action="store_true" makes -b --batchimport to a flag so no further arguments are expected
     # the flag is true when specified in the commandline otherwise false
-    parser.add_argument('-b', '--batchimport',
-                        help='process all files in the input directory', action="store_true")
+    parser.add_argument(
+        '-b', '--batchimport',
+        help='process all files in the input directory',
+        action="store_true")
     parser.add_argument('-r', '--reorganize',
                         help='rename files to reorganize directory', action="store_true")
     parser.add_argument('-i', '--attach_ids',
