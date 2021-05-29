@@ -11,3 +11,5 @@ The Zettelkasten tools support a simple yet effective system for a digital zette
 The Zettelkasten shows the zettel files as html and provides a simple webeserver to do so. It uses flask, a markdown to html converter and bootstrap to do so in a responsive GUI.
 
 The Zettelkasten tools provide a set of tools to manipulate the markdown files to significantly improve the handling of a big number of zettel / markdown files. With Zettelkasten you can effortlessly change the hierachy as well as the interlinks of your Zettelkasten.
+
+.. include:: docs/source/why_zettelkasten_tools.rst
