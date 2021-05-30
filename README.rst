@@ -12,4 +12,4 @@ The Zettelkasten shows the zettel files as html and provides a simple webeserver
 
 The Zettelkasten tools provide a set of tools to manipulate the markdown files to significantly improve the handling of a big number of zettel / markdown files. With Zettelkasten you can effortlessly change the hierachy as well as the interlinks of your Zettelkasten.
 
-See [https://rreben.github.io/zettelkasten_tools/](https://rreben.github.io/zettelkasten_tools/) for more information on how to build and use this project.
+See https://rreben.github.io/zettelkasten_tools/ for more information on how to build and use this project.
