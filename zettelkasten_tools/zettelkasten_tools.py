@@ -28,6 +28,12 @@ from pyfiglet import Figlet
 from InquirerPy import prompt
 
 
+class ZettelkastenTools:
+
+    @staticmethod
+    def run():
+        print("Hello World...")
+
 class PageDownFormExample(Form):
     pagedown = PageDownField('Enter your markdown')
     submit = SubmitField('Submit')
