@@ -17,7 +17,7 @@ from pygments.formatters import HtmlFormatter
 import re
 import os
 import logging
-from datetime import datetime
+# from datetime import datetime
 import argparse
 from flask_wtf import Form
 from flask_pagedown.fields import PageDownField
@@ -26,24 +26,26 @@ from flask_pagedown import PageDown
 from pprint import pprint
 from pyfiglet import Figlet
 from InquirerPy import prompt
+from zettelkasten_tools import settings, handle_filenames
 
 
 class ZettelkastenTools:
 
     @staticmethod
     def run():
-        print("Hello World...")
+        print('hello world')
+
 
 class PageDownFormExample(Form):
     pagedown = PageDownField('Enter your markdown')
     submit = SubmitField('Submit')
 
 
-app = Flask(__name__, template_folder='../flask_frontend/templates',
-            static_folder='../flask_frontend/static')
+app = Flask(__name__, template_folder=settings.TEMPLATE_FOLDER,
+            static_folder=settings.STATIC_FOLDER)
 pagedown = PageDown(app)
-input_directory = '../zettelkasten/input'
-zettelkasten_directory = '../zettelkasten/mycelium'
+input_directory = settings.ZETTELKASTEN_INPUT
+zettelkasten_directory = settings.ZETTELKASTEN
 
 
 def process_txt_file(pathname):
@@ -52,7 +54,7 @@ def process_txt_file(pathname):
         content = afile.readlines()
         if (content[0][0] == '#'):
             filename = content[0][2:]
-            filename = canonize_filename(filename)
+            filename = handle_filenames.canonize_filename(filename)
         os.rename(pathname, input_directory + '/' + filename + '.md')
 
 
@@ -62,9 +64,12 @@ def process_files_from_input():
             # do not process hidden files
             if not (filename[0] == '.'):
                 # txt-file?
-                if ('txt' == os.path.splitext(filename)[1][1:].strip().lower()
-                    or
-                    'md' == os.path.splitext(filename)[1][1:].strip().lower()):
+                if (
+                    'txt' ==
+                    os.path.splitext(filename)[1][1:].strip().lower() or
+                    'md' ==
+                    os.path.splitext(filename)[1][1:].strip().lower()
+                ):
                     print(process_txt_file(input_directory + '/' + filename))
     else:
         logging.error("input directrory not found")
@@ -78,14 +83,18 @@ def reorganize_filenames(tree, path=None, final=None):
     for node in tree:
         if isinstance(node, list):
             if len(node) == 2:
-                if isinstance(node[0], str) and isinstance(node[1], str): 
+                if isinstance(node[0], str) and isinstance(node[1], str):
                     final.append(
                         [path + node[0], node[1]])
                 else:
                     reorganize_filenames(node, path=path, final=final)
             else:
                 if len(node) == 3:
-                    if isinstance(node[0], str) and isinstance(node[1], str) and isinstance(node[2], list):
+                    if (
+                        isinstance(node[0], str)
+                        and isinstance(node[1], str)
+                        and isinstance(node[2], list)
+                    ):
                         final.append([path + node[0], node[1]])
                         reorganize_filenames(
                             node[2], path=path + node[0] + '_', final=final)
@@ -103,14 +112,17 @@ def corrections_elements(list_of_keys):
     for i in range(len(list_of_keys)):
         number_of_digits = sum(c.isdigit() for c in list_of_keys[i])
         leading_zeros = '0' * (number_of_necessary_digits - number_of_digits)
-        list_of_keys_with_leading_zeros.append([list_of_keys[i], leading_zeros + list_of_keys[i]])
+        list_of_keys_with_leading_zeros.append(
+            [list_of_keys[i], leading_zeros + list_of_keys[i]])
     list_of_keys_with_leading_zeros.sort(key=lambda x: x[1])
     for i in range(len(list_of_keys_with_leading_zeros)):
         j = i + 1
         number_of_digits = sum(c.isdigit() for c in str(j))
         leading_zeros = '0' * (number_of_necessary_digits - number_of_digits)
         list_of_keys_with_leading_zeros[i].append(leading_zeros + str(j))
-        corrections_elements_dict[list_of_keys_with_leading_zeros[i][0]] = list_of_keys_with_leading_zeros[i][2]
+        corrections_elements_dict[
+            list_of_keys_with_leading_zeros[i][0]] = (
+                list_of_keys_with_leading_zeros[i][2])
     return corrections_elements_dict
 
 
@@ -120,7 +132,7 @@ def generate_tree(tokenized_list):
     # remove duplicates
     tree_keys = list(dict.fromkeys(tree_keys))
     corrections_elements_dict = corrections_elements(tree_keys)
-    tree =[]
+    tree = []
     for tree_key in tree_keys:
         sub_tree = []
         sub_tokenized_list = []
@@ -130,10 +142,11 @@ def generate_tree(tokenized_list):
                 if len(x[0]) == 1:
                     sub_tree.append(x[1])
                 else:
-                    sub_tokenized_list.append([x[0][1:],x[1]])
+                    sub_tokenized_list.append([x[0][1:], x[1]])
                     # sub_tree.append(generate_tree([x[0][1:],x[1]]))
-        #sub_tree.append([[x[0][1:], x[1]] for x in tokenized_list if x[0][0] == tree_key])
-        if len(sub_tokenized_list) >0:
+        # sub_tree.append([[x[0][1:],
+        # x[1]] for x in tokenized_list if x[0][0] == tree_key])
+        if len(sub_tokenized_list) > 0:
             sub_tree.append(generate_tree(sub_tokenized_list))
         tree.append(sub_tree)
     tree.sort(key=lambda x: x[0])
@@ -144,8 +157,9 @@ def generate_tokenized_list(zettelkasten_list):
     tokenized_list = []
     for filename in zettelkasten_list:
         filename_components = re.split(r'_\D', filename, maxsplit=1)
-        numbering_in_filename_and_filename = [re.split(r'_', filename_components[0]), filename]
-        #if match:
+        numbering_in_filename_and_filename = [
+            re.split(r'_', filename_components[0]), filename]
+        # if match:
         #    trunk_filen_name = match.group()
         tokenized_list.append(numbering_in_filename_and_filename)
     return tokenized_list
@@ -162,44 +176,6 @@ def generate_list_of_zettelkasten_files():
     return zettelkasten_list
 
 
-def canonize_filename(filename):
-    # filename extension is md
-    # remove leading and trailing whitespaces
-    filename = filename.strip()
-    # remove multiple whitespaces
-    filename = " ".join(filename.split())
-    # replace all öäüß with oe, ae, ue, ss
-    filename = filename.replace("ä", "ae")
-    filename = filename.replace("ö", "oe")
-    filename = filename.replace("ü", "ue")
-    filename = filename.replace("Ä", "Ae")
-    filename = filename.replace("Ö", "Oe")
-    filename = filename.replace("Ü", "Ue")
-    filename = filename.replace("ß", "ss")
-    # replace all spaces with underscore
-    filename = filename.replace(" ", "_")
-    # remove special characters like ?
-    filename = re.sub('[^A-Za-z0-9_]+', '', filename)
-    return filename
-
-
-def get_filename_components(filename):
-    components = []
-    id_filename = ''
-    if re.match('.*_[0-9a-f]{9}\.md$', filename):
-        id_filename = filename[-12:-3]
-        filename = filename[:-13]
-    # Split by first underscore followed by a character = Non-Digit
-    ordering_filename = re.split(r'_\D', filename, maxsplit=1)[0]
-    base_filename = filename[(len(ordering_filename)+1):]
-    components = [ordering_filename, base_filename, id_filename]
-    return components
-
-
-def generate_id(filename):
-    return evaluate_sha_256(filename + currentTimestamp())[:9]
-
-
 def attach_missing_ids():
     questions = [
         {
@@ -210,8 +186,8 @@ def attach_missing_ids():
         }
     ]
     for filename in generate_list_of_zettelkasten_files():
-        components = get_filename_components(filename)
-        file_id = generate_id(filename)
+        components = handle_filenames.get_filename_components(filename)
+        file_id = handle_filenames.generate_id(filename)
         if components[2] == '':
             oldfilename = filename
             newfilename = components[0] + '_' + components[1][:-3] + \
@@ -219,7 +195,7 @@ def attach_missing_ids():
             print('Rename ', oldfilename, ' --> ')
             print(newfilename, '?')
             result = prompt(questions)
-            if result["proceed"]:          
+            if result["proceed"]:
                 rename_file(oldfilename, newfilename)
 
 
@@ -239,7 +215,9 @@ def reorganize_mycelium():
         generate_tokenized_list(generate_list_of_zettelkasten_files()))
     # pprint(tree)
     potential_changes_of_filenames = reorganize_filenames(tree)
-    changes_of_filenames = [[x[0], x[1]] for x in potential_changes_of_filenames if x[0] != re.split(r'_\D', x[1], maxsplit=1)[0]]
+    changes_of_filenames = [
+        [x[0], x[1]] for x in potential_changes_of_filenames
+        if x[0] != re.split(r'_\D', x[1], maxsplit=1)[0]]
     print()
     print('The following changes will be done:')
     pprint([x[0] + ' --> ' + x[1] for x in changes_of_filenames])
@@ -256,24 +234,14 @@ def reorganize_mycelium():
         if os.path.exists(zettelkasten_directory):
             for x in changes_of_filenames:
                 oldfile = zettelkasten_directory + '/' + x[1]
-                newfile = zettelkasten_directory + '/' + x[0] + '_' + get_filename_components(x[1])[1]
+                newfile = (
+                    zettelkasten_directory +
+                    '/' + x[0] + '_' +
+                    handle_filenames.get_filename_components(x[1])[1])
                 os.rename(oldfile, newfile)
                 print('renamed: ', oldfile, ' with: ', newfile)
         else:
             logging.error("reorg-error: zettelkasten directrory not found")
-
-
-def evaluate_sha_256(input):
-    import hashlib
-    input = input.encode('utf-8')
-    hash_object = hashlib.sha256(input)
-    hex_dig = hash_object.hexdigest()
-    return(hex_dig)
-
-
-def currentTimestamp():
-    now = datetime.now()
-    return now.strftime("%Y%m%d%H%M%S%f")
 
 
 @app.route('/<file>')
@@ -311,7 +279,8 @@ def start():
 
 def write_markdown_to_file(filename, markdown_string):
     if os.path.exists(zettelkasten_directory):
-        with open(zettelkasten_directory + '/' + filename, 'w') as markdown_file:
+        with open(
+                zettelkasten_directory + '/' + filename, 'w') as markdown_file:
             markdown_file.write(markdown_string)
     else:
         logging.error("zettelkasten_directory does not exist")
@@ -340,21 +309,27 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     # We use arparse to specify the CLI
     # Description is the program description in the help message
-    parser = argparse.ArgumentParser(description="A set of tools for a simple Zettelkasten, no arguments start flask")
-    # action="store_true" makes -b --batchimport to a flag so no further arguments are expected
+    parser = argparse.ArgumentParser(
+        description=(
+            "A set of tools for a simple Zettelkasten,"
+            "no arguments start flask"))
+    # action="store_true" makes -b --batchimport
+    # to a flag so no further arguments are expected
     # the flag is true when specified in the commandline otherwise false
     parser.add_argument(
         '-b', '--batchimport',
         help='process all files in the input directory',
         action="store_true")
     parser.add_argument('-r', '--reorganize',
-                        help='rename files to reorganize directory', action="store_true")
+                        help='rename files to reorganize directory',
+                        action="store_true")
     parser.add_argument('-i', '--attach_ids',
-                        help='attach missing IDs to files', action="store_true")
+                        help='attach missing IDs to files',
+                        action="store_true")
     args = parser.parse_args()
-    
+
     f = Figlet(font='slant')
-    print (f.renderText('zettelkasten tools'))
+    print(f.renderText('zettelkasten tools'))
     if args.batchimport:
         process_files_from_input()
     elif args.reorganize:
@@ -365,5 +340,6 @@ if __name__ == '__main__':
         SECRET_KEY = os.urandom(32)
         app.config['SECRET_KEY'] = SECRET_KEY
         app.debug = True
-        app.config["MYCELIUM_IMAGES"] = "/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images"
+        app.config["MYCELIUM_IMAGES"] = (
+            "/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images")
         app.run()

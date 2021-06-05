@@ -1,5 +1,5 @@
 # __main__.py
-from .zettelkasten_tools import ZettelkastenTools
+from .app import ZettelkastenTools
 
 if __name__ == '__main__':
     ZettelkastenTools.run()

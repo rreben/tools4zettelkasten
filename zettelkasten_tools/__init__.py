@@ -1,2 +1,3 @@
 # __init__.py
-from .zettelkasten_tools import ZettelkastenTools
+
+from .app import ZettelkastenTools
