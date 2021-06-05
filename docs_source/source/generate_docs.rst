@@ -33,7 +33,7 @@ The autogeneration of the ``modules.rst`` file and a file for each module is don
 3. Use ``git merge master`` to fetch all the changes from the master
 4. Generate the docs and copy it to the docs folder wit ``make html``
 5. Commit the generated files to the gh-pages branch
-6. Go back to the master branch wit ``git checkout master``
-7. Push all branches to the remote repo on Github
+6. Push gh-pages to the remote repo on Github
+7. Go back to the master branch wit ``git checkout master``
 8. Check the Github pages.
 
