@@ -10,9 +10,13 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+# The path to (!) the module has to be inserted
+# ../../zettelkasten_tools won't work, because
+# this would be the path of (!) the module
+sys.path.insert(0, os.path.abspath('../../'))
 
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +26,7 @@ copyright = '2021, Rupert Rebentisch'
 author = 'Rupert Rebentisch'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0a1'
+release = '1.0a2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,6 +35,7 @@ release = '1.0a1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
