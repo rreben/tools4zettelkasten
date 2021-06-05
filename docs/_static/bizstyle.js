@@ -36,6 +36,6 @@ $(window).resize(function(){
         $("li.nav-item-0 a").text("Top");
     }
     else {
-        $("li.nav-item-0 a").text("zettelkasten_tools 1.0a1 documentation");
+        $("li.nav-item-0 a").text("zettelkasten_tools 1.0a2 documentation");
     }
 });

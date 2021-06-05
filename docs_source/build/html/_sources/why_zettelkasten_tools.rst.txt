@@ -1,5 +1,5 @@
-Why zettelkasten_tools
-======================
+Why zettelkasten_tools?
+=======================
 
 The Zettelkasten method as used by Niklas Luhmann is a very effective method to organize your learning, writing and thinking (see https://www.mycelium-of-knowledge.org/luhmanns-zettelkasten/ and references therein).
 

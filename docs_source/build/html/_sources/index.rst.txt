@@ -11,6 +11,11 @@ Welcome to zettelkasten_tools's documentation!
    :caption: Contents:
 
 .. include:: why_zettelkasten_tools.rst
+.. include:: license.rst
+.. include:: projectsetup.rst
+.. include:: generate_docs.rst
+.. include:: bugs.rst
+.. include:: modules.rst
 
 Indices and tables
 ==================
