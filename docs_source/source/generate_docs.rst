@@ -24,6 +24,10 @@ The Makefile first creates the documentation in the build folder via ``sphinx`` 
 
 There is an additional target ``clear`` in the Makefile, that will delete all files (except the ``.nojekyll`` file) from the docs directory.
 
+We will also delete all auto-generated files via the ``clear`` target.
+
+The autogeneration of the ``modules.rst`` file and a file for each module is done via the sphinx-apidoc command which is configured in the Makefile.
+
 1.  Now switch to the gh-pages branch with ``git checkout gh-pages``
 2.  run ``Make clean`` and a ``Make Clear``  again to wipe out all generated docs in this branch
 3. Use ``git merge master`` to fetch all the changes from the master

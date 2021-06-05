@@ -15,6 +15,7 @@ Welcome to zettelkasten_tools's documentation!
 .. include:: projectsetup.rst
 .. include:: generate_docs.rst
 .. include:: bugs.rst
+.. include:: modules.rst
 
 Indices and tables
 ==================
