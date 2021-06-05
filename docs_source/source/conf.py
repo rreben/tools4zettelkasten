@@ -22,7 +22,7 @@ copyright = '2021, Rupert Rebentisch'
 author = 'Rupert Rebentisch'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0a1'
+release = '1.0a2'
 
 
 # -- General configuration ---------------------------------------------------
