@@ -16,7 +16,13 @@ Publish the documentation
 
 I use Github pages to host the documentation. The configuration can be done in the projects / repo settings under pages.
 
-Github pages expects the html files in the docs directory, with an ``index.html`` file as root. The Github pages are drawn from a special ``gh-pages`` branch (so there is now interference with day to day work).
+Github pages expects the html files in the docs directory, with an ``index.html`` file as root. The Github pages are drawn from a special ``gh-pages`` branch (so there is now interference with day to day.
+
+There should be a ``.nojkyll`` file in the docs folder in order to stop the templating engine of Github pages to modify the html files. The ``.nojkyll`` is an empty file, just for signalling purposes, it will not be removed by ``make clear``
+
+The Makefile first creates the documentation in the build folder via ``sphinx`` (target ``html``). Then the html documentation is copied to the docs folder. This step is necessary, as ``sphinx`` won't create an ``index.html`` file in the root directory of the build folder, but in a ``html`` subfolder instead.
+
+There is an additional target ``clear`` in the Makefile, that will delete all files (except the ``.nojekyll`` file) from the docs directory.
 
 1.  Now switch to the gh-pages branch with ``git checkout gh-pages``
 2.  run ``Make clean`` and a ``Make Clear``  again to wipe out all generated docs in this branch
