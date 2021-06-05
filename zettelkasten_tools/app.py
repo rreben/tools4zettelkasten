@@ -1,7 +1,10 @@
 # app.py
 
+from . import cli
+
+
 class ZettelkastenTools:
 
     @staticmethod
     def run():
-        print('hello world')
+        cli.messages()
