@@ -54,7 +54,8 @@ def process_txt_file(pathname):
         content = afile.readlines()
         if (content[0][0] == '#'):
             filename = content[0][2:]
-            filename = handle_filenames.canonize_filename(filename)
+            filename = handle_filenames.create_base_filename_from_title(
+                filename)
         os.rename(pathname, input_directory + '/' + filename + '.md')
 
 

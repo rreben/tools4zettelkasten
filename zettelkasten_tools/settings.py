@@ -1,5 +1,8 @@
 # settings.py
 
+# Copyright (c) 2021 Rupert Rebentisch
+# Licensed under the MIT license
+
 ZETTELKASTEN = '../zettelkasten/mycelium'
 ZETTELKASTEN_INPUT = '../zettelkasten/input'
 
