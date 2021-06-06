@@ -14,7 +14,7 @@ import logging
 # import works pretty fine due to above setting of the src path
 # But pylint isn't able to follow this, thus we have to disable it
 # to prevent false pylint problems
-import zettelkasten # pylint: disable=import-error
+import zettelkasten_tools # pylint: disable=import-error
 from pprint import pprint
 
 class TestCanonizeFilename(unittest.TestCase):
