@@ -1,6 +1,18 @@
 Generate the docs
 =================
 
+Sphix is used to generate the documentation. I use the VSCode extension ```Python Docstring Generator``` to generate the code from the docstrings.
+
+In the ``settings.json`` file in ``.vscode/`` add ``"autoDocstring.docstringFormat": "sphinx"``.
+
+The napoleon sphinx extension is used to enable google-styled docstrings for sphinx.
+
+.. code-block:: sh
+
+  pip install sphinxcontrib-napoleon
+
+And add the ``sphinxcontrib-napoleon`` extension to the sphinx extensions in ``conf.py``.
+
 Create and edit the source files for the docs
 ---------------------------------------------
 1. To generate the docs navigate to the docs_source folder 

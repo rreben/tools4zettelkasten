@@ -1,5 +1,6 @@
 {
     "python.linting.pycodestyleEnabled": true,
     "python.linting.enabled": true,
-    "restructuredtext.confPath": ""
+    "restructuredtext.confPath": "",
+    "autoDocstring.docstringFormat": "sphinx"
 }

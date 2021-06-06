@@ -3,6 +3,16 @@
 # Copyright (c) 2021 Rupert Rebentisch
 # Licensed under the MIT license
 
+"""functions to handle filenames
+
+standard filenames have the form of
+2_03_04a_5_Some_Topic_fb134b00b
+
+The correct form of the filenames is
+important for listing, reorganizing the
+Zettelkasten etc.
+"""
+
 import re
 import hashlib
 from datetime import datetime
@@ -17,11 +27,11 @@ def create_base_filename_from_title(title):
     This string is suited as a standard base filename for
     the Zettelkasten.
 
-    Parameters:
-    title (str): The title of the note
+    Args:
+        title (str): The title of the note
 
     Returns:
-    filename_base (str): string for base_filename
+        str: base_filename
     """
     # filename extension is md
     # remove leading and trailing whitespaces
@@ -55,11 +65,11 @@ def get_filename_components(filename):
     The return value is
     ['2_03_04a_5','Some_Topic','fb134b00b']
 
-    Parameters:
-    filename (str): The filename of a note
+    Args:
+        filename (str): The filename of a note
 
     Returns:
-    components (list): List of strings with the components of the filename
+        list: List of strings with the components of the filename
     """
     components = []
     id_filename = ''
@@ -81,11 +91,11 @@ def generate_id(filename):
     but not impossible the seed is peppered with
     a timestamp.
 
-    Parameters:
-    filename (str): The filename of a note
+    Args:
+        filename (string): The filename of a note
 
     Returns:
-    (str): id in form of 8 hex digits
+        str: id in form of 8 hex digits
     """
     return evaluate_sha_256(filename + currentTimestamp())[:9]
 
