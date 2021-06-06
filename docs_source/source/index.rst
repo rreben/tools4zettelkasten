@@ -16,6 +16,8 @@ Welcome to zettelkasten_tools's documentation!
 .. include:: generate_docs.rst
 .. include:: bugs.rst
 .. include:: modules.rst
+.. include:: todo.rst
+
 
 Indices and tables
 ==================
