@@ -48,34 +48,6 @@ input_directory = settings.ZETTELKASTEN_INPUT
 zettelkasten_directory = settings.ZETTELKASTEN
 
 
-def process_txt_file(pathname):
-    filename = 'Error'
-    with open(pathname, 'r') as afile:
-        content = afile.readlines()
-        if (content[0][0] == '#'):
-            filename = content[0][2:]
-            filename = handle_filenames.create_base_filename_from_title(
-                filename)
-        os.rename(pathname, input_directory + '/' + filename + '.md')
-
-
-def process_files_from_input():
-    if os.path.exists(input_directory):
-        for filename in os.listdir(input_directory):
-            # do not process hidden files
-            if not (filename[0] == '.'):
-                # txt-file?
-                if (
-                    'txt' ==
-                    os.path.splitext(filename)[1][1:].strip().lower() or
-                    'md' ==
-                    os.path.splitext(filename)[1][1:].strip().lower()
-                ):
-                    print(process_txt_file(input_directory + '/' + filename))
-    else:
-        logging.error("input directrory not found")
-
-
 def reorganize_filenames(tree, path=None, final=None):
     if final is None:
         final = []
@@ -198,16 +170,6 @@ def attach_missing_ids():
             result = prompt(questions)
             if result["proceed"]:
                 rename_file(oldfilename, newfilename)
-
-
-def rename_file(oldfilename, newfilename):
-    if os.path.exists(zettelkasten_directory):
-        oldfile = zettelkasten_directory + '/' + oldfilename
-        newfile = zettelkasten_directory + '/' + newfilename
-        os.rename(oldfile, newfile)
-        print('renamed: ', oldfile, ' with: ', newfile)
-    else:
-        logging.error("rename-error: zettelkasten directrory not found")
 
 
 def reorganize_mycelium():
