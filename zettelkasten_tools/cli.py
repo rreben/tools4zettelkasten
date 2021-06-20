@@ -12,6 +12,10 @@ Todo:
 """
 
 import click
+from pyfiglet import Figlet
+from . import settings
+# we have to rename stage so it does not interfere with command stage
+from . import stage as stg
 
 
 @click.group()
@@ -21,7 +25,9 @@ def messages():
 
 @click.command(help='rename files from input for moving into the Zettelkasten')
 def stage():
-    click.echo('stage input')
+    f = Figlet(font='slant')
+    print(f.renderText('zettelkasten tools'))
+    stg.process_files_from_input(settings.ZETTELKASTEN_INPUT)
 
 
 @click.command(help='add ids, consecutive numbering, keep links life')
