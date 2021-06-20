@@ -3,29 +3,32 @@
 # Licensed under the MIT license
 
 from zettelkasten_tools.settings import ZETTELKASTEN_INPUT
-from zettelkasten_tools.persistency import list_of_filenames_from_directory
+from zettelkasten_tools.persistency import (
+    rename_file,
+    file_content,
+    is_markdown_file,
+    is_text_file,
+    list_of_filenames_from_directory
+)
+from zettelkasten_tools.handle_filenames import create_base_filename_from_title
 import os
 
 
-def process_txt_file(pathname):
-    filename = 'Error'
-    with open(pathname, 'r') as afile:
-        content = afile.readlines()
-        if (content[0][0] == '#'):
-            filename = content[0][2:]
-            filename = handle_filenames.create_base_filename_from_title(
-                filename)
-        os.rename(pathname, input_directory + '/' + filename + '.md')
+def process_txt_file(directory, filename):
+    newfilename = 'Error'
+    content = file_content(directory, filename)
+    if (content[0][0] == '#'):
+        newfilename = create_base_filename_from_title(
+            content[0][2:])
+        rename_file(directory, filename, newfilename + ".md")
 
 
-def process_files_from_input():
-    list_of_filenames = list_of_filenames_from_directory(ZETTELKASTEN_INPUT)
+def process_files_from_input(directory):
+    list_of_filenames = list_of_filenames_from_directory(directory)
     for filename in list_of_filenames:
         if (
-            'txt' ==
-            os.path.splitext(filename)[1][1:].strip().lower()
+            is_text_file(filename)
             or
-            'md' ==
-            os.path.splitext(filename)[1][1:].strip().lower()
+            is_markdown_file(filename)
         ):
-            print(process_txt_file(ZETTELKASTEN_INPUT + '/' + filename))
+            print(process_txt_file(directory, filename))
