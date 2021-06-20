@@ -48,3 +48,24 @@ def list_of_filenames_from_directory(directory):
         logging.error(
             "input directrory" + " not found")
     return list_of_filenames
+
+
+def is_text_file(filename):
+    if 'txt' == os.path.splitext(filename)[1][1:].strip().lower():
+        return True
+    else:
+        return False
+
+
+def is_markdown_file(filename):
+    if 'md' == os.path.splitext(filename)[1][1:].strip().lower():
+        return True
+    else:
+        return False
+
+
+def file_content(directory, filename):
+    content = []
+    with open(directory + "/" + filename, 'r') as afile:
+        content = afile.readlines()
+    return content

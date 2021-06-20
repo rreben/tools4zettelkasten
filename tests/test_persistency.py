@@ -2,7 +2,6 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from zettelkasten_tools.persistency import list_of_filenames_from_directory
 from .context import zettelkasten_tools as zt
 import re
 
@@ -47,3 +46,26 @@ def test_list_of_filenames_from_directory(tmp_path):
     assert len(list_of_filenames) == 2
     assert list_of_filenames[1] == "test.md"
     assert list_of_filenames[0] == "test_scnd.md"
+
+
+def test_is_text_file():
+    assert zt.is_text_file("some.txt")
+    assert zt.is_text_file("some.jpg") is False
+
+
+def test_is_markdown_file():
+    assert zt.is_markdown_file("some.md")
+    assert zt.is_markdown_file("some.jpg") is False
+
+
+def test_file_content(tmp_path):
+    test_dir = tmp_path / "subdir"
+    test_dir.mkdir()
+    testfile = test_dir / "test.md"
+    content = """# Eine längere Überschrift
+
+    and some content"""
+    testfile.write_text(content)
+    content = zt.file_content(str(test_dir), "test.md")
+    assert len(content) == 3
+    assert content[0][0] == "#"
