@@ -22,6 +22,20 @@ from InquirerPy import prompt
 
 
 def batch_rename(command_list, directory):
+    """rename a bunch of file
+
+    prompt user to verify that rename should be done
+
+    :param command_list: A list of rename commands.
+    Each command is a list with three entries.
+    name of command, must be rename.
+    oldfilename original name of file.
+    newfilename name of file after rename operation.
+
+    :type command_list: list
+    :param directory: directory with files which shoud be renamed
+    :type directory: string
+    """
     questions = [
         {
             "type": "confirm",
@@ -41,6 +55,11 @@ def batch_rename(command_list, directory):
                 pers.rename_file(directory, oldfilename, newfilename)
 
 
+def show_banner():
+    f = Figlet(font='slant')
+    print(f.renderText('zettelkasten tools'))
+
+
 @click.group()
 def messages():
     pass
@@ -48,15 +67,13 @@ def messages():
 
 @click.command(help='rename files from input for moving into the Zettelkasten')
 def stage():
-    f = Figlet(font='slant')
-    print(f.renderText('zettelkasten tools'))
+    show_banner()
     stg.process_files_from_input(settings.ZETTELKASTEN_INPUT)
 
 
 @click.command(help='add ids, consecutive numbering, keep links alife')
 def reorganize():
-    f = Figlet(font='slant')
-    print(f.renderText('zettelkasten tools'))
+    show_banner()
     batch_rename(
         ro.attach_missing_ids(
             pers.list_of_filenames_from_directory(settings.ZETTELKASTEN)),
