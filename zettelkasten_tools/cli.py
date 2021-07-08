@@ -16,6 +16,29 @@ from pyfiglet import Figlet
 from . import settings
 # we have to rename stage so it does not interfere with command stage
 from . import stage as stg
+from . import persistency as pers
+from . import reorganize as ro
+from InquirerPy import prompt
+
+
+def batch_rename(command_list, directory):
+    questions = [
+        {
+            "type": "confirm",
+            "message": "Proceed?",
+            "name": "proceed",
+            "default": False,
+        }
+    ]
+    for command in command_list:
+        if command[0] == 'rename':
+            oldfilename = command[1]
+            newfilename = command[2]
+            print('Rename ', oldfilename, ' --> ')
+            print(newfilename, '?')
+            result = prompt(questions)
+            if result["proceed"]:
+                pers.rename_file(directory, oldfilename, newfilename)
 
 
 @click.group()
@@ -30,9 +53,14 @@ def stage():
     stg.process_files_from_input(settings.ZETTELKASTEN_INPUT)
 
 
-@click.command(help='add ids, consecutive numbering, keep links life')
+@click.command(help='add ids, consecutive numbering, keep links alife')
 def reorganize():
-    click.echo('reorganize')
+    f = Figlet(font='slant')
+    print(f.renderText('zettelkasten tools'))
+    batch_rename(
+        ro.attach_missing_ids(
+            pers.list_of_filenames_from_directory(settings.ZETTELKASTEN)),
+        settings.ZETTELKASTEN)
 
 
 messages.add_command(stage)

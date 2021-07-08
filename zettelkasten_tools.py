@@ -149,29 +149,6 @@ def generate_list_of_zettelkasten_files():
     return zettelkasten_list
 
 
-def attach_missing_ids():
-    questions = [
-        {
-            "type": "confirm",
-            "message": "Proceed?",
-            "name": "proceed",
-            "default": False,
-        }
-    ]
-    for filename in generate_list_of_zettelkasten_files():
-        components = handle_filenames.get_filename_components(filename)
-        file_id = handle_filenames.generate_id(filename)
-        if components[2] == '':
-            oldfilename = filename
-            newfilename = components[0] + '_' + components[1][:-3] + \
-                '_' + file_id + '.md'
-            print('Rename ', oldfilename, ' --> ')
-            print(newfilename, '?')
-            result = prompt(questions)
-            if result["proceed"]:
-                rename_file(oldfilename, newfilename)
-
-
 def reorganize_mycelium():
     tree = []
     tree = generate_tree(

@@ -41,8 +41,11 @@ def list_of_filenames_from_directory(directory):
     list_of_filenames = []
     if os.path.exists(directory):
         for filename in os.listdir(directory):
-            # do not process hidden files
-            if not (filename[0] == '.'):
+            # do not process subfolders
+            if (os.path.isfile(os.path.join(directory, filename))
+                and
+                # do not process hidden files
+                    not (filename[0] == '.')):
                 list_of_filenames.append(filename)
     else:
         logging.error(
