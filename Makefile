@@ -6,7 +6,11 @@ run:
 	@python -m $(MODULE)
 
 test:
-	@pytest
+	@pytest --ignore=venvonwindows
+
+coverage:
+	coverage run -m pytest --ignore=venvonwindows
+	coverage html
 
 lint:
 	@echo "\n${BLUE}Running Pylint against source and test files...${NC}\n"
@@ -17,6 +21,6 @@ lint:
 	@bandit -r --ini setup.cfg
 
 clean:
-	rm -rf .pytest_cache .coverage .pytest_cache coverage.xml
+	rm -rf .pytest_cache .coverage .pytest_cache coverage.xml reports/
 
 .PHONY: clean test
