@@ -20,7 +20,7 @@ def test_app(capsys, example_fixture):
 
     ToDo:
     * assert exit code zero
-    * assert help in message 
+    * assert help in message
     """
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         zettelkasten_tools.ZettelkastenTools.run()
