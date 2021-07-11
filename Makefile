@@ -8,6 +8,9 @@ run:
 test:
 	@pytest
 
+testdebug:
+	@pytest --pdb
+
 coverage:
 	coverage run -m pytest
 	coverage html
