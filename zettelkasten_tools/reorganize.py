@@ -1,4 +1,9 @@
+# reorganize.py
+# Copyright (c) 2021 Dr. Rupert Rebentisch
+# Licensed under the MIT license
+
 from . import handle_filenames as hf
+import re
 
 
 def attach_missing_ids(file_name_list):
@@ -21,3 +26,15 @@ def attach_missing_ids(file_name_list):
                 '_' + file_id + '.md'
             command_list.append(['rename', oldfilename, newfilename])
     return command_list
+
+
+def generate_tokenized_list(zettelkasten_list):
+    tokenized_list = []
+    for filename in zettelkasten_list:
+        filename_components = hf.get_filename_components(filename)
+        numbering_in_filename_and_filename = [
+            re.split(r'_', filename_components[0]), filename]
+        # if match:
+        #    trunk_filen_name = match.group()
+        tokenized_list.append(numbering_in_filename_and_filename)
+    return tokenized_list
