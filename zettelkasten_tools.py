@@ -126,17 +126,6 @@ def generate_tree(tokenized_list):
     return tree
 
 
-def generate_tokenized_list(zettelkasten_list):
-    tokenized_list = []
-    for filename in zettelkasten_list:
-        filename_components = re.split(r'_\D', filename, maxsplit=1)
-        numbering_in_filename_and_filename = [
-            re.split(r'_', filename_components[0]), filename]
-        # if match:
-        #    trunk_filen_name = match.group()
-        tokenized_list.append(numbering_in_filename_and_filename)
-    return tokenized_list
-
 
 def generate_list_of_zettelkasten_files():
     zettelkasten_list = []
