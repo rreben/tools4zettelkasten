@@ -78,52 +78,7 @@ def reorganize_filenames(tree, path=None, final=None):
     return final
 
 
-def corrections_elements(list_of_keys):
-    list_of_keys_with_leading_zeros = []
-    corrections_elements_dict = {}
-    number_of_necessary_digits = len(str(abs(len(list_of_keys))))
-    for i in range(len(list_of_keys)):
-        number_of_digits = sum(c.isdigit() for c in list_of_keys[i])
-        leading_zeros = '0' * (number_of_necessary_digits - number_of_digits)
-        list_of_keys_with_leading_zeros.append(
-            [list_of_keys[i], leading_zeros + list_of_keys[i]])
-    list_of_keys_with_leading_zeros.sort(key=lambda x: x[1])
-    for i in range(len(list_of_keys_with_leading_zeros)):
-        j = i + 1
-        number_of_digits = sum(c.isdigit() for c in str(j))
-        leading_zeros = '0' * (number_of_necessary_digits - number_of_digits)
-        list_of_keys_with_leading_zeros[i].append(leading_zeros + str(j))
-        corrections_elements_dict[
-            list_of_keys_with_leading_zeros[i][0]] = (
-                list_of_keys_with_leading_zeros[i][2])
-    return corrections_elements_dict
 
-
-def generate_tree(tokenized_list):
-    tree_keys = [x[0][0] for x in tokenized_list]
-    tree_keys.sort()
-    # remove duplicates
-    tree_keys = list(dict.fromkeys(tree_keys))
-    corrections_elements_dict = corrections_elements(tree_keys)
-    tree = []
-    for tree_key in tree_keys:
-        sub_tree = []
-        sub_tokenized_list = []
-        sub_tree.append(corrections_elements_dict[tree_key])
-        for x in tokenized_list:
-            if x[0][0] == tree_key:
-                if len(x[0]) == 1:
-                    sub_tree.append(x[1])
-                else:
-                    sub_tokenized_list.append([x[0][1:], x[1]])
-                    # sub_tree.append(generate_tree([x[0][1:],x[1]]))
-        # sub_tree.append([[x[0][1:],
-        # x[1]] for x in tokenized_list if x[0][0] == tree_key])
-        if len(sub_tokenized_list) > 0:
-            sub_tree.append(generate_tree(sub_tokenized_list))
-        tree.append(sub_tree)
-    tree.sort(key=lambda x: x[0])
-    return tree
 
 
 
