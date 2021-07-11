@@ -6,10 +6,10 @@ run:
 	@python -m $(MODULE)
 
 test:
-	@pytest --ignore=venvonwindows
+	@pytest
 
 coverage:
-	coverage run -m pytest --ignore=venvonwindows
+	coverage run -m pytest
 	coverage html
 
 lint:
@@ -21,6 +21,6 @@ lint:
 	@bandit -r --ini setup.cfg
 
 clean:
-	rm -rf .pytest_cache .coverage .pytest_cache coverage.xml reports/
+	rm -rf .pytest_cache .coverage .pytest_cache coverage.xml reports/ htmlcov/
 
 .PHONY: clean test

@@ -25,7 +25,7 @@ def test_app(capsys, example_fixture):
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         zettelkasten_tools.ZettelkastenTools.run()
     assert pytest_wrapped_e.type == SystemExit
-    # assert pytest_wrapped_e.value.code == 0
+    assert pytest_wrapped_e.value.code == 0
 
     captured = capsys.readouterr()
-    # assert "--help" in captured.out
+    assert "--help" in captured.out
