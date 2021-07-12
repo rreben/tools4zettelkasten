@@ -84,7 +84,8 @@ def reorganize():
         pers.list_of_filenames_from_directory(settings.ZETTELKASTEN))
     tree = ro.generate_tree(tokenized_list)
     potential_changes = ro.reorganize_filenames(tree)
-    print(ro.create_rename_commands(potential_changes))
+    batch_rename(ro.create_rename_commands(
+        potential_changes), settings.ZETTELKASTEN)
 
 
 messages.add_command(stage)
