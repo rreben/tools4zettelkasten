@@ -48,35 +48,6 @@ input_directory = settings.ZETTELKASTEN_INPUT
 zettelkasten_directory = settings.ZETTELKASTEN
 
 
-def reorganize_filenames(tree, path=None, final=None):
-    if final is None:
-        final = []
-    if path is None:
-        path = ''
-    for node in tree:
-        if isinstance(node, list):
-            if len(node) == 2:
-                if isinstance(node[0], str) and isinstance(node[1], str):
-                    final.append(
-                        [path + node[0], node[1]])
-                else:
-                    reorganize_filenames(node, path=path, final=final)
-            else:
-                if len(node) == 3:
-                    if (
-                        isinstance(node[0], str)
-                        and isinstance(node[1], str)
-                        and isinstance(node[2], list)
-                    ):
-                        final.append([path + node[0], node[1]])
-                        reorganize_filenames(
-                            node[2], path=path + node[0] + '_', final=final)
-                else:
-                    reorganize_filenames(node, path=path, final=final)
-        else:
-            path += node + '_'
-    return final
-
 
 
 
