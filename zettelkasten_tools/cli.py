@@ -74,10 +74,17 @@ def stage():
 @click.command(help='add ids, consecutive numbering, keep links alife')
 def reorganize():
     show_banner()
+    print('Searching for missing IDs')
     batch_rename(
         ro.attach_missing_ids(
             pers.list_of_filenames_from_directory(settings.ZETTELKASTEN)),
         settings.ZETTELKASTEN)
+    print('Searching for necessary changes in hierachy')
+    tokenized_list = ro.generate_tokenized_list(
+        pers.list_of_filenames_from_directory(settings.ZETTELKASTEN))
+    tree = ro.generate_tree(tokenized_list)
+    potential_changes = ro.reorganize_filenames(tree)
+    print(ro.create_rename_commands(potential_changes))
 
 
 messages.add_command(stage)

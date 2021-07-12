@@ -231,6 +231,13 @@ def reorganize_filenames(tree, path=None, final=None):
 
 def create_rename_commands(potential_changes_of_filenames):
     changes_of_filenames = [
-        ['rename', x[0], x[1]] for x in potential_changes_of_filenames
+        ['rename', x[1],
+            x[0]
+            + '_'
+            + hf.get_filename_components(x[1])[1]
+            + '_'
+            + hf.get_filename_components(x[1])[2]
+            + '.md']
+        for x in potential_changes_of_filenames
         if x[0] != hf.get_filename_components(x[1])[0]]
     return changes_of_filenames

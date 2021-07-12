@@ -100,5 +100,9 @@ def test_create_rename_commands():
         ['2_1', '2_3_a_Thought_on_Second_Topic_176fb43ae.md']]
     command_list = zt.reorganize.create_rename_commands(potential_changes)
     assert command_list == [
-        ['rename', '1_2', '1_5_another_Thought_on_first_topic_2af216153.md'],
-        ['rename', '2_1', '2_3_a_Thought_on_Second_Topic_176fb43ae.md']]
+        ['rename',
+            '1_5_another_Thought_on_first_topic_2af216153.md',
+            '1_2_another_Thought_on_first_topic_2af216153.md'],
+        ['rename',
+            '2_3_a_Thought_on_Second_Topic_176fb43ae.md',
+            '2_1_a_Thought_on_Second_Topic_176fb43ae.md', ]]
