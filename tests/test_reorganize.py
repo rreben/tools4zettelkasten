@@ -72,3 +72,33 @@ def test_generate_tree():
                 ['2', '1_2_another_Thought_on_first_topic_2af216153.md']]],
         ['2', '2_Second_Topic_cc6290ab7.md',
             [['1', '2_1_a_Thought_on_Second_Topic_176fb43ae.md']]]]
+
+
+def test_reorganize_filenames():
+    tree = [
+        ['1', '1_first_topic_41b4e4f8f.md',
+            [
+                ['1', '1_1_a_Thought_on_first_topic_2c3c34ff5.md'],
+                ['2', '1_2_another_Thought_on_first_topic_2af216153.md']]],
+        ['2', '2_Second_Topic_cc6290ab7.md',
+            [['1', '2_1_a_Thought_on_Second_Topic_176fb43ae.md']]]]
+    changes = zt.reorganize.reorganize_filenames(tree)
+    assert changes == [
+        ['1', '1_first_topic_41b4e4f8f.md'],
+        ['1_1', '1_1_a_Thought_on_first_topic_2c3c34ff5.md'],
+        ['1_2', '1_2_another_Thought_on_first_topic_2af216153.md'],
+        ['2', '2_Second_Topic_cc6290ab7.md'],
+        ['2_1', '2_1_a_Thought_on_Second_Topic_176fb43ae.md']]
+
+
+def test_create_rename_commands():
+    potential_changes = [
+        ['1', '1_first_topic_41b4e4f8f.md'],
+        ['1_1', '1_1_a_Thought_on_first_topic_2c3c34ff5.md'],
+        ['1_2', '1_5_another_Thought_on_first_topic_2af216153.md'],
+        ['2', '2_Second_Topic_cc6290ab7.md'],
+        ['2_1', '2_3_a_Thought_on_Second_Topic_176fb43ae.md']]
+    command_list = zt.reorganize.create_rename_commands(potential_changes)
+    assert command_list == [
+        ['rename', '1_2', '1_5_another_Thought_on_first_topic_2af216153.md'],
+        ['rename', '2_1', '2_3_a_Thought_on_Second_Topic_176fb43ae.md']]
