@@ -3,6 +3,7 @@
 # Licensed under the MIT license
 
 from zettelkasten_tools.settings import ZETTELKASTEN_INPUT
+import logging
 from zettelkasten_tools.persistency import (
     rename_file,
     file_content,
@@ -17,7 +18,12 @@ import os
 def process_txt_file(directory, filename):
     newfilename = 'Error'
     content = file_content(directory, filename)
-    if (content[0][0] == '#'):
+    if len(content) == 0:
+        logging.warning(
+            "File ", filename,
+            "in directory", directory,
+            "can not be processed, no valid markdown header")
+    elif (content[0][0] == '#'):
         newfilename = create_base_filename_from_title(
             content[0][2:])
         rename_file(directory, filename, newfilename + ".md")

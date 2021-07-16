@@ -37,3 +37,25 @@ def test_process_files_from_input(tmp_path):
     second_comparefile = test_sub_dir / "A_very_different_topic.md"
     assert first_comparefile.exists()
     assert second_comparefile.exists()
+
+
+def test_process_files_from_input_with_error(tmp_path):
+    test_sub_dir = tmp_path / "subdir"
+    test_sub_dir.mkdir()
+    first_testfile = test_sub_dir / "test.md"
+    # Has no valid header and should lead to error
+    content = """- Eine längere Überschrift
+
+    and some content"""
+    first_testfile.write_text(content)
+    second_testfile = test_sub_dir / "other.txt"
+    content = """# A very different topic
+
+    and also some different content"""
+    second_testfile.write_text(content)
+    zt.stage.process_files_from_input(str(test_sub_dir))
+    # First file should not be changed
+    first_comparefile = test_sub_dir / "test.md"
+    second_comparefile = test_sub_dir / "A_very_different_topic.md"
+    assert first_comparefile.exists()
+    assert second_comparefile.exists()
