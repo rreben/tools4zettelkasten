@@ -3,5 +3,5 @@
     "python.linting.enabled": true,
     "restructuredtext.confPath": "",
     "autoDocstring.docstringFormat": "sphinx",
-    "python.pythonPath": "venv/bin/python"
+    "python.pythonPath": "venvonwindows\\Scripts\\python.exe"
 }
