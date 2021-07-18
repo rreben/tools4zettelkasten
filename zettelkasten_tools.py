@@ -64,40 +64,6 @@ def generate_list_of_zettelkasten_files():
     return zettelkasten_list
 
 
-def reorganize_mycelium():
-    tree = []
-    tree = generate_tree(
-        generate_tokenized_list(generate_list_of_zettelkasten_files()))
-    # pprint(tree)
-    potential_changes_of_filenames = reorganize_filenames(tree)
-    changes_of_filenames = [
-        [x[0], x[1]] for x in potential_changes_of_filenames
-        if x[0] != re.split(r'_\D', x[1], maxsplit=1)[0]]
-    print()
-    print('The following changes will be done:')
-    pprint([x[0] + ' --> ' + x[1] for x in changes_of_filenames])
-    questions = [
-        {
-            "type": "confirm",
-            "message": "Proceed?",
-            "name": "proceed",
-            "default": False,
-        }
-    ]
-    result = prompt(questions)
-    if result["proceed"]:
-        if os.path.exists(zettelkasten_directory):
-            for x in changes_of_filenames:
-                oldfile = zettelkasten_directory + '/' + x[1]
-                newfile = (
-                    zettelkasten_directory +
-                    '/' + x[0] + '_' +
-                    handle_filenames.get_filename_components(x[1])[1])
-                os.rename(oldfile, newfile)
-                print('renamed: ', oldfile, ' with: ', newfile)
-        else:
-            logging.error("reorg-error: zettelkasten directrory not found")
-
 
 @app.route('/<file>')
 def show_md_file(file):
