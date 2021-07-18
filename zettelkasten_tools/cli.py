@@ -4,11 +4,8 @@
 # Licensed under the MIT license
 """The command line interface.
 
-click is used as backbone for the cli.
-An excellent tutorial is found at https://zetcode.com/python/click/
-
-Todo:
-    * connect new cli to functionality
+Click is used as backbone for the cli.
+An excellent tutorial is found at "https://zetcode.com/python/click".
 """
 
 import click
