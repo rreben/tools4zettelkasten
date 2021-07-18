@@ -18,6 +18,7 @@ import sys
 # this would be the path of (!) the module
 sys.path.insert(0, os.path.abspath('../../'))
 
+from zettelkasten_tools import __version__  # noqa
 
 # -- Project information -----------------------------------------------------
 
@@ -26,7 +27,7 @@ copyright = '2021, Rupert Rebentisch'
 author = 'Rupert Rebentisch'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0a2'
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
