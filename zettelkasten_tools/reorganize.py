@@ -2,8 +2,57 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
+from os import link
+from zettelkasten_tools.persistency import file_content
 from . import handle_filenames as hf
+from dataclasses import dataclass
 import re
+
+
+@dataclass()
+class Link:
+    '''Object for representing a link between notes'''
+    description: str
+    target: str
+
+
+def get_list_of_links_from_file(lines_of_filecontent):
+    """find all links in a file
+
+    Only links to other files are returned. Links for images are ignored.
+
+    :param lines_of_filecontent: the content of the file as list of strings
+    :type lines_of_filecontent: list of strings
+    :return: list of Link dataclass objects
+    :rtype: list of Link objects
+    """
+    list_of_links = []
+    # there might be multiple links in one line
+    # there might be links to images
+    link_reg_ex = re.compile(r'!{0,1}\[[a-zA-Z0-9_ !]*\]\([a-zA-Z0-9_\.]*\)')
+    link_reg_ex_with_groups = re.compile(
+        r'\[([a-zA-Z0-9_ !]*)\]\(([a-zA-Z0-9_\.]*)\)')
+    for line in lines_of_filecontent:
+        # first we gather all links from a given line
+        # we do not use groups here, because
+        # it is easier to process groups within each found link
+        links_found_strings = link_reg_ex.findall(line)
+        for link_found in links_found_strings:
+            # If the line contains one ore more links
+            # each link is tested if it is a link to an image
+            # which schould be ignored
+            if (
+                isinstance(link_found, str)
+                and
+                link_found[0] != '!'
+            ):
+                # We then match the description and the target and
+                # form the result to a Link object
+                link_match = link_reg_ex_with_groups.search(link_found)
+                if link_match:
+                    list_of_links.append(
+                        Link(link_match.group(1), link_match.group(2)))
+    return list_of_links
 
 
 def attach_missing_ids(file_name_list):

@@ -106,3 +106,34 @@ def test_create_rename_commands():
         ['rename',
             '2_3_a_Thought_on_Second_Topic_176fb43ae.md',
             '2_1_a_Thought_on_Second_Topic_176fb43ae.md', ]]
+
+
+def test_get_list_of_links_from_file(tmpdir):
+    p = tmpdir.mkdir("subdir").join(
+        "1_05_a_file_containinglinks_2af216153.md")
+    content = """# A file containing links
+
+    some text. some more text.
+
+    [a link](1_07_a_target_176fb43ae.md)
+
+    some
+    different text [an inline link](1_1_a_Thought_on_first_topic_2c3c34ff5.md)
+
+    ![image link](some_image.jpg)
+
+    [a third link](1_1_a_Thought_on_first_topic_2c3c34ff5.md) and [a fourth link](2_3_a_Thought_on_Second_Topic_176fb43ae.md) test # noqa
+    more to come"""
+    p.write(content)
+    assert p.read() == content
+    assert len(tmpdir.listdir()) == 1
+    links = zt.reorganize.get_list_of_links_from_file(p.readlines())
+    assert len(links) == 4
+    assert links[0].description == 'a link'
+    assert links[0].target == '1_07_a_target_176fb43ae.md'
+    assert links[1].description == 'an inline link'
+    assert links[1].target == '1_1_a_Thought_on_first_topic_2c3c34ff5.md'
+    assert links[2].description == 'a third link'
+    assert links[2].target == '1_1_a_Thought_on_first_topic_2c3c34ff5.md'
+    assert links[3].description == 'a fourth link'
+    assert links[3].target == '2_3_a_Thought_on_Second_Topic_176fb43ae.md'
