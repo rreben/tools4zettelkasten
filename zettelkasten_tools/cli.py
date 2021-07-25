@@ -15,6 +15,7 @@ from . import settings
 from . import stage as stg
 from . import persistency as pers
 from . import reorganize as ro
+from . import __version__
 from InquirerPy import prompt
 
 
@@ -55,6 +56,7 @@ def batch_rename(command_list, directory):
 def show_banner():
     f = Figlet(font='slant')
     print(f.renderText('zettelkasten tools'))
+    print("Copyright (c) 2021 Rupert Rebentisch, Version: ", __version__)
 
 
 @click.group()
