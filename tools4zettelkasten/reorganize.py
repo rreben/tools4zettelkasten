@@ -3,7 +3,7 @@
 # Licensed under the MIT license
 
 from os import link
-from zettelkasten_tools.persistency import file_content
+from tools4zettelkasten.persistency import file_content
 from . import handle_filenames as hf
 from dataclasses import dataclass
 import re

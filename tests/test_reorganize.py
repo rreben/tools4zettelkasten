@@ -2,7 +2,7 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from zettelkasten_tools.reorganize import corrections_elements
+from tools4zettelkasten.reorganize import corrections_elements
 from .context import zettelkasten_tools as zt
 import re
 
