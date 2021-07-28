@@ -2,16 +2,16 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from zettelkasten_tools.settings import ZETTELKASTEN_INPUT
+from tools4zettelkasten.settings import ZETTELKASTEN_INPUT
 import logging
-from zettelkasten_tools.persistency import (
+from tools4zettelkasten.persistency import (
     rename_file,
     file_content,
     is_markdown_file,
     is_text_file,
     list_of_filenames_from_directory
 )
-from zettelkasten_tools.handle_filenames import create_base_filename_from_title
+from tools4zettelkasten.handle_filenames import create_base_filename_from_title
 import os
 
 

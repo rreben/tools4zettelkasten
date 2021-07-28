@@ -8,3 +8,4 @@ from .persistency import *
 from .stage import *
 from .settings import *
 from .reorganize import *
+from .cli import *
