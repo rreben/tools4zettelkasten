@@ -1,4 +1,4 @@
-MODULE := zettelkasten_tools
+MODULE := tools4zettelkasten
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 

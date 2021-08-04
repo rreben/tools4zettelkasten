@@ -1,5 +1,5 @@
 # test_app.py
-from .context import zettelkasten_tools
+from .context import tools4zettelkasten
 import pytest
 
 
@@ -23,7 +23,7 @@ def test_app(capsys, example_fixture):
     * assert help in message
     """
     with pytest.raises(SystemExit) as pytest_wrapped_e:
-        zettelkasten_tools.ZettelkastenTools.run()
+        tools4zettelkasten.ZettelkastenTools.run()
     assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
 

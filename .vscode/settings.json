@@ -1,7 +1,8 @@
 {
-    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pycodestyleEnabled": false,
     "python.linting.enabled": true,
     "restructuredtext.confPath": "",
     "autoDocstring.docstringFormat": "sphinx",
-    "python.pythonPath": "venvonwindows\\Scripts\\python.exe"
+    "python.pythonPath": "venvonwindows\\Scripts\\python.exe",
+    "python.linting.flake8Enabled": true
 }

@@ -2,7 +2,7 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from .context import zettelkasten_tools as zt
+from .context import tools4zettelkasten as zt
 import re
 
 
@@ -14,7 +14,7 @@ def test_process_txt_file(tmp_path):
 
     and some content"""
     testfile.write_text(content)
-    zt.stage.process_txt_file(str(test_sub_dir), "test.md")
+    zt.process_txt_file(str(test_sub_dir), "test.md")
     comparefile = test_sub_dir / "Eine_laengere_Ueberschrift.md"
     assert comparefile.exists()
 
@@ -32,7 +32,7 @@ def test_process_files_from_input(tmp_path):
 
     and also some different content"""
     second_testfile.write_text(content)
-    zt.stage.process_files_from_input(str(test_sub_dir))
+    zt.process_files_from_input(str(test_sub_dir))
     first_comparefile = test_sub_dir / "Eine_laengere_Ueberschrift.md"
     second_comparefile = test_sub_dir / "A_very_different_topic.md"
     assert first_comparefile.exists()
@@ -53,7 +53,7 @@ def test_process_files_from_input_with_error(tmp_path):
 
     and also some different content"""
     second_testfile.write_text(content)
-    zt.stage.process_files_from_input(str(test_sub_dir))
+    zt.process_files_from_input(str(test_sub_dir))
     # First file should not be changed
     first_comparefile = test_sub_dir / "test.md"
     second_comparefile = test_sub_dir / "A_very_different_topic.md"

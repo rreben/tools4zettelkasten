@@ -6,6 +6,21 @@ import os
 import logging
 
 
+def is_file_existing(directory, filename) -> bool:
+    if os.path.exists(directory):
+        if (os.path.isfile(os.path.join(directory, filename))
+                and
+                # do not process hidden files
+                    not (filename[0] == '.')):
+                return True
+        else:   
+            return False
+    else:
+        logging.error(
+            "rename-error: directrory "
+            + directory + " not found")
+
+
 def rename_file(directory, oldfilename, newfilename):
     """renames a file in a directory
 

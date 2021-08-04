@@ -2,7 +2,7 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from .context import zettelkasten_tools as zt
+from .context import tools4zettelkasten as zt
 import re
 
 
