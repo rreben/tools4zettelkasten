@@ -3,7 +3,6 @@
 # Licensed under the MIT license
 
 from .context import tools4zettelkasten as zt
-import re
 
 
 def test_process_txt_file(tmp_path):
