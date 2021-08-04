@@ -2,8 +2,7 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from .context import  tools4zettelkasten as zt
-import re
+from .context import tools4zettelkasten as zt
 
 
 def test_create_file(tmpdir):
@@ -17,6 +16,8 @@ def test_create_file(tmpdir):
     :param tmpdir: this parameter is set as test fixture
                    by the pytest system
     :type tmpdir: directory
+    ToDo:
+    * Test PersistencyManager
     """
     p = tmpdir.mkdir("sub").join("hello.txt")
     p.write("content")
@@ -29,10 +30,11 @@ def test_is_file_existing(tmp_path):
     test_sub_dir.mkdir()
     testfile = test_sub_dir / "test.md"
     testfile.write_text("some info")
-    assert zt.is_file_existing(str(test_sub_dir),"test.md")
+    assert zt.is_file_existing(str(test_sub_dir), "test.md")
+    assert not zt.is_file_existing(str(test_sub_dir), "nonexiting.md")
 
 
-def test_rename_file(tmp_path): 
+def test_rename_file(tmp_path):
     test_dir = tmp_path / "subdir"
     test_dir.mkdir()
     testfile = test_dir / "test.md"
