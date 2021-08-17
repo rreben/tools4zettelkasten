@@ -42,6 +42,8 @@ def test_get_list_of_invalid_links(tmp_path):
     assert third_testfile.read_text() == "target 2"
     assert len(zt.get_list_of_invalid_links(persistency_manager)) == 1
     linklist = zt.get_list_of_invalid_links(persistency_manager)
+    assert linklist[0].source == "1_05_a_file_containinglinks_2af216153.md"
+    assert linklist[0].description == "a fourth link"
     assert linklist[0].target == "2_3_a_Thought_on_Second_Topic_176fb43ae.md"
 
 
@@ -165,13 +167,18 @@ def test_get_list_of_links_from_file(tmpdir):
     p.write(content)
     assert p.read() == content
     assert len(tmpdir.listdir()) == 1
-    links = zt.get_list_of_links_from_file(p.readlines())
+    links = zt.get_list_of_links_from_file(
+        "1_05_a_file_containinglinks_2af216153.md", p.readlines())
     assert len(links) == 4
+    assert links[0].source == "1_05_a_file_containinglinks_2af216153.md"
     assert links[0].description == 'a link'
     assert links[0].target == '1_07_a_target_176fb43ae.md'
+    assert links[1].source == "1_05_a_file_containinglinks_2af216153.md"
     assert links[1].description == 'an inline link'
     assert links[1].target == '1_1_a_Thought_on_first_topic_2c3c34ff5.md'
+    assert links[2].source == "1_05_a_file_containinglinks_2af216153.md"
     assert links[2].description == 'a third link'
     assert links[2].target == '1_1_a_Thought_on_first_topic_2c3c34ff5.md'
+    assert links[3].source == "1_05_a_file_containinglinks_2af216153.md"
     assert links[3].description == 'a fourth link'
     assert links[3].target == '2_3_a_Thought_on_Second_Topic_176fb43ae.md'

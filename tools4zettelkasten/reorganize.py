@@ -12,6 +12,7 @@ import re
 @dataclass()
 class Link:
     '''Object for representing a link between notes'''
+    source: str
     description: str
     target: str
 
@@ -24,6 +25,7 @@ def get_list_of_invalid_links(persistency_manager: PersistencyManager):
         if len(lines_of_filecontent) > 0:
             list_of_links_in_file = (
                 get_list_of_links_from_file(
+                    file,
                     lines_of_filecontent=lines_of_filecontent))
         else:
             logging.error("empty file: " + file)
@@ -33,7 +35,7 @@ def get_list_of_invalid_links(persistency_manager: PersistencyManager):
     return invalid_links
 
 
-def get_list_of_links_from_file(lines_of_filecontent):
+def get_list_of_links_from_file(filename, lines_of_filecontent):
     """find all links in a file
 
     Only links to other files are returned. Links for images are ignored.
@@ -68,7 +70,10 @@ def get_list_of_links_from_file(lines_of_filecontent):
                 link_match = link_reg_ex_with_groups.search(link_found)
                 if link_match:
                     list_of_links.append(
-                        Link(link_match.group(1), link_match.group(2)))
+                        Link(
+                            filename,
+                            link_match.group(1),
+                            link_match.group(2)))
     return list_of_links
 
 
