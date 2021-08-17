@@ -4,5 +4,11 @@
     "restructuredtext.confPath": "",
     "autoDocstring.docstringFormat": "sphinx",
     "python.pythonPath": "venvonwindows\\Scripts\\python.exe",
-    "python.linting.flake8Enabled": true
+    "python.linting.flake8Enabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true
 }
