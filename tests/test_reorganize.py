@@ -41,6 +41,8 @@ def test_get_list_of_invalid_links(tmp_path):
     assert second_testfile.read_text() == "target 1"
     assert third_testfile.read_text() == "target 2"
     assert len(zt.get_list_of_invalid_links(persistency_manager)) == 1
+    linklist = zt.get_list_of_invalid_links(persistency_manager)
+    assert linklist[0].target == "2_3_a_Thought_on_Second_Topic_176fb43ae.md"
 
 
 def test_attach_missing_ids():
