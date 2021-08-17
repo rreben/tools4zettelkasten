@@ -11,9 +11,9 @@ def is_file_existing(directory, filename) -> bool:
         if (os.path.isfile(os.path.join(directory, filename))
                 and
                 # do not process hidden files
-                    not (filename[0] == '.')):
-                return True
-        else:   
+                not (filename[0] == '.')):
+            return True
+        else:
             return False
     else:
         logging.error(
@@ -33,8 +33,8 @@ def rename_file(directory, oldfilename, newfilename):
     :type newfilename: string
     """
     if os.path.exists(directory):
-        oldfile = directory + '/' + oldfilename
-        newfile = directory + '/' + newfilename
+        oldfile = directory / oldfilename
+        newfile = directory / newfilename
         os.rename(oldfile, newfile)
         print('renamed: ', oldfile, ' with: ', newfile)
     else:
@@ -84,6 +84,20 @@ def is_markdown_file(filename):
 
 def file_content(directory, filename):
     content = []
-    with open(directory + "/" + filename, 'r') as afile:
+    with open(directory / filename, 'r') as afile:
         content = afile.readlines()
     return content
+
+
+class PersistencyManager:
+    def __init__(self, directory) -> None:
+        self.directory = directory
+
+    def get_list_of_filenames(self):
+        return list_of_filenames_from_directory(directory=self.directory)
+
+    def get_file_content(self, filename):
+        return file_content(directory=self.directory, filename=filename)
+
+    def is_file_existing(self, filename):
+        return is_file_existing(directory=self.directory, filename=filename)

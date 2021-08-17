@@ -2,9 +2,9 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from os import link
-from tools4zettelkasten.persistency import file_content
+import logging
 from . import handle_filenames as hf
+from .persistency import PersistencyManager
 from dataclasses import dataclass
 import re
 
@@ -14,6 +14,23 @@ class Link:
     '''Object for representing a link between notes'''
     description: str
     target: str
+
+
+def get_list_of_invalid_links(persistency_manager: PersistencyManager):
+    invalid_links = []
+    for file in persistency_manager.get_list_of_filenames():
+        lines_of_filecontent = (
+            persistency_manager.get_file_content(filename=file))
+        if len(lines_of_filecontent) > 0:
+            list_of_links_in_file = (
+                get_list_of_links_from_file(
+                    lines_of_filecontent=lines_of_filecontent))
+        else:
+            logging.error("empty file: " + file)
+        for link in list_of_links_in_file:
+            if not persistency_manager.is_file_existing(link.target):
+                invalid_links.append(link)
+    return invalid_links
 
 
 def get_list_of_links_from_file(lines_of_filecontent):

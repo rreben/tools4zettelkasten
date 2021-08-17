@@ -2,9 +2,45 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-from tools4zettelkasten.reorganize import corrections_elements
 from .context import tools4zettelkasten as zt
 import re
+
+
+def test_get_list_of_invalid_links(tmp_path):
+    """Test finding all invalid links in directory of notes
+    ToDo:
+    * Write Test
+    """
+    content = """# A file containing links
+
+    some text. some more text.
+
+    [a link](1_07_a_target_176fb43ae.md)
+
+    some
+    different text [an inline link](1_1_a_Thought_on_first_topic_2c3c34ff5.md)
+
+    ![image link](some_image.jpg)
+
+    [a third link](1_1_a_Thought_on_first_topic_2c3c34ff5.md) and [a fourth link](2_3_a_Thought_on_Second_Topic_176fb43ae.md) test # noqa
+    more to come"""
+    test_sub_dir = tmp_path / "subdir"
+    test_sub_dir.mkdir()
+    persistency_manager = zt.PersistencyManager(test_sub_dir)
+    first_testfile = test_sub_dir / "1_05_a_file_containinglinks_2af216153.md"
+    first_testfile.write_text(content)
+    second_testfile = test_sub_dir / "1_07_a_target_176fb43ae.md"
+    second_testfile.write_text("target 1")
+    third_testfile = test_sub_dir / "1_1_a_Thought_on_first_topic_2c3c34ff5.md"
+    third_testfile.write_text("target 2")
+    fourth_testfile = (
+        test_sub_dir / "2_04_a_Thought_on_Second_Topic_176fb43ae.md")
+    fourth_testfile.write_text("changed target 3")
+
+    assert first_testfile.read_text() == content
+    assert second_testfile.read_text() == "target 1"
+    assert third_testfile.read_text() == "target 2"
+    assert len(zt.get_list_of_invalid_links(persistency_manager)) == 1
 
 
 def test_attach_missing_ids():
