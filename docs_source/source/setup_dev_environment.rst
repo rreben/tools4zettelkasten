@@ -51,3 +51,5 @@ For this to work the setting of the debugger and the test engine have to be in s
 
 Start the detection of tests with ``Python: Discover Tests`` from the command palette. 
 Specify ``tests`` as the test directory.
+
+For more information look at the `VSCode Documentation <https://code.visualstudio.com/docs/python/testing>`_
