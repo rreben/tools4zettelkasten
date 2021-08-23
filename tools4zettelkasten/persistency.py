@@ -4,6 +4,7 @@
 
 import os
 import logging
+from pathlib import Path
 
 
 def is_file_existing(directory, filename) -> bool:
@@ -91,7 +92,10 @@ def file_content(directory, filename):
 
 class PersistencyManager:
     def __init__(self, directory) -> None:
-        self.directory = directory
+        if (isinstance(directory, str)):
+            self.directory = Path(directory)
+        else:
+            self.directory = directory
 
     def get_list_of_filenames(self):
         return list_of_filenames_from_directory(directory=self.directory)
