@@ -67,7 +67,9 @@ def messages():
 @click.command(help='rename files from input for moving into the Zettelkasten')
 def stage():
     show_banner()
-    stg.process_files_from_input(settings.ZETTELKASTEN_INPUT)
+    persistencyManager = pers.PersistencyManager(
+        settings.ZETTELKASTEN_INPUT)
+    stg.process_files_from_input(persistencyManager)
 
 
 @click.command(help='add ids, consecutive numbering, keep links alife')
