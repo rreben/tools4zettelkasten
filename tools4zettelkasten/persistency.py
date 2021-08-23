@@ -101,3 +101,15 @@ class PersistencyManager:
 
     def is_file_existing(self, filename):
         return is_file_existing(directory=self.directory, filename=filename)
+
+    def is_markdown_file(self, filename):
+        return is_markdown_file(filename)
+
+    def is_text_file(self, filename):
+        return is_text_file(filename)
+
+    def rename_file(self, oldfilename, newfilename):
+        rename_file(
+            directory=self.directory,
+            oldfilename=oldfilename,
+            newfilename=newfilename)

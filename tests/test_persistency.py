@@ -53,9 +53,10 @@ def test_is_file_existing(tmp_path):
 def test_rename_file(tmp_path):
     test_dir = tmp_path / "subdir"
     test_dir.mkdir()
+    persistency_manager = zt.PersistencyManager(tmp_path / "subdir")
     testfile = test_dir / "test.md"
     testfile.write_text("some info")
-    zt.rename_file(test_dir, "test.md", "new.md")
+    persistency_manager.rename_file("test.md", "new.md")
     comparefile = test_dir / "new.md"
     assert comparefile.exists()
     assert comparefile.read_text() == "some info"
