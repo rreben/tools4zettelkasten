@@ -27,7 +27,7 @@ def rename_file(directory, oldfilename, newfilename):
 
     :param directory: the name of the directory containing the file
                       to be renamed
-    :type directory: string
+    :type directory: path
     :param oldfilename: original name of the file
     :type oldfilename: string
     :param newfilename: new name of the file
@@ -50,7 +50,7 @@ def list_of_filenames_from_directory(directory):
     Hidden files are excluded from the list
 
     :param directory: name of the directory
-    :type directory: string
+    :type directory: path
     :return: list of the names of the files in the directory
     :rtype: list
     """
