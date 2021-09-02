@@ -13,13 +13,13 @@ from pyfiglet import Figlet
 from . import settings
 # we have to rename stage so it does not interfere with command stage
 from . import stage as stg
-from . import persistency as pers
+from .persistency import PersistencyManager
 from . import reorganize as ro
 from . import __version__
 from InquirerPy import prompt
 
 
-def batch_rename(command_list, directory):
+def batch_rename(command_list, persistencyManager: PersistencyManager):
     """rename a bunch of file
 
     prompt user to verify that rename should be done
@@ -31,8 +31,8 @@ def batch_rename(command_list, directory):
     newfilename name of file after rename operation.
 
     :type command_list: list
-    :param directory: directory with files which shoud be renamed
-    :type directory: string
+    :param persistencyManager: handler for manipulation of the file system
+    :type persistencyManager: PersistencyManager
     """
     questions = [
         {
@@ -50,7 +50,8 @@ def batch_rename(command_list, directory):
             print(newfilename, '?')
             result = prompt(questions)
             if result["proceed"]:
-                pers.rename_file(directory, oldfilename, newfilename)
+                persistencyManager.rename_file(
+                    oldfilename, newfilename)
 
 
 def show_banner():
@@ -67,7 +68,7 @@ def messages():
 @click.command(help='rename files from input for moving into the Zettelkasten')
 def stage():
     show_banner()
-    persistencyManager = pers.PersistencyManager(
+    persistencyManager = PersistencyManager(
         settings.ZETTELKASTEN_INPUT)
     stg.process_files_from_input(persistencyManager)
 
@@ -75,18 +76,19 @@ def stage():
 @click.command(help='add ids, consecutive numbering, keep links alife')
 def reorganize():
     show_banner()
+    persistencyManager = PersistencyManager(
+        settings.ZETTELKASTEN)
     print('Searching for missing IDs')
     batch_rename(
         ro.attach_missing_ids(
-            pers.list_of_filenames_from_directory(settings.ZETTELKASTEN)),
-        settings.ZETTELKASTEN)
+            persistencyManager.get_list_of_filenames()), persistencyManager)
     print('Searching for necessary changes in hierachy')
     tokenized_list = ro.generate_tokenized_list(
-        pers.list_of_filenames_from_directory(settings.ZETTELKASTEN))
+        persistencyManager.get_list_of_filenames())
     tree = ro.generate_tree(tokenized_list)
     potential_changes = ro.reorganize_filenames(tree)
     batch_rename(ro.create_rename_commands(
-        potential_changes), settings.ZETTELKASTEN)
+        potential_changes), persistencyManager)
 
 
 messages.add_command(stage)

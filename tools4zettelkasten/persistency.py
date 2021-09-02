@@ -93,7 +93,7 @@ def file_content(directory, filename):
 class PersistencyManager:
     """Interface class for all the persistency functionality
 
-    Later we can add the same functionality on different 
+    Later we can add the same functionality on different
     persistency mechanisms (like local folder, dropbox, AWS-S3 etc.)
     """
     def __init__(self, directory) -> None:
