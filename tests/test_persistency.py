@@ -96,3 +96,26 @@ def test_file_content(tmp_path):
     content = zt.file_content(test_dir, "test.md")
     assert len(content) == 3
     assert content[0][0] == "#"
+
+
+def test_get_string_from_file_content(tmp_path):
+    test_dir = tmp_path / "subdir"
+    test_dir.mkdir()
+    testfile = test_dir / "test.md"
+    content = """# Eine längere Überschrift
+
+    and some content"""
+    testfile.write_text(content)
+    content_read = zt.get_string_from_file_content(test_dir, "test.md")
+    assert content == content_read
+
+
+def test_overwrite_file_content(tmp_path):
+    test_dir = tmp_path / "subdir"
+    test_dir.mkdir()
+    testfile = test_dir / "test.md"
+    content = "abc"
+    testfile.write_text(content)
+    zt.overwrite_file_content(test_dir, "test.md", "def")
+    content_read = zt.get_string_from_file_content(test_dir, "test.md")
+    assert content_read == "def"

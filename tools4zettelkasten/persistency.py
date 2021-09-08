@@ -90,6 +90,18 @@ def file_content(directory, filename):
     return content
 
 
+def get_string_from_file_content(directory, filename):
+    content_string = ''
+    with open(directory / filename, 'r') as afile:
+        content_string = afile.read()
+    return content_string
+
+
+def overwrite_file_content(directory, filename, new_content):
+    with open(directory / filename, 'w') as afile:
+        afile.write(new_content)
+
+
 class PersistencyManager:
     """Interface class for all the persistency functionality
 
@@ -107,6 +119,16 @@ class PersistencyManager:
 
     def get_file_content(self, filename):
         return file_content(directory=self.directory, filename=filename)
+
+    def g(self, filename):
+        return get_string_from_file_content(
+            directory=self.directory, filename=filename)
+
+    def overwrite_file_content(self, filename, new_content):
+        overwrite_file_content(
+            directory=self.directory,
+            filename=filename,
+            new_content=new_content)
 
     def is_file_existing(self, filename):
         return is_file_existing(directory=self.directory, filename=filename)
