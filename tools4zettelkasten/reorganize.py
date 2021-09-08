@@ -26,9 +26,7 @@ def generate_list_of_link_correction_commands(
         persistencyManager.get_list_of_filenames())
     for invalid_link in list_of_invalid_links:
         target = invalid_link.target
-        print("target: ", target)
         target_id = hf.get_filename_components(target)[2]
-        print("id: ", target_id)
         valid_target = ''
         if target_id in files_dict:
             valid_target = files_dict[target_id]
@@ -50,7 +48,6 @@ def generate_list_of_link_correction_commands(
             )
         )
         command_list.append(command)
-        print(target, "  -->  ", valid_target)
     return command_list
 
 
