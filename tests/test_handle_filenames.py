@@ -47,3 +47,15 @@ def test_hash():
 def test_currentTimestamp():
     assert re.match(
         '^[0-9]{1,20}$', zt.handle_filenames.currentTimestamp())
+
+
+def test_get_filename_components():
+    assert (zt.handle_filenames.get_filename_components(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[0]
+        == '01_36')
+    assert (zt.handle_filenames.get_filename_components(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[1]
+        == 'Beispiel_fuer_eine_Core_Conflict_Cloud_CCC')
+    assert (zt.handle_filenames.get_filename_components(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[2]
+        == '6f4175c6f')
