@@ -17,6 +17,19 @@ from .persistency import PersistencyManager
 from . import reorganize as ro
 from . import __version__
 from InquirerPy import prompt
+from dataclasses import dataclass
+
+
+@dataclass()
+class Command:
+    pass
+
+
+@dataclass()
+class Replace_command(Command):
+    filename: str
+    to_be_replaced: str
+    replace_with: str
 
 
 def batch_rename(command_list, persistencyManager: PersistencyManager):
@@ -91,5 +104,17 @@ def reorganize():
         potential_changes), persistencyManager)
 
 
+@click.command(help='analyse your Zettelkasten')
+def analyse():
+    show_banner()
+    print("Analysing the Zettelkasten")
+    persistencyManager = PersistencyManager(
+        settings.ZETTELKASTEN)
+    list_of_commands = ro.generate_list_of_link_correction_commands(
+        persistencyManager)
+    print(list_of_commands)
+
+
 messages.add_command(stage)
 messages.add_command(reorganize)
+messages.add_command(analyse)

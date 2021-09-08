@@ -4,6 +4,7 @@
 
 import logging
 from . import handle_filenames as hf
+from . import cli as cli
 from .persistency import PersistencyManager
 from dataclasses import dataclass
 import re
@@ -15,6 +16,42 @@ class Link:
     source: str
     description: str
     target: str
+
+
+def generate_list_of_link_correction_commands(
+        persistencyManager: PersistencyManager):
+    command_list = []
+    list_of_invalid_links = get_list_of_invalid_links(persistencyManager)
+    files_dict = generate_dictionary(
+        persistencyManager.get_list_of_filenames())
+    for invalid_link in list_of_invalid_links:
+        target = invalid_link.target
+        print("target: ", target)
+        target_id = hf.get_filename_components(target)[2]
+        print("id: ", target_id)
+        valid_target = ''
+        if target_id in files_dict:
+            valid_target = files_dict[target_id]
+        else:
+            print(
+                "no file with id: " +
+                str(target_id) +
+                " found for link in file: " +
+                invalid_link.source +
+                "Pls correct manually")
+        command = cli.Replace_command(
+            filename=invalid_link.source,
+            to_be_replaced=(
+                "[" + invalid_link.description + "]"
+                + "(" + target + ")"),
+            replace_with=(
+                "[" + invalid_link.description + "]"
+                + "(" + valid_target + ")"
+            )
+        )
+        command_list.append(command)
+        print(target, "  -->  ", valid_target)
+    return command_list
 
 
 def get_list_of_invalid_links(persistency_manager: PersistencyManager):
@@ -48,9 +85,10 @@ def get_list_of_links_from_file(filename, lines_of_filecontent):
     list_of_links = []
     # there might be multiple links in one line
     # there might be links to images
-    link_reg_ex = re.compile(r'!{0,1}\[[a-zA-Z0-9_ !]*\]\([a-zA-Z0-9_\.]*\)')
+    link_reg_ex = re.compile(
+        r'!{0,1}\[[a-zA-Z0-9_ !]*\]\([a-zA-Z0-9_]*\.md\)')
     link_reg_ex_with_groups = re.compile(
-        r'\[([a-zA-Z0-9_ !]*)\]\(([a-zA-Z0-9_\.]*)\)')
+        r'\[([a-zA-Z0-9_ !]*)\]\(([a-zA-Z0-9_]*\.md)\)')
     for line in lines_of_filecontent:
         # first we gather all links from a given line
         # we do not use groups here, because
@@ -116,6 +154,21 @@ def attach_missing_ids(file_name_list):
                 '_' + file_id + '.md'
             command_list.append(['rename', oldfilename, newfilename])
     return command_list
+
+
+def generate_dictionary(zettelkasten_list: list[str]) -> dict[str, str]:
+    """generates a list from a list of Zettelkasten filenames
+
+    :param zettelkasten_list: List of filenames in the Zettelkasten
+    :type zettelkasten_list: list[str]
+    :return: dictionary with the id as keys and the filename as values
+    :rtype: dictionary
+    """
+    zettelkasten_dict = {}
+    for filename in zettelkasten_list:
+        zettelkasten_dict[
+            hf.get_filename_components(filename=filename)[2]] = filename
+    return zettelkasten_dict
 
 
 def generate_tokenized_list(zettelkasten_list):
