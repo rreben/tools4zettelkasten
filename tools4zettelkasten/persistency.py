@@ -120,7 +120,7 @@ class PersistencyManager:
     def get_file_content(self, filename):
         return file_content(directory=self.directory, filename=filename)
 
-    def g(self, filename):
+    def get_string_from_file_content(self, filename):
         return get_string_from_file_content(
             directory=self.directory, filename=filename)
 
