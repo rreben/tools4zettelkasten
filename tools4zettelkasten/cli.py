@@ -115,9 +115,11 @@ def reorganize():
     potential_changes = ro.reorganize_filenames(tree)
     batch_rename(ro.create_rename_commands(
         potential_changes), persistencyManager)
+    print('Searching for invalid links')
     list_of_commands = ro.generate_list_of_link_correction_commands(
         persistencyManager)
     print(list_of_commands)
+    batch_replace(list_of_commands, persistencyManager)
 
 
 @click.command(help='analyse your Zettelkasten')
