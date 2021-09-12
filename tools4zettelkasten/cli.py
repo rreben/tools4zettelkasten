@@ -35,14 +35,25 @@ class Replace_command(Command):
 def batch_replace(
         command_list: list[Replace_command],
         persistencyManager: PersistencyManager):
-    for command in command_list:
-        file_content = persistencyManager.get_string_from_file_content(
-            command.filename)
-        new_file_content = file_content.replace(
-            command.to_be_replaced,
-            command.replace_with)
-        persistencyManager.overwrite_file_content(
-            command.filename, new_file_content)
+    questions = [
+        {
+            "type": "confirm",
+            "message": "Proceed?",
+            "name": "proceed",
+            "default": False,
+        }
+    ]
+    print(command_list)
+    result = prompt(questions)
+    if result["proceed"]:
+        for command in command_list:
+            file_content = persistencyManager.get_string_from_file_content(
+                command.filename)
+            new_file_content = file_content.replace(
+                command.to_be_replaced,
+                command.replace_with)
+            persistencyManager.overwrite_file_content(
+                command.filename, new_file_content)
 
 
 def batch_rename(command_list, persistencyManager: PersistencyManager):
@@ -118,7 +129,6 @@ def reorganize():
     print('Searching for invalid links')
     list_of_commands = ro.generate_list_of_link_correction_commands(
         persistencyManager)
-    print(list_of_commands)
     batch_replace(list_of_commands, persistencyManager)
 
 
