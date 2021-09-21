@@ -138,9 +138,10 @@ def analyse():
     print("Analysing the Zettelkasten")
     persistencyManager = PersistencyManager(
         settings.ZETTELKASTEN)
-    list_of_commands = ro.generate_list_of_link_correction_commands(
-        persistencyManager)
-    print(list_of_commands)
+    list_of_filenames = persistencyManager.get_list_of_filenames()
+    print("Number of Zettel: ", len(list_of_filenames))
+    list_of_explicit_links = ro.get_list_of_links(persistencyManager)
+    print("Number of Explicit Links: ", len(list_of_explicit_links))
 
 
 messages.add_command(stage)

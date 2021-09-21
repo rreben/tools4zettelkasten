@@ -69,6 +69,23 @@ def get_list_of_invalid_links(persistency_manager: PersistencyManager):
     return invalid_links
 
 
+def get_list_of_links(persistency_manager: PersistencyManager):
+    list_of_links = []
+    for file in persistency_manager.get_list_of_filenames():
+        lines_of_filecontent = (
+            persistency_manager.get_file_content(filename=file))
+        if len(lines_of_filecontent) > 0:
+            list_of_links_in_file = (
+                get_list_of_links_from_file(
+                    file,
+                    lines_of_filecontent=lines_of_filecontent))
+        else:
+            logging.error("empty file: ", file)
+        for link in list_of_links_in_file:
+            list_of_links.append(link)
+    return list_of_links
+
+
 def get_list_of_links_from_file(filename, lines_of_filecontent):
     """find all links in a file
 
