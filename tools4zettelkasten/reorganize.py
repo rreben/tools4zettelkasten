@@ -411,6 +411,14 @@ def get_hierarchy_links(tree, hierarchy_links=None):
                         description="train of thoughts",
                         target=child_leafs[index + 1]
                     ))
+            if len(child_leafs) > 0:
+                hierarchy_links.append(
+                    Link(
+                        source=node[1],
+                        description="detail / digression",
+                        target=child_leafs[0]
+                    )
+                )
             get_hierarchy_links(node[2])
         elif isStructureNode(node):
             child_leafs = getChildNodesThatAreLeafs(node)

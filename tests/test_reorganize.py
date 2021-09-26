@@ -152,8 +152,11 @@ def test_get_get_hierarchy_links():
         zt.Link(
             source='1_2_One_Two_000000003.md',
             description='train of thoughts',
-            target='1_3_One_Three_000000004.md')
-    ]
+            target='1_3_One_Three_000000004.md'),
+        zt.Link(
+            source='1_One_000000001.md',
+            description='detail / digression',
+            target='1_1_One_One_000000002.md')]
 
 
 def test_reorganize_filenames():
