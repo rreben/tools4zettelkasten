@@ -4,6 +4,10 @@ __pycache__/
 *$py.class
 *.tmp
 
+# graphviz files
+*.gv
+*.png
+
 # MacOS memory caching
 .DS_Store
 static/.DS_Store
