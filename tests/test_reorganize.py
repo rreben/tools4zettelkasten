@@ -114,6 +114,48 @@ def test_generate_tree():
             [['1', '2_1_a_Thought_on_Second_Topic_176fb43ae.md']]]]
 
 
+def test_get_get_hierarchy_links():
+    test_filenames = [
+        '1_One_000000001.md',
+        '1_1_One_One_000000002.md',
+        '1_2_One_Two_000000003.md',
+        '1_3_One_Three_000000004.md',
+        '2_Two_000000005.md'
+    ]
+    tokenized_list = zt.generate_tokenized_list(test_filenames)
+    # print(tokenized_list)
+    assert tokenized_list == [
+        [['1'], '1_One_000000001.md'],
+        [['1', '1'], '1_1_One_One_000000002.md'],
+        [['1', '2'], '1_2_One_Two_000000003.md'],
+        [['1', '3'], '1_3_One_Three_000000004.md'],
+        [['2'], '2_Two_000000005.md']
+    ]
+    tree = zt.generate_tree(tokenized_list)
+    # print(tree)
+    assert tree == [
+        ['1', '1_One_000000001.md',
+            [
+                ['1', '1_1_One_One_000000002.md'],
+                ['2', '1_2_One_Two_000000003.md'],
+                ['3', '1_3_One_Three_000000004.md']
+            ]],
+        ['2', '2_Two_000000005.md']
+    ]
+    hierarchy_links = zt.get_hierarchy_links(tree)
+    print(hierarchy_links)
+    assert hierarchy_links == [
+        zt.Link(
+            source='1_1_One_One_000000002.md',
+            description='train of thoughts',
+            target='1_2_One_Two_000000003.md'),
+        zt.Link(
+            source='1_2_One_Two_000000003.md',
+            description='train of thoughts',
+            target='1_3_One_Three_000000004.md')
+    ]
+
+
 def test_reorganize_filenames():
     tree = [
         ['1', '1_first_topic_41b4e4f8f.md',

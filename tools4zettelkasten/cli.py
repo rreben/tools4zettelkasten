@@ -142,6 +142,10 @@ def analyse():
     print("Number of Zettel: ", len(list_of_filenames))
     list_of_explicit_links = ro.get_list_of_links(persistencyManager)
     print("Number of Explicit Links: ", len(list_of_explicit_links))
+    tokenized_list = ro.generate_tokenized_list(
+        persistencyManager.get_list_of_filenames())
+    tree = ro.generate_tree(tokenized_list)
+    print(tree)
 
 
 messages.add_command(stage)

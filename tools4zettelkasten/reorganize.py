@@ -337,6 +337,94 @@ def generate_tree(tokenized_list):
     return tree
 
 
+def isLeaf(node):
+    if isinstance(node, list):
+        if len(node) == 2:
+            if isinstance(node[0], str) and isinstance(node[1], str):
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
+
+def isLeafWithSubtree(node):
+    if isinstance(node, list):
+        if len(node) == 3:
+            if (
+                isinstance(node[0], str)
+                and isinstance(node[1], str)
+                and isinstance(node[2], list)
+            ):
+                return True
+        else:
+            return False
+    else:
+        return False
+
+
+def isStructureNode(node):
+    if isinstance(node, list):
+        if len(node) == 2:
+            if (isinstance(node[0], str)
+                    and isinstance(node[1], list)):
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
+
+def getChildNodesThatAreLeafs(node):
+    child_nodes = []
+    if isStructureNode(node):
+        for pot_child_node in node[1]:
+            if isLeaf(pot_child_node):
+                child_nodes.append(pot_child_node[1])
+            elif isLeafWithSubtree(pot_child_node):
+                child_nodes.append(pot_child_node[1])
+    elif isLeafWithSubtree(node):
+        for pot_child_node in node[2]:
+            if isLeaf(pot_child_node):
+                child_nodes.append(pot_child_node[1])
+            elif isLeafWithSubtree(pot_child_node):
+                child_nodes.append(pot_child_node[1])
+    return child_nodes
+
+
+def get_hierarchy_links(tree, hierarchy_links=None):
+    if hierarchy_links is None:
+        hierarchy_links = []
+    for node in tree:
+        if isLeaf(node):
+            pass
+        elif isLeafWithSubtree(node):
+            child_leafs = getChildNodesThatAreLeafs(node)
+            for index in range(0, len(child_leafs)-1):
+                hierarchy_links.append(
+                    Link(
+                        source=child_leafs[index],
+                        description="train of thoughts",
+                        target=child_leafs[index + 1]
+                    ))
+            get_hierarchy_links(node[2])
+        elif isStructureNode(node):
+            child_leafs = getChildNodesThatAreLeafs(node)
+            for index in range(0, len(child_leafs)-1):
+                hierarchy_links.append(
+                    Link(
+                        source=child_leafs[index],
+                        description="train of thoughts",
+                        target=child_leafs[index + 1]
+                    ))
+            get_hierarchy_links(node[1])
+    return hierarchy_links
+
+
 def reorganize_filenames(tree, path=None, final=None):
     if final is None:
         final = []
@@ -344,24 +432,15 @@ def reorganize_filenames(tree, path=None, final=None):
         path = ''
     for node in tree:
         if isinstance(node, list):
-            if len(node) == 2:
-                if isinstance(node[0], str) and isinstance(node[1], str):
-                    final.append(
-                        [path + node[0], node[1]])
-                else:
-                    reorganize_filenames(node, path=path, final=final)
+            if isLeaf(node):
+                final.append(
+                    [path + node[0], node[1]])
+            elif isLeafWithSubtree(node):
+                final.append([path + node[0], node[1]])
+                reorganize_filenames(
+                    node[2], path=path + node[0] + '_', final=final)
             else:
-                if len(node) == 3:
-                    if (
-                        isinstance(node[0], str)
-                        and isinstance(node[1], str)
-                        and isinstance(node[2], list)
-                    ):
-                        final.append([path + node[0], node[1]])
-                        reorganize_filenames(
-                            node[2], path=path + node[0] + '_', final=final)
-                else:
-                    reorganize_filenames(node, path=path, final=final)
+                reorganize_filenames(node, path=path, final=final)
         else:
             path += node + '_'
     return final
