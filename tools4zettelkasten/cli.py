@@ -145,7 +145,9 @@ def analyse():
     tokenized_list = ro.generate_tokenized_list(
         persistencyManager.get_list_of_filenames())
     tree = ro.generate_tree(tokenized_list)
-    print(tree)
+    # print(tree)
+    list_of_structure_links = ro.get_hierarchy_links(tree)
+    print("Number of structure links: ", len(list_of_structure_links))
 
 
 messages.add_command(stage)
