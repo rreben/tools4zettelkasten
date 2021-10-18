@@ -149,7 +149,8 @@ def analyse():
     # print(tree)
     list_of_structure_links = ro.get_hierarchy_links(tree)
     print("Number of structure links: ", len(list_of_structure_links))
-    an.show_graph_of_zettelkasten()
+    list_of_links = list_of_structure_links + list_of_explicit_links
+    an.show_graph_of_zettelkasten(list_of_filenames, list_of_links)
 
 
 messages.add_command(stage)

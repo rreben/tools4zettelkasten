@@ -3,35 +3,31 @@
 # Licensed under the MIT license
 
 from graphviz import Digraph
+from . import handle_filenames as hf
 
 
-def show_graph_of_zettelkasten():
-    dot = Digraph(comment='Goal Tree')
+def show_graph_of_zettelkasten(list_of_filenames, list_of_links):
+    dot = Digraph(comment='Zettelkasten')
 
     # Goal
-    dot.node('0', 'Ein erfülltes Leben führen', shape='box', style='rounded')
+    for filename in list_of_filenames:
+        filename_components = hf.get_filename_components(filename=filename)
+        print(filename_components[2], filename_components[1])
+        dot.node(
+            filename_components[2],
+            filename_components[1],
+            shape='box',
+            style='rounded')
 
-    # CSF
-    dot.node(
-        '1', 'Sein volles Potential für Gutes einsetzen',
-        shape='box', style='rounded')
-    dot.node(
-        '2', 'Sein Leben selbstbestimmt gestalten',
-        shape='box', style='rounded')
-
-    # NC
-    dot.node(
-        '1.1', 'Sein Potential entwickeln',
-        shape='box', style='rounded')
-    dot.node(
-        '2.1', 'finanziell unabhängig sein',
-        shape='box', style='rounded')
-
+    for link in list_of_links:
+        source_components = hf.get_filename_components(link.source)
+        target_components = hf.get_filename_components(link.target)
+        dot.edge(source_components[2], target_components[2])
     # Edges
-    dot.edge('0', '1')
-    dot.edge('0', '2')
-    dot.edge('1', '1.1')
-    dot.edge('2', '2.1')
+    # dot.edge('0', '1')
+    # dot.edge('0', '2')
+    # dot.edge('1', '1.1')
+    # dot.edge('2', '2.1')
 
     # Generate Output
     print(dot.source)
