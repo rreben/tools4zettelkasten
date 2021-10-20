@@ -2,9 +2,14 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
+import pprint as pp
 from graphviz import Digraph
 from . import handle_filenames as hf
 from . import reorganize as ro
+
+
+def show_tree_as_list(tree):
+    pp.pprint(tree)
 
 
 def show_graph_of_zettelkasten(

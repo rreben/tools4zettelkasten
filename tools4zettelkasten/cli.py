@@ -134,8 +134,17 @@ def reorganize():
 
 
 @click.command(help='analyse your Zettelkasten')
-def analyse():
+@click.option(
+        '-t',
+        '--type',
+        help='type of analysis',
+        type=click.Choice(['graph', 'tree'], case_sensitive=False),
+        default='graph',
+        show_default=True
+    )
+def analyse(type):
     show_banner()
+    print(type)
     print("Analysing the Zettelkasten")
     persistencyManager = PersistencyManager(
         settings.ZETTELKASTEN)
@@ -150,9 +159,13 @@ def analyse():
     list_of_structure_links = ro.get_hierarchy_links(tree)
     print("Number of structure links: ", len(list_of_structure_links))
     list_of_links = list_of_structure_links + list_of_explicit_links
-    an.show_graph_of_zettelkasten(list_of_filenames, list_of_links)
+    if (type == 'tree'):
+        an.show_tree_as_list(tree)
+    else:
+        an.show_graph_of_zettelkasten(list_of_filenames, list_of_links)
 
 
 messages.add_command(stage)
 messages.add_command(reorganize)
 messages.add_command(analyse)
+messages.no_args_is_help
