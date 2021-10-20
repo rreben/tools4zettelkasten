@@ -419,7 +419,7 @@ def get_hierarchy_links(tree, hierarchy_links=None):
                         target=child_leafs[0]
                     )
                 )
-            get_hierarchy_links(node[2])
+            get_hierarchy_links(node[2], hierarchy_links)
         elif isStructureNode(node):
             child_leafs = getChildNodesThatAreLeafs(node)
             for index in range(0, len(child_leafs)-1):
@@ -429,7 +429,7 @@ def get_hierarchy_links(tree, hierarchy_links=None):
                         description="train of thoughts",
                         target=child_leafs[index + 1]
                     ))
-            get_hierarchy_links(node[1])
+            get_hierarchy_links(node[1], hierarchy_links)
     return hierarchy_links
 
 
