@@ -69,15 +69,22 @@ def test_attach_missing_ids():
         '5_10_Senescent_cells_9e051e2c4.md',
         '1_2_reframe_your_goal_as_a_learning_goal.md',
         '2_1a_render_md_files_with_python_and_flask_41e5a496c.md',
-        '2_5_homebrew.md']
+        '2_5_homebrew.md',
+        'no_ordering.md']
     command_list = zt.attach_missing_ids(test_list)
-    assert len(command_list) == 2
+    assert len(command_list) == 3
     assert command_list[0][0] == 'rename'
     assert zt.handle_filenames.get_filename_components(
         command_list[0][2])[0] == '1_2'
     assert zt.handle_filenames.get_filename_components(
         command_list[0][2])[1] == 'reframe_your_goal_as_a_learning_goal'
     assert re.match(r'.*_[0-9a-f]{9}\.md$', command_list[0][2])
+    assert command_list[2][0] == 'rename'
+    assert zt.handle_filenames.get_filename_components(
+        command_list[2][2])[0] == ''
+    assert zt.handle_filenames.get_filename_components(
+        command_list[2][2])[1] == 'no_ordering'
+    assert re.match(r'.*_[0-9a-f]{9}\.md$', command_list[2][2])
 
 
 def test_generate_tokenized_list():
