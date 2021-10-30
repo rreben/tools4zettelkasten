@@ -59,3 +59,30 @@ def test_get_filename_components():
     assert (zt.handle_filenames.get_filename_components(
         "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[2]
         == '6f4175c6f')
+    assert (zt.handle_filenames.get_filename_components(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")[0]
+        == '01_36')
+    assert (zt.handle_filenames.get_filename_components(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")[1]
+        == 'Beispiel_fuer_eine_Core_Conflict_Cloud_CCC')
+    assert (zt.handle_filenames.get_filename_components(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")[2]
+        == '')
+    assert (zt.handle_filenames.get_filename_components(
+        "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")[0]
+        == '')
+    assert (zt.handle_filenames.get_filename_components(
+        "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")[1]
+        == 'Beispiel_fuer_eine_Core_Conflict_Cloud_CCC')
+    assert (zt.handle_filenames.get_filename_components(
+        "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")[2]
+        == '')
+    assert (zt.handle_filenames.get_filename_components(
+        "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[0]
+        == '')
+    assert (zt.handle_filenames.get_filename_components(
+        "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[1]
+        == 'Beispiel_fuer_eine_Core_Conflict_Cloud_CCC')
+    assert (zt.handle_filenames.get_filename_components(
+        "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[2]
+        == '6f4175c6f')

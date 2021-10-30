@@ -76,9 +76,16 @@ def get_filename_components(filename):
     if re.match(r'.*_[0-9a-f]{9}\.md$', filename):
         id_filename = filename[-12:-3]
         filename = filename[:-13]
+    else:
+        id_filename = ''
+        filename = filename[:-3]
     # Split by first underscore followed by a character = Non-Digit
-    ordering_filename = re.split(r'_\D', filename, maxsplit=1)[0]
-    base_filename = filename[(len(ordering_filename)+1):]
+    if re.match(r'^\d', filename):
+        ordering_filename = re.split(r'_\D', filename, maxsplit=1)[0]
+        base_filename = filename[(len(ordering_filename)+1):]
+    else:
+        ordering_filename = ''
+        base_filename = filename
     components = [ordering_filename, base_filename, id_filename]
     return components
 
