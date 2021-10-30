@@ -23,7 +23,7 @@ def show_graph_of_zettelkasten(
         print(filename_components[2], filename_components[1])
         dot.node(
             filename_components[2],
-            filename_components[1],
+            filename_components[1].replace("_", " "),
             shape='box',
             style='rounded')
 
