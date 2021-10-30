@@ -47,6 +47,23 @@ def test_get_list_of_invalid_links(tmp_path):
     assert linklist[0].target == "2_3_a_Thought_on_Second_Topic_176fb43ae.md"
 
 
+def test_attach_missing_orderings():
+    test_list = [
+        '5_10_Senescent_cells_9e051e2c4.md',
+        'some_cloud_idea.md',
+        '1_2_reframe_your_goal_as_a_learning_goal.md',
+        '2_1a_render_md_files_with_python_and_flask_41e5a496c.md',
+        'some_other_cloud_idea_43e5a488c.md',
+        '2_5_homebrew.md']
+    command_list = zt.attach_missing_orderings(test_list)
+    assert len(command_list) == 2
+    assert command_list[0][0] == 'rename'
+    assert zt.handle_filenames.get_filename_components(
+        command_list[0][2])[0] == '0_0'
+    assert zt.handle_filenames.get_filename_components(
+        command_list[0][2])[1] == 'some_cloud_idea'
+
+
 def test_attach_missing_ids():
     test_list = [
         '5_10_Senescent_cells_9e051e2c4.md',

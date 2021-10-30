@@ -104,11 +104,28 @@ def messages():
 
 
 @click.command(help='rename files from input for moving into the Zettelkasten')
-def stage():
+@click.option(
+    '--fully/--no-fully',
+    default=False,
+    help='Add perliminary ordering and ID',
+    show_default=True
+)
+def stage(fully):
     show_banner()
     persistencyManager = PersistencyManager(
         settings.ZETTELKASTEN_INPUT)
     stg.process_files_from_input(persistencyManager)
+    if fully:
+        print('Searching for missing IDs')
+        batch_rename(
+            ro.attach_missing_ids(
+                persistencyManager.get_list_of_filenames()),
+            persistencyManager)
+        print('Searching for missing orderingss')
+        batch_rename(
+            ro.attach_missing_orderings(
+                persistencyManager.get_list_of_filenames()),
+            persistencyManager)
 
 
 @click.command(help='add ids, consecutive numbering, keep links alife')
