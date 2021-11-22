@@ -130,6 +130,7 @@ def get_list_of_links_from_file(filename, lines_of_filecontent):
 
 
 def attach_missing_orderings(file_name_list):
+    """attaches the missing orderings to the files in the file_name_list"""
     command_list = []
     for filename in file_name_list:
         oldfilename = filename
@@ -172,16 +173,12 @@ def attach_missing_ids(file_name_list):
     """
     command_list = []
     for filename in file_name_list:
-        components = hf.get_filename_components(filename)
-        if components[2] == '':
-            oldfilename = filename
+        oldfilename = filename
+        note = hf.create_Note(filename)
+        if note.id == '':
             file_id = hf.generate_id(filename)
-            if components[0] == '':
-                newfilename = components[1] + \
-                    '_' + file_id + '.md'
-            else:
-                newfilename = components[0] + '_' + components[1] + \
-                    '_' + file_id + '.md'
+            newfilename = hf.create_filename(
+                note.ordering, note.base_filename, file_id)
             command_list.append(['rename', oldfilename, newfilename])
     return command_list
 
