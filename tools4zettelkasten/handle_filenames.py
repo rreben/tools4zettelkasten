@@ -16,6 +16,114 @@ Zettelkasten etc.
 import re
 import hashlib
 from datetime import datetime
+from dataclasses import dataclass
+
+
+@dataclass
+class Note:
+    """A note
+
+    Attributes:
+        ordering (str): The ordering of the note
+        base_filename (str): The base of the filename
+        id (str): The id of the note
+    """
+    ordering: str
+    base_filename: str
+    id: str
+
+
+def is_valid_filename(filename) -> bool:
+    """checks if a filename is valid
+
+    Args:
+        filename (str): The filename of a note
+
+    Returns:
+        bool: True if the filename is valid
+    """
+    note = create_Note(filename)
+    if (is_valid_ordering(note.ordering)
+            and is_valid_basefilename(note.base_filename)
+            and is_valid_id(note.id)):
+        return True
+
+
+def create_Note(filename) -> Note:
+    """create a Note object from a filename
+
+    Args:
+        filename (str): The filename of a note
+
+    Returns:
+        Note: Note object
+    """
+    components = get_filename_components(filename)
+    ordering = components[0]
+    base_filename = components[1]
+    id = components[2]
+    note = Note(ordering, base_filename, id)
+    return note
+
+
+def is_valid_basefilename(base_filename):
+    """checks if a base filename is valid
+
+    Args:
+        base_filename (str): The base of the filename
+
+    Returns:
+        bool: True if the base filename is valid
+    """
+    if re.match(r'^[A-Za-z_]+$', base_filename):
+        return True
+    else:
+        return False
+
+
+def is_valid_ordering(ordering):
+    """checks if an ordering is valid
+
+    Args:
+        ordering (str): The ordering of a note
+
+    Returns:
+        bool: True if the ordering is valid
+    """
+    if re.match(r'^[0-9_]+$', ordering):
+        return True
+    else:
+        return False
+
+
+def is_valid_id(id):
+    """checks if an id is valid
+
+    Args:
+        id (str): The id of a note
+
+    Returns:
+        bool: True if the id is valid
+    """
+    if re.match(r'^[0-9a-f]{9}$', id):
+        return True
+    else:
+        return False
+
+
+def create_filename(ordering, base_filename, id) -> str:
+    """Creates a standard filename
+
+    Args:
+        ordering (str): The ordering of the note
+        base_filename (str): The base of the filename
+        id (str): The id of the note
+
+    Returns:
+        str: filename
+    """
+    filename = ordering + '_' + base_filename + '_' + id + '.md'
+    return filename
 
 
 def create_base_filename_from_title(title):

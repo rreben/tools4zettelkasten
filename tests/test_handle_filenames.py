@@ -86,3 +86,26 @@ def test_get_filename_components():
     assert (zt.handle_filenames.get_filename_components(
         "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")[2]
         == '6f4175c6f')
+
+
+def test_create_Note():
+    note = zt.handle_filenames.create_Note(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")
+    assert note.base_filename == "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC"
+    assert note.id == "6f4175c6f"
+    assert note.ordering == "01_36"
+
+
+def test_is_valid_filename():
+    # valid
+    assert zt.handle_filenames.is_valid_filename(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")
+    # invalid id to short
+    assert not zt.handle_filenames.is_valid_filename(
+        "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175cf.md")
+    # invalid no ordering
+    assert not zt.handle_filenames.is_valid_filename(
+        "A_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")
+    # invalid special character ü
+    assert not zt.handle_filenames.is_valid_filename(
+        "01_36_Beispiel_für_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")
