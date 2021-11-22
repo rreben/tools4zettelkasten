@@ -122,7 +122,14 @@ def create_filename(ordering, base_filename, id) -> str:
     Returns:
         str: filename
     """
-    filename = ordering + '_' + base_filename + '_' + id + '.md'
+    if ordering == '':
+        filename = base_filename
+    else:
+        filename = ordering + '_' + base_filename
+    if id != '':
+        filename = filename + '_' + id + '.md'
+    else:
+        filename = filename + '.md'
     return filename
 
 

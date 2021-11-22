@@ -109,3 +109,18 @@ def test_is_valid_filename():
     # invalid special character ü
     assert not zt.handle_filenames.is_valid_filename(
         "01_36_Beispiel_für_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")
+
+
+def test_create_filename():
+    assert (zt.handle_filenames.create_filename(
+            "01_36", "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC", "6f4175c6f")
+            == "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")
+    assert (zt.handle_filenames.create_filename(
+            "", "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC", "6f4175c6f")
+            == "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC_6f4175c6f.md")
+    assert (zt.handle_filenames.create_filename(
+        "01_36", "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC", "")
+        == "01_36_Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")
+    assert (zt.handle_filenames.create_filename(
+        "", "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC", "")
+        == "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")

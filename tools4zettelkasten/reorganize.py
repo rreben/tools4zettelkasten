@@ -132,14 +132,11 @@ def get_list_of_links_from_file(filename, lines_of_filecontent):
 def attach_missing_orderings(file_name_list):
     command_list = []
     for filename in file_name_list:
-        components = hf.get_filename_components(filename)
-        if components[0] == '':
-            oldfilename = filename
-            newfilename = '0_0_' + components[1]
-            if components[2] == '':
-                newfilename = newfilename + ".md"
-            else:
-                newfilename = newfilename + "_" + components[2] + ".md"
+        oldfilename = filename
+        note = hf.create_Note(filename)
+        if note.ordering == '':
+            newfilename = hf.create_filename(
+                '0_0', note.base_filename, note.id)
             command_list.append(['rename', oldfilename, newfilename])
     return command_list
 
