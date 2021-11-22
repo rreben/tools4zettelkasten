@@ -11,7 +11,7 @@ dot.node('2', 'Mein Leben selbstbestimmt gestalten',
          shape='box', style='rounded')
 
 # NC
-dot.node('1.1', 'Mein Potential entwickeln',
+dot.node('1.1', 'Mein Potenzial entwickeln',
          shape='box', style='rounded')
 dot.node('1.1.1', 'Bewusst und Commited sein',
          shape='box', style='rounded')
