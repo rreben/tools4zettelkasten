@@ -5,10 +5,11 @@
 import logging
 from tools4zettelkasten.persistency import PersistencyManager
 from tools4zettelkasten.handle_filenames import create_base_filename_from_title
+from . import handle_filenames as hf
 
 
 def process_txt_file(persistencyManager: PersistencyManager, filename):
-    newfilename = 'Error'
+    newbasefilename = 'Error'
     content = persistencyManager.get_file_content(filename)
     if len(content) == 0:
         logging.warning(
@@ -16,9 +17,16 @@ def process_txt_file(persistencyManager: PersistencyManager, filename):
             "in directory", persistencyManager.directory,
             "can not be processed, no valid markdown header")
     elif (content[0][0] == '#'):
-        newfilename = create_base_filename_from_title(
+        newbasefilename = create_base_filename_from_title(
             content[0][2:])
-        persistencyManager.rename_file(filename, newfilename + ".md")
+        ordering = ''
+        id = ''
+        if hf.is_valid_filename(filename):
+            hf.Note = hf.Note(filename)
+            ordering = hf.Note.ordering
+            id = hf.Note.id
+        persistencyManager.rename_file(
+            filename, hf.create_filename(ordering, newbasefilename, id))
 
 
 def process_files_from_input(persistencyManager: PersistencyManager):
