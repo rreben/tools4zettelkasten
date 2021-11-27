@@ -22,9 +22,9 @@ def process_txt_file(persistencyManager: PersistencyManager, filename):
         ordering = ''
         id = ''
         if hf.is_valid_filename(filename):
-            hf.Note = hf.Note(filename)
-            ordering = hf.Note.ordering
-            id = hf.Note.id
+            note = hf.create_Note(filename)
+            ordering = note.ordering
+            id = note.id
         persistencyManager.rename_file(
             filename, hf.create_filename(ordering, newbasefilename, id))
 
