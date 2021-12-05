@@ -6,6 +6,7 @@ import pprint as pp
 from graphviz import Digraph
 from . import handle_filenames as hf
 from . import reorganize as ro
+from textwrap import fill
 
 
 def show_tree_as_list(tree):
@@ -19,19 +20,18 @@ def show_graph_of_zettelkasten(
 
     # Nodes
     for filename in list_of_filenames:
-        filename_components = hf.get_filename_components(filename=filename)
-        print(filename_components[2], filename_components[1])
+        note = hf.create_Note(filename)
         dot.node(
-            filename_components[2],
-            filename_components[1].replace("_", " "),
+            note.id,
+            fill(note.base_filename.replace("_", " "), width=30),
             shape='box',
             style='rounded')
 
     # Edges
     for link in list_of_links:
-        source_components = hf.get_filename_components(link.source)
-        target_components = hf.get_filename_components(link.target)
-        dot.edge(source_components[2], target_components[2])
+        source_note = hf.create_Note(link.source)
+        target_note = hf.create_Note(link.target)
+        dot.edge(source_note.id, target_note.id)
 
     # Generate Output
     print(dot.source)
