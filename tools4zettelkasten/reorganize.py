@@ -5,6 +5,7 @@
 import logging
 from . import handle_filenames as hf
 from . import cli as cli
+from . import settings as set
 from .persistency import PersistencyManager
 from dataclasses import dataclass
 import re
@@ -421,14 +422,14 @@ def get_hierarchy_links(tree, hierarchy_links=None):
                 hierarchy_links.append(
                     Link(
                         source=child_leafs[index],
-                        description="train of thoughts",
+                        description=set.DIRECT_SISTER_ZETTEL,
                         target=child_leafs[index + 1]
                     ))
             if len(child_leafs) > 0:
                 hierarchy_links.append(
                     Link(
                         source=node[1],
-                        description="detail / digression",
+                        description=set.DIRECT_DAUGHTER_ZETTEL,
                         target=child_leafs[0]
                     )
                 )
@@ -439,7 +440,7 @@ def get_hierarchy_links(tree, hierarchy_links=None):
                 hierarchy_links.append(
                     Link(
                         source=child_leafs[index],
-                        description="train of thoughts",
+                        description=set.DIRECT_SISTER_ZETTEL,
                         target=child_leafs[index + 1]
                     ))
             get_hierarchy_links(node[1], hierarchy_links)
