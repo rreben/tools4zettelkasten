@@ -8,6 +8,14 @@ Click is used as backbone for the cli.
 An excellent tutorial is found at "https://zetcode.com/python/click".
 """
 
+from flask import Flask, \
+    render_template, \
+    send_from_directory, \
+    request
+from flask_wtf import Form
+from flask_pagedown.fields import PageDownField
+from wtforms.fields import SubmitField
+from flask_pagedown import PageDown
 import click
 from pyfiglet import Figlet
 from . import settings
@@ -19,6 +27,9 @@ from . import analyse as an
 from . import __version__
 from InquirerPy import prompt
 from dataclasses import dataclass
+import os
+import markdown
+from pygments.formatters import HtmlFormatter
 
 
 @dataclass()
@@ -182,7 +193,92 @@ def analyse(type):
         an.show_graph_of_zettelkasten(list_of_filenames, list_of_links)
 
 
+app = Flask(__name__, template_folder=settings.TEMPLATE_FOLDER,
+            static_folder=settings.STATIC_FOLDER)
+
+
+class PageDownFormExample(Form):
+    pagedown = PageDownField('Enter your markdown')
+    submit = SubmitField('Submit')
+
+
+pagedown = PageDown(app)
+
+
+@click.command(help='start flask server')
+def start():
+    show_banner()
+    print("starting flask server")
+
+    SECRET_KEY = os.urandom(32)
+    app.config['SECRET_KEY'] = SECRET_KEY
+    app.debug = True
+    app.config["MYCELIUM_IMAGES"] = (
+        "/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images")
+    app.run()
+
+
+@app.route('/')
+def index():
+    persistencyManager = PersistencyManager(
+        settings.ZETTELKASTEN)
+    zettelkasten_list = persistencyManager.get_list_of_filenames()
+    # print(zettelkasten_list)
+    zettelkasten_list.sort()
+    # print(zettelkasten_list)
+    return render_template('startpage.html', zettelkasten=zettelkasten_list)
+
+
+@app.route('/<file>')
+def show_md_file(file):
+    persistencyManager = PersistencyManager(
+        settings.ZETTELKASTEN)
+    filename = file
+    input_file = persistencyManager.get_string_from_file_content(filename)
+    htmlString = markdown.markdown(
+        input_file, output_format='html5',
+        extensions=[
+            "fenced_code",
+            'codehilite',
+            'attr_list',
+            'pymdownx.arithmatex'],
+        extension_configs={'pymdownx.arithmatex': {'generic': True}}
+    )
+    formatter = HtmlFormatter(style="emacs", full=True, cssclass="codehilite")
+    css_string = formatter.get_style_defs()
+    # return md_css_string + htmlString
+    return render_template(
+        "mainpage.html",
+        codeCSSString="<style>" + css_string + "</style>",
+        htmlString=htmlString,
+        filename=filename)
+
+
+@app.route('/edit/<filename>', methods=['GET', 'POST'])
+def edit(filename):
+    persistencyManager = PersistencyManager(
+        settings.ZETTELKASTEN)
+    input_file = persistencyManager.get_string_from_file_content(filename)
+    markdown_string = input_file
+    form = PageDownFormExample()
+    form.pagedown.data = markdown_string
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            new_markdown_string = request.form['pagedown']
+            form.pagedown.data = new_markdown_string
+            persistencyManager.overwrite_file_content(
+                filename, new_markdown_string)
+            # write_markdown_to_file(filename, new_markdown_string)
+    return render_template('edit.html', form=form)
+
+
+@app.route('/images/<path:filename>')
+def send_image(filename):
+    return send_from_directory(app.config["MYCELIUM_IMAGES"], filename)
+
+
 messages.add_command(stage)
 messages.add_command(reorganize)
 messages.add_command(analyse)
+messages.add_command(start)
 messages.no_args_is_help
