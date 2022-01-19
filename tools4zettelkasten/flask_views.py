@@ -1,5 +1,5 @@
 from flask import (
-    Flask, render_template, send_from_directory, request)
+    Flask, render_template, send_from_directory, redirect, url_for, request)
 from . import settings as st
 from .persistency import PersistencyManager
 import markdown
@@ -77,6 +77,7 @@ def edit(filename):
             form.pagedown.data = new_markdown_string
             persistencyManager.overwrite_file_content(
                 filename, new_markdown_string)
+            return redirect(url_for('show_md_file', file=filename))
     return render_template('edit.html', form=form)
 
 
