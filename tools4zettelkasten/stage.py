@@ -25,8 +25,9 @@ def process_txt_file(persistencyManager: PersistencyManager, filename):
             note = hf.create_Note(filename)
             ordering = note.ordering
             id = note.id
-        persistencyManager.rename_file(
-            filename, hf.create_filename(ordering, newbasefilename, id))
+        if hf.create_filename(ordering, newbasefilename, id) != filename:
+            persistencyManager.rename_file(
+                filename, hf.create_filename(ordering, newbasefilename, id))
 
 
 def process_files_from_input(persistencyManager: PersistencyManager):
