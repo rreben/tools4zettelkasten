@@ -2,11 +2,11 @@
 # Copyright (c) 2022 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
+from ast import Str
 from flask import (
     Flask, render_template, send_from_directory, redirect, url_for, request)
 from . import settings as st
-from . import reorganize as ro
-from . import handle_filenames as hf
+from . import analyse as an
 from .persistency import PersistencyManager
 import markdown
 from pygments.formatters import HtmlFormatter
@@ -15,8 +15,6 @@ from flask_pagedown.fields import PageDownField
 from wtforms.fields import SubmitField
 from flask_pagedown import PageDown
 import os
-from graphviz import Digraph
-from textwrap import fill
 
 # After some attempts I initialize the app object in this file.
 # The app object will be initialized in the import procedure of
@@ -45,6 +43,11 @@ def run_flask_server():
     app.config['SECRET_KEY'] = SECRET_KEY
     app.debug = True
     app.run()
+
+
+def url_for_file(filename) -> Str:
+    URL = url_for('show_md_file', file=filename)
+    return URL
 
 
 @app.route('/')
@@ -109,39 +112,11 @@ def send_image(filename):
 def svggraph():
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN)
-    list_of_filenames = persistencyManager.get_list_of_filenames()
-    list_of_explicit_links = ro.get_list_of_links(persistencyManager)
-    tokenized_list = ro.generate_tokenized_list(
-        persistencyManager.get_list_of_filenames())
-    tree = ro.generate_tree(tokenized_list)
-    list_of_structure_links = ro.get_hierarchy_links(tree)
-    list_of_links = list_of_structure_links + list_of_explicit_links
-    chart_data = Digraph(comment='Zettelkasten')
-
-    # Nodes
-    for filename in list_of_filenames:
-        note = hf.create_Note(filename)
-        title_of_node = (
-            note.ordering.replace('_', ' ') +
-            ' ' + note.base_filename.replace("_", " "))
-        chart_data.node(
-            note.id,
-            fill(title_of_node, width=30),
-            shape='box',
-            URL=url_for('show_md_file', file=filename),
-            style='rounded')
-
-    # Edges
-    for link in list_of_links:
-        source_note = hf.create_Note(link.source)
-        target_note = hf.create_Note(link.target)
-        if link.description == st.DIRECT_DAUGHTER_ZETTEL:
-            chart_data.edge(source_note.id, target_note.id, color='blue')
-        elif link.description == st.DIRECT_SISTER_ZETTEL:
-            chart_data.edge(source_note.id, target_note.id)
-        else:
-            chart_data.edge(source_note.id, target_note.id, color='red')
-
-    chart_output = chart_data.pipe(format='svg').decode('utf-8')
+    list_of_filenames, list_of_links, tree = an.create_graph_input(
+        persistencyManager)
+    print("Number of Zettel: ", len(list_of_filenames))
+    dot = an.create_graph_of_zettelkasten(
+            list_of_filenames, list_of_links, url_in_nodes=True)
+    chart_output = dot.pipe(format='svg').decode('utf-8')
 
     return render_template('visualzk.html', chart_output=chart_output)

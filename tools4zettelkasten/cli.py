@@ -166,21 +166,15 @@ def analyse(type):
     print("Analysing the Zettelkasten")
     persistencyManager = PersistencyManager(
         settings.ZETTELKASTEN)
-    list_of_filenames = persistencyManager.get_list_of_filenames()
+    list_of_filenames, list_of_links, tree = an.create_graph_input(
+        persistencyManager)
     print("Number of Zettel: ", len(list_of_filenames))
-    list_of_explicit_links = ro.get_list_of_links(persistencyManager)
-    print("Number of Explicit Links: ", len(list_of_explicit_links))
-    tokenized_list = ro.generate_tokenized_list(
-        persistencyManager.get_list_of_filenames())
-    tree = ro.generate_tree(tokenized_list)
-    # print(tree)
-    list_of_structure_links = ro.get_hierarchy_links(tree)
-    print("Number of structure links: ", len(list_of_structure_links))
-    list_of_links = list_of_structure_links + list_of_explicit_links
     if (type == 'tree'):
         an.show_tree_as_list(tree)
     else:
-        an.show_graph_of_zettelkasten(list_of_filenames, list_of_links)
+        dot = an.create_graph_of_zettelkasten(
+            list_of_filenames, list_of_links, url_in_nodes=False)
+        an.show_graph_of_zettelkasten(dot)
 
 
 @click.command(help='start flask server')
