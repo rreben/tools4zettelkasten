@@ -166,14 +166,16 @@ def analyse(type):
     print("Analysing the Zettelkasten")
     persistencyManager = PersistencyManager(
         settings.ZETTELKASTEN)
-    list_of_filenames, list_of_links, tree = an.create_graph_input(
+    analysis = an.create_graph_analysis(
         persistencyManager)
-    print("Number of Zettel: ", len(list_of_filenames))
+    print("Number of Zettel: ", len(analysis.list_of_filenames))
     if (type == 'tree'):
-        an.show_tree_as_list(tree)
+        an.show_tree_as_list(analysis.tree)
     else:
         dot = an.create_graph_of_zettelkasten(
-            list_of_filenames, list_of_links, url_in_nodes=False)
+            analysis.list_of_filenames,
+            analysis.list_of_links,
+            url_in_nodes=False)
         an.show_graph_of_zettelkasten(dot)
 
 

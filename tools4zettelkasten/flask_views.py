@@ -112,11 +112,12 @@ def send_image(filename):
 def svggraph():
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN)
-    list_of_filenames, list_of_links, tree = an.create_graph_input(
+    analysis = an.create_graph_analysis(
         persistencyManager)
-    print("Number of Zettel: ", len(list_of_filenames))
     dot = an.create_graph_of_zettelkasten(
-            list_of_filenames, list_of_links, url_in_nodes=True)
+            analysis.list_of_filenames,
+            analysis.list_of_links,
+            url_in_nodes=True)
     chart_output = dot.pipe(format='svg').decode('utf-8')
 
     return render_template('visualzk.html', chart_output=chart_output)

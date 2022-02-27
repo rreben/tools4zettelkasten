@@ -2,6 +2,7 @@
 # Copyright (c) 2021 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
+from dataclasses import dataclass
 import pprint as pp
 from graphviz import Digraph
 from . import handle_filenames as hf
@@ -12,17 +13,30 @@ from .persistency import PersistencyManager
 from textwrap import fill
 
 
-def create_graph_input(persistency_manager: PersistencyManager):
-    persistencyManager = PersistencyManager(
-        st.ZETTELKASTEN)
+@dataclass
+class Analysis:
+    list_of_filenames: list[str]
+    list_of_explicit_links: list[ro.Link]
+    list_of_structure_links: list[ro.Link]
+    list_of_links: list[ro.Link]
+    tree: list
+
+
+def create_graph_analysis(persistencyManager: PersistencyManager) -> Analysis:
     list_of_filenames = persistencyManager.get_list_of_filenames()
     list_of_explicit_links = ro.get_list_of_links(persistencyManager)
     tokenized_list = ro.generate_tokenized_list(
         persistencyManager.get_list_of_filenames())
     tree = ro.generate_tree(tokenized_list)
     list_of_structure_links = ro.get_hierarchy_links(tree)
-    list_of_links = list_of_structure_links + list_of_explicit_links
-    return list_of_filenames, list_of_links, tree
+    list_of_links = (
+        list_of_structure_links + list_of_explicit_links)
+    return Analysis(
+        list_of_filenames=list_of_filenames,
+        list_of_explicit_links=list_of_explicit_links,
+        list_of_structure_links=list_of_structure_links,
+        list_of_links=list_of_links,
+        tree=tree)
 
 
 def show_tree_as_list(tree):
