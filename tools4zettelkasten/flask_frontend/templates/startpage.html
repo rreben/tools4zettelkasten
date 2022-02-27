@@ -10,6 +10,7 @@
 <body class="d-flex flex-column h-100">
   <main class="flex-shrink-0">
     <div class="container">
+        <a href="{{ url_for('svggraph') }}" class="btn btn-primary">Zettelkasten as a Graphic</a>
       <table border = 1>
         {% for file in zettelkasten %}
         <tr>

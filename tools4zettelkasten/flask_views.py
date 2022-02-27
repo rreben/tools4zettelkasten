@@ -1,6 +1,12 @@
+# flask_views.py
+# Copyright (c) 2022 Dr. Rupert Rebentisch
+# Licensed under the MIT license
+
 from flask import (
     Flask, render_template, send_from_directory, redirect, url_for, request)
 from . import settings as st
+from . import reorganize as ro
+from . import handle_filenames as hf
 from .persistency import PersistencyManager
 import markdown
 from pygments.formatters import HtmlFormatter
@@ -9,7 +15,18 @@ from flask_pagedown.fields import PageDownField
 from wtforms.fields import SubmitField
 from flask_pagedown import PageDown
 import os
+from graphviz import Digraph
+from textwrap import fill
 
+# After some attempts I initialize the app object in this file.
+# The app object will be initialized in the import procedure of
+# this file.
+# I would have liked to have the initialization of all objects
+# in the parent file, but I could not find a way to do that:
+# Using url_map did not allow for parameters to be shared.
+# Using Flask Blueprint did not work very well, because I would have
+# to initialize the pagedown file in this file, also I loose the
+# @app.route() decorator.
 app = Flask(
         __name__, template_folder=st.TEMPLATE_FOLDER,
         static_folder=st.STATIC_FOLDER)
@@ -86,3 +103,45 @@ def send_image(filename):
     return send_from_directory(
         st.ABSOLUTE_PATH_IMAGES,
         filename)
+
+
+@app.route('/svggraph')
+def svggraph():
+    persistencyManager = PersistencyManager(
+        st.ZETTELKASTEN)
+    list_of_filenames = persistencyManager.get_list_of_filenames()
+    list_of_explicit_links = ro.get_list_of_links(persistencyManager)
+    tokenized_list = ro.generate_tokenized_list(
+        persistencyManager.get_list_of_filenames())
+    tree = ro.generate_tree(tokenized_list)
+    list_of_structure_links = ro.get_hierarchy_links(tree)
+    list_of_links = list_of_structure_links + list_of_explicit_links
+    chart_data = Digraph(comment='Zettelkasten')
+
+    # Nodes
+    for filename in list_of_filenames:
+        note = hf.create_Note(filename)
+        title_of_node = (
+            note.ordering.replace('_', ' ') +
+            ' ' + note.base_filename.replace("_", " "))
+        chart_data.node(
+            note.id,
+            fill(title_of_node, width=30),
+            shape='box',
+            URL=url_for('show_md_file', file=filename),
+            style='rounded')
+
+    # Edges
+    for link in list_of_links:
+        source_note = hf.create_Note(link.source)
+        target_note = hf.create_Note(link.target)
+        if link.description == st.DIRECT_DAUGHTER_ZETTEL:
+            chart_data.edge(source_note.id, target_note.id, color='blue')
+        elif link.description == st.DIRECT_SISTER_ZETTEL:
+            chart_data.edge(source_note.id, target_note.id)
+        else:
+            chart_data.edge(source_note.id, target_note.id, color='red')
+
+    chart_output = chart_data.pipe(format='svg').decode('utf-8')
+
+    return render_template('visualzk.html', chart_output=chart_output)
