@@ -8,10 +8,8 @@ Click is used as backbone for the cli.
 An excellent tutorial is found at "https://zetcode.com/python/click".
 """
 
-from pickle import TRUE
 import click
 from pyfiglet import Figlet
-from . import settings
 # we have to rename stage so it does not interfere with command stage
 from . import stage as stg
 from .persistency import PersistencyManager
@@ -22,6 +20,9 @@ from . import settings as st
 from . import __version__
 from InquirerPy import prompt
 from dataclasses import dataclass
+from os import environ as env
+from os import path
+from colorama import init, Fore, Style
 
 
 @dataclass()
@@ -101,22 +102,69 @@ def show_banner():
     print("Copyright (c) 2021 Rupert Rebentisch, Version: ", __version__)
 
 
+def overwrite_setting(environment_variable: str):
+    try:
+        if env[environment_variable]:
+            st.ZETTELKASTEN = env[environment_variable]
+    except KeyError:
+        print(
+            Style.BRIGHT + Fore.BLUE +
+            f"{environment_variable} not set in environment, " +
+            "tools4zettelkasten will default to built-in setting. " +
+            "Use the 'show' command to find out more."
+        )
+
+
+def overwrite_settings():
+    overwrite_setting('ZETTELKASTEN')
+    overwrite_setting('ZETTELKASTEN_INPUT')
+    overwrite_setting('ABSOLUTE_PATH_IMAGES')
+
+
+def check_directories():
+    if not path.isdir(st.ZETTELKASTEN):
+        print(
+            Style.BRIGHT + Fore.RED +
+            f"{st.ZETTELKASTEN} is not a directory, " +
+            "please set ZETTELKASTEN to a valid directory."
+        )
+        exit(1)
+    if not path.isdir(st.ZETTELKASTEN_INPUT):
+        print(
+            Style.BRIGHT + Fore.RED +
+            f"{st.ZETTELKASTEN_INPUT} is not a directory, " +
+            "please set ZETTELKASTEN_INPUT to a valid directory."
+        )
+        exit(1)
+    if not path.isdir(st.ABSOLUTE_PATH_IMAGES):
+        print(
+            Style.BRIGHT + Fore.RED +
+            f"{st.ABSOLUTE_PATH_IMAGES} is not a directory, " +
+            "please set ABSOLUTE_PATH_IMAGES to a valid directory."
+        )
+        exit(1)
+
+
 @click.group()
 def messages():
+    show_banner()
+    init(autoreset=True)
+    print('something is happening here')
+    overwrite_settings()
+    check_directories()
     pass
 
 
 @click.command(help='rename files from input for moving into the Zettelkasten')
 @click.option(
     '--fully/--no-fully',
-    default=TRUE,
+    default=True,
     help='Add perliminary ordering and ID',
     show_default=True
 )
 def stage(fully):
-    show_banner()
     persistencyManager = PersistencyManager(
-        settings.ZETTELKASTEN_INPUT)
+        st.ZETTELKASTEN_INPUT)
     stg.process_files_from_input(persistencyManager)
     if fully:
         print('Searching for missing IDs')
@@ -133,9 +181,8 @@ def stage(fully):
 
 @click.command(help='add ids, consecutive numbering, keep links alife')
 def reorganize():
-    show_banner()
     persistencyManager = PersistencyManager(
-        settings.ZETTELKASTEN)
+        st.ZETTELKASTEN)
     print('Searching for missing IDs')
     batch_rename(
         ro.attach_missing_ids(
@@ -163,11 +210,10 @@ def reorganize():
         show_default=True
     )
 def analyse(type):
-    show_banner()
     print(type)
     print("Analysing the Zettelkasten")
     persistencyManager = PersistencyManager(
-        settings.ZETTELKASTEN)
+        st.ZETTELKASTEN)
     analysis = an.create_graph_analysis(
         persistencyManager)
     print("Number of Zettel: ", len(analysis.list_of_filenames))
@@ -183,20 +229,33 @@ def analyse(type):
 
 @click.command(help='start flask server')
 def start():
-    show_banner()
     print("starting flask server")
     fv.run_flask_server()
 
 
 @click.command(help='show version and settings')
 def show():
-    show_banner()
+    print()
     print('Here is the configuration')
-    print('Path to the Zettelkasten: ', st.ZETTELKASTEN)
-    print('Path to the Zettelkasten input: ', st.ZETTELKASTEN_INPUT)
+    print('Working directories')
+    print(
+        'Path to the Zettelkasten: ',
+        st.ZETTELKASTEN,
+        ' can be set via ZETTELKASTEN environment variable')
+    print(
+        'Path to the Zettelkasten input: ',
+        st.ZETTELKASTEN_INPUT,
+        ' can be set via ZETTELKASTEN_INPUT environment variable')
+    print()
+    print('Flask configuration')
     print('Path to templates: ', st.TEMPLATE_FOLDER)
     print('Path to static files: ', st.STATIC_FOLDER)
-    print('Path to images for flask: ', st.ABSOLUTE_PATH_IMAGES)
+    print(
+        'Path to images for flask: ',
+        st.ABSOLUTE_PATH_IMAGES,
+        ' can be set via ABSOLUTE_PATH_IMAGES environment variable')
+    print()
+    print('What we write to automatically generated hierachy links')
     print('comment for sister Zettel: ', st.DIRECT_SISTER_ZETTEL)
     print('comment for daughter Zettel: ', st.DIRECT_DAUGHTER_ZETTEL)
 
