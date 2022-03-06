@@ -9,7 +9,7 @@ ZETTELKASTEN_INPUT = '../zettelkasten/input'
 # Flask settings
 TEMPLATE_FOLDER = 'flask_frontend/templates'
 STATIC_FOLDER = 'flask_frontend/static'
-ABSOLUTE_PATH_IMAGES = (
+ZETTELKASTEN_IMAGES = (
     '/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images')
 
 # Description of structural links in Zettelkasten

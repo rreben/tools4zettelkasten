@@ -118,7 +118,7 @@ def overwrite_setting(environment_variable: str):
 def overwrite_settings():
     overwrite_setting('ZETTELKASTEN')
     overwrite_setting('ZETTELKASTEN_INPUT')
-    overwrite_setting('ABSOLUTE_PATH_IMAGES')
+    overwrite_setting('ZETTELKASTEN_IMAGES')
 
 
 def check_directories():
@@ -136,11 +136,11 @@ def check_directories():
             "please set ZETTELKASTEN_INPUT to a valid directory."
         )
         exit(1)
-    if not path.isdir(st.ABSOLUTE_PATH_IMAGES):
+    if not path.isdir(st.ZETTELKASTEN_IMAGES):
         print(
             Style.BRIGHT + Fore.RED +
-            f"{st.ABSOLUTE_PATH_IMAGES} is not a directory, " +
-            "please set ABSOLUTE_PATH_IMAGES to a valid directory."
+            f"{st.ZETTELKASTEN_IMAGES} is not a directory, " +
+            "please set ZETTELKASTEN_IMAGES to a valid directory."
         )
         exit(1)
 
@@ -149,7 +149,7 @@ def check_directories():
 def messages():
     show_banner()
     init(autoreset=True)
-    print('something is happening here')
+    print('Initializing of tools4zettelkasten ...')
     overwrite_settings()
     check_directories()
     pass
@@ -252,8 +252,8 @@ def show():
     print('Path to static files: ', st.STATIC_FOLDER)
     print(
         'Path to images for flask: ',
-        st.ABSOLUTE_PATH_IMAGES,
-        ' can be set via ABSOLUTE_PATH_IMAGES environment variable')
+        st.ZETTELKASTEN_IMAGES,
+        ' can be set via ZETTELKASTEN_IMAGES environment variable')
     print()
     print('What we write to automatically generated hierachy links')
     print('comment for sister Zettel: ', st.DIRECT_SISTER_ZETTEL)

@@ -104,7 +104,7 @@ def edit(filename):
 @app.route('/images/<path:filename>')
 def send_image(filename):
     return send_from_directory(
-        st.ABSOLUTE_PATH_IMAGES,
+        st.ZETTELKASTEN_IMAGES,
         filename)
 
 
