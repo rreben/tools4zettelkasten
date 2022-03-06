@@ -18,7 +18,7 @@ import sys
 # this would be the path of (!) the module
 sys.path.insert(0, os.path.abspath('../../'))
 
-from zettelkasten_tools import __version__  # noqa
+from tools4zettelkasten import __version__  # noqa
 
 # -- Project information -----------------------------------------------------
 
