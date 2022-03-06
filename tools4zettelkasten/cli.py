@@ -18,6 +18,7 @@ from .persistency import PersistencyManager
 from . import reorganize as ro
 from . import analyse as an
 from . import flask_views as fv
+from . import settings as st
 from . import __version__
 from InquirerPy import prompt
 from dataclasses import dataclass
@@ -187,8 +188,22 @@ def start():
     fv.run_flask_server()
 
 
+@click.command(help='show version and settings')
+def show():
+    show_banner()
+    print('Here is the configuration')
+    print('Path to the Zettelkasten: ', st.ZETTELKASTEN)
+    print('Path to the Zettelkasten input: ', st.ZETTELKASTEN_INPUT)
+    print('Path to templates: ', st.TEMPLATE_FOLDER)
+    print('Path to static files: ', st.STATIC_FOLDER)
+    print('Path to images for flask: ', st.ABSOLUTE_PATH_IMAGES)
+    print('comment for sister Zettel: ', st.DIRECT_SISTER_ZETTEL)
+    print('comment for daughter Zettel: ', st.DIRECT_DAUGHTER_ZETTEL)
+
+
 messages.add_command(stage)
 messages.add_command(reorganize)
 messages.add_command(analyse)
 messages.add_command(start)
+messages.add_command(show)
 messages.no_args_is_help
