@@ -1,6 +1,63 @@
 Setup the Dev Environment
 =========================
 
+Setup a virtual environment for python
+--------------------------------------
+
+First install virtualenv:
+
+I follow the routes in the flask tutorial https://www.tutorialspoint.com/flask/flask_environment.htm
+
+.. code-block:: sh
+
+    pip install virtualenv
+
+No go to your project folder and type in
+
+.. code-block:: sh
+
+    virtualenv venv
+
+This will create a ``venv`` folder. Now type in:
+
+.. code-block:: sh
+
+    source venv/bin/activate
+
+
+You should now see ``venv`` in front of your cli prompt.
+
+If you want to exit from the virtual environment then type ``deactivate`` at the prompt.
+
+Create a separate virtual environmen for windows
+------------------------------------------------
+
+If you want to use a virtual environment for windows then you can create a separate virtual environment for windows. 
+
+Use the command ``pip install virtualenv``. 
+
+Now go to your project folder and type in, but do **not** use ``venv`` but a different fodername 
+for this separate virtual environment (especially when working in a dropbox folder).
+
+
+.. code-block:: sh
+    
+        virtualenv venv_win
+
+
+This will create a virtual environment that you can use on your windows system.
+Before you are able to activate the environment you might have to change the policy settings so that you can start the skripts.
+
+Use the following command:
+
+.. code-block:: sh
+
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+Use ``Get-ExecutionPolicy`` to check the policy settings.
+
+You have to activate the virtual environment by typing in ``venv_win/Scripts/activate.ps1``. You should now see the modified prompt.
+
 psioniq Extension
 -----------------
 
