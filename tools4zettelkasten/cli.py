@@ -8,6 +8,7 @@ Click is used as backbone for the cli.
 An excellent tutorial is found at "https://zetcode.com/python/click".
 """
 
+from pickle import TRUE
 import click
 from pyfiglet import Figlet
 from . import settings
@@ -107,7 +108,7 @@ def messages():
 @click.command(help='rename files from input for moving into the Zettelkasten')
 @click.option(
     '--fully/--no-fully',
-    default=False,
+    default=TRUE,
     help='Add perliminary ordering and ID',
     show_default=True
 )
