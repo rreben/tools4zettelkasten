@@ -2,11 +2,17 @@
 # Copyright (c) 2022 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
+# See https://click.palletsprojects.com/en/8.0.x/
+#     setuptools/#setuptools-integration
+# on how to use setuptools with the Click package.
+
 from setuptools import setup
+
+import tools4zettelkasten
 
 setup(
     name='tools4zettelkasten',
-    version='0.1.0',
+    version=tools4zettelkasten.__version__,
     py_modules=['tools4zettelkasten'],
     install_requires=[
         'Click',

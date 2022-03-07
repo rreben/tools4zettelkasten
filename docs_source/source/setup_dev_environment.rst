@@ -110,3 +110,23 @@ Start the detection of tests with ``Python: Discover Tests`` from the command pa
 Specify ``tests`` as the test directory.
 
 For more information look at the `VSCode Documentation <https://code.visualstudio.com/docs/python/testing>`_
+
+
+Install the module locally
+--------------------------
+
+Go to the project folder where you find the ``setup.py`` file. Activate the virtual environment. To install the module locally type in:
+
+.. code-block:: sh
+
+    pip install --editable .
+
+With the ``--editable`` flag or ``-e``flag the module will be installed in the virtual environment.
+
+You can uninstall the module with:
+
+.. code-block:: sh
+
+    pip uninstall -y tools4zettelkasten
+
+You should now be able to start the module with ``tools4zettelkasten``. 
