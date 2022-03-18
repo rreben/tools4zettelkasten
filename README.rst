@@ -29,7 +29,7 @@ Start ``tools4zettelkasten``
 The Zettelkasten tools provide a set of tools to manipulate the markdown files to significantly improve the handling of a big number of zettel / markdown files. With Zettelkasten you can effortlessly change the hierachy as well as the interlinks of your Zettelkasten.
 
 .. code-block:: sh
-    
+
     python -m tools4zettelkasten.zettelkasten_tools
 
 Will open a help page with all available commands. You can get further information about a command (e.g. for the command ``stage``) by typing:
@@ -101,7 +101,7 @@ We store the Markdown files in a simple folder with the following directory stru
     ├── input/
     │   └── images/
     └── mycelium/
-      └── images/
+        └── images/
 
 Any other directory structure is possible, but you need to have the images in the ``images/`` directory, if you want to use the flask server.
 
@@ -118,7 +118,7 @@ In MacOS you can use the following command to set the environment variables:
     export ZETTELKASTEN=/Users/me/Documents/zettelkasten/mycelium/
     export ZETTELKASTEN_INPUT=/Users/me/Documents/zettelkasten/input/
  
- Where ``/Users/me/Documents/zettelkasten/mycelium/``  is the directory of your zettelkasten and ``/Users/me/Documents/zettelkasten/input/`` is the directory of your input folder.
+Where ``/Users/me/Documents/zettelkasten/mycelium/``  is the directory of your zettelkasten and ``/Users/me/Documents/zettelkasten/input/`` is the directory of your input folder.
 
 How to contribute?
 ==================
