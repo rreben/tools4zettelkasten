@@ -121,7 +121,7 @@ Go to the project folder where you find the ``setup.py`` file. Activate the virt
 
     pip install --editable .
 
-With the ``--editable`` flag or ``-e``flag the module will be installed in the virtual environment.
+With the ``--editable`` flag or ``-e`` flag the module will be installed in the virtual environment.
 
 You can uninstall the module with:
 

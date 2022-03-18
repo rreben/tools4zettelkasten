@@ -11,7 +11,7 @@ Welcome to zettelkasten_tools's documentation!
    :caption: Contents:
 
 .. include:: why_zettelkasten_tools.rst
-.. inclide:: first_steps.rst
+.. include:: first_steps.rst
 .. include:: license.rst
 .. include:: projectsetup.rst
 .. include:: setup_dev_environment.rst

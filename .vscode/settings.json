@@ -11,5 +11,6 @@
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
-    "esbonio.server.enabled": true
+    "esbonio.server.enabled": true,
+    "esbonio.sphinx.confDir": "/Users/rupertrebentisch/Dropbox/tools4zettelkasten/docs_source/source"
 }
