@@ -30,13 +30,13 @@ The Zettelkasten tools provide a set of tools to manipulate the markdown files t
 
 .. code-block:: sh
 
-    python -m tools4zettelkasten.zettelkasten_tools
+    python -m tools4zettelkasten
 
 Will open a help page with all available commands. You can get further information about a command (e.g. for the command ``stage``) by typing:
 
 .. code-block:: sh
 
-    python -m tools4zettelkasten.zettelkasten_tools stage --help
+    python -m tools4zettelkasten stage --help
 
 The Zettelkasten shows the zettel files as html and provides a simple webeserver to do so. It uses flask, a markdown to html converter and bootstrap to do so in a responsive GUI.
 
@@ -85,7 +85,7 @@ Right now ``tools4zettelkasten`` is still in alpha mode. You need to download or
 
 .. code-block:: sh
 
-    python -m tools4zettelkasten.zettelkasten_tools
+    python -m tools4zettelkasten
 
 You will have to install the missing dependencies via pip. So you may want to use a virtual environment. See https://rreben.github.io/tools4zettelkasten/ for further information.
 
