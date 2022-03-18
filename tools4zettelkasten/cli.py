@@ -258,6 +258,7 @@ def show():
     print('What we write to automatically generated hierachy links')
     print('comment for sister Zettel: ', st.DIRECT_SISTER_ZETTEL)
     print('comment for daughter Zettel: ', st.DIRECT_DAUGHTER_ZETTEL)
+    print('Built-in settings can be changed in the settings.py file')
 
 
 messages.add_command(stage)
