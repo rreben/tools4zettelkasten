@@ -15,3 +15,4 @@ We can delete the environment variable with
     
     unset ZETTELKASTEN
 
+The ``show`` command will show the current value of the environment variable.

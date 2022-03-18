@@ -22,7 +22,7 @@ from tools4zettelkasten import __version__  # noqa
 
 # -- Project information -----------------------------------------------------
 
-project = 'zettelkasten_tools'
+project = 'tools4zettelkasten'
 copyright = '2021, Rupert Rebentisch'
 author = 'Rupert Rebentisch'
 
