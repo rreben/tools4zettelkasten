@@ -67,10 +67,10 @@ def batch_rename(command_list, persistencyManager: PersistencyManager):
     prompt user to verify that rename should be done
 
     :param command_list: A list of rename commands.
-    Each command is a list with three entries.
-    name of command, must be rename.
-    oldfilename original name of file.
-    newfilename name of file after rename operation.
+        Each command is a list with three entries.
+        name of command, must be rename.
+        oldfilename original name of file.
+        newfilename name of file after rename operation.
 
     :type command_list: list
     :param persistencyManager: handler for manipulation of the file system
@@ -81,7 +81,7 @@ def batch_rename(command_list, persistencyManager: PersistencyManager):
             "type": "confirm",
             "message": "Proceed?",
             "name": "proceed",
-            "default": False,
+            "default": False
         }
     ]
     for command in command_list:
