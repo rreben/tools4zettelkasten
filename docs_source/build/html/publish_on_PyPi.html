@@ -1,0 +1,121 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Publish on PyPi &#8212; tools4zettelkasten 1.0a4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Publish on PyPi</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="publish-on-pypi">
+<h1>Publish on PyPi<a class="headerlink" href="#publish-on-pypi" title="Permalink to this headline">¶</a></h1>
+<p>We follow the excellent advice in
+<a class="reference external" href="https://www.codementor.io/&#64;arpitbhayani/host-your-python-package-using-github-on-pypi-du107t7ku">https://www.codementor.io/&#64;arpitbhayani/host-your-python-package-using-github-on-pypi-du107t7ku</a></p>
+<p>First we have to create an account on PyPi and on testpipy.
+Go to <a class="reference external" href="https://pypi.python.org">https://pypi.python.org</a> and <a class="reference external" href="https://testpypi.python.org">https://testpypi.python.org</a> respectively.</p>
+<p>We store the user names and password in a <code class="docutils literal notranslate"><span class="pre">~/.pypirc</span></code>
+file in our home directory (<strong>not</strong> the project directory).</p>
+<p>The file has the following format:</p>
+<div class="highlight-linux-config notranslate"><div class="highlight"><pre><span></span>[distutils]<span class="w"></span>
+index-servers<span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span>pypi<span class="w"></span>
+<span class="w">    </span>testpypi<span class="w"></span>
+
+[pypi]<span class="w"></span>
+username:&lt;username&gt;<span class="w"></span>
+password:&lt;password&gt;<span class="w"></span>
+
+[testpypi]<span class="w"></span>
+username:&lt;username&gt;<span class="w"></span>
+password:&lt;password&gt;<span class="w"></span>
+</pre></div>
+</div>
+<p>Use the following command to register your package
+and to check your settings in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> and <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python setup.py register -r pypitest
+</pre></div>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/publish_on_PyPi.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Publish on PyPi</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Rupert Rebentisch.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>
