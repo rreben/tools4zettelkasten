@@ -7,14 +7,15 @@ Welcome to zettelkasten_tools's documentation!
 ==============================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
 
 .. include:: why_zettelkasten_tools.rst
 .. include:: first_steps.rst
 .. include:: license.rst
 .. include:: projectsetup.rst
 .. include:: setup_dev_environment.rst
+.. include:: publish_on_PyPi.rst
 .. include:: generate_docs.rst
 .. include:: bugs.rst
 .. include:: modules.rst
