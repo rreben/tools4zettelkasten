@@ -18,15 +18,16 @@ import sys
 # this would be the path of (!) the module
 sys.path.insert(0, os.path.abspath('../../'))
 
+from tools4zettelkasten import __version__  # noqa
 
 # -- Project information -----------------------------------------------------
 
-project = 'zettelkasten_tools'
+project = 'tools4zettelkasten'
 copyright = '2021, Rupert Rebentisch'
 author = 'Rupert Rebentisch'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0a2'
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -35,8 +36,13 @@ release = '1.0a2'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.todo',
+    'sphinxcontrib.napoleon'
 ]
+
+# show todos from docstrings in documentation
+todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

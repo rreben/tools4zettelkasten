@@ -14,32 +14,8 @@ import logging
 # import works pretty fine due to above setting of the src path
 # But pylint isn't able to follow this, thus we have to disable it
 # to prevent false pylint problems
-import zettelkasten # pylint: disable=import-error
+import zettelkasten_tools # pylint: disable=import-error
 from pprint import pprint
-
-class TestCanonizeFilename(unittest.TestCase):
-
-    def test_trailing_spaces(self):
-        self.assertEqual(zettelkasten.canonize_filename('foo  '), 'foo')
-
-    def test_multiple_spaces_removed(self):
-        self.assertEqual(zettelkasten.canonize_filename('foo   bar'), 'foo_bar')
-
-    def test_replace_spaces_with_underscores(self):
-        self.assertEqual(zettelkasten.canonize_filename('How to connect a local flask server to the internet'), 'How_to_connect_a_local_flask_server_to_the_internet')
-
-    def test_replace_umlaute(self):
-        self.assertEqual(zettelkasten.canonize_filename('Testen ist nicht öde oder ärgerlich'), 'Testen_ist_nicht_oede_oder_aergerlich')
-
-    def test_remove_special_characters(self):
-        self.assertEqual(zettelkasten.canonize_filename('Testen ist nicht öde! oder ärgerlich?'), 'Testen_ist_nicht_oede_oder_aergerlich')
-
-class TestGetId(unittest.TestCase):
-    def test_hash(self):
-        self.assertEqual(zettelkasten.evaluate_sha_256('foo  '), '07e67ea4439b8f4513d4140fe54229ac127fe0b39ef740136892c433d311a41a')
-
-    def test_currentTimestamp(self):
-        assert re.match('^[0-9]{1,20}$', zettelkasten.currentTimestamp())
 
 class TestProcessInput(unittest.TestCase):
     def test_process_files_from_input(self):
