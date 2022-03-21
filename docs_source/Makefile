@@ -19,12 +19,12 @@ help:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
-	@$(SPHINXGENERATE) -o "$(SOURCEDIR)" ../zettelkasten_tools
+	@$(SPHINXGENERATE) -o "$(SOURCEDIR)" ../tools4zettelkasten
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	cp -r $(BUILDDIR)/html/* $(HTMLCOPYDIR)
 
 clear:
 	rm $(SOURCEDIR)/modules.rst
-	rm $(SOURCEDIR)/zettelkasten_tools.rst
+	rm $(SOURCEDIR)/tools4zettelkasten.rst
 	rm -r $(HTMLCOPYDIR)/*
 	

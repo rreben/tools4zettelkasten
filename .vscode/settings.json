@@ -1,7 +1,7 @@
 {
     "python.linting.pycodestyleEnabled": false,
     "python.linting.enabled": true,
-    "restructuredtext.confPath": "",
+    "restructuredtext.confPath": "${workspaceFolder}/docs_source/source/",
     "autoDocstring.docstringFormat": "sphinx",
     "python.pythonPath": "venvonwindows\\Scripts\\python.exe",
     "python.linting.flake8Enabled": true,
@@ -11,5 +11,6 @@
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
-    "esbonio.server.enabled": true
+    "esbonio.server.enabled": true,
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs_source/source/"
 }
