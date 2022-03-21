@@ -13,6 +13,12 @@ import tools4zettelkasten
 setup(
     name='tools4zettelkasten',
     version=tools4zettelkasten.__version__,
+    description=(
+        'This project provides tools to setup' +
+        'a Zettelkasten System based on simple interlinked markdown files'),
+    author='Dr. Rupert Rebentisch',
+    author_email='rupert.rebentisch@gmail.com',
+    url='https://github.com/rreben/tools4zettelkasten',
     py_modules=['tools4zettelkasten'],
     install_requires=[
         'Click',
