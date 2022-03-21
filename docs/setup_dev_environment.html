@@ -1,0 +1,214 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Setup the Dev Environment &#8212; tools4zettelkasten 1.0a4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Setup the Dev Environment</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="setup-the-dev-environment">
+<h1>Setup the Dev Environment<a class="headerlink" href="#setup-the-dev-environment" title="Permalink to this headline">¶</a></h1>
+<section id="setup-a-virtual-environment-for-python">
+<h2>Setup a virtual environment for python<a class="headerlink" href="#setup-a-virtual-environment-for-python" title="Permalink to this headline">¶</a></h2>
+<p>First install virtualenv:</p>
+<p>I follow the routes in the flask tutorial <a class="reference external" href="https://www.tutorialspoint.com/flask/flask_environment.htm">https://www.tutorialspoint.com/flask/flask_environment.htm</a></p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install virtualenv
+</pre></div>
+</div>
+<p>No go to your project folder and type in</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>virtualenv venv
+</pre></div>
+</div>
+<p>This will create a <code class="docutils literal notranslate"><span class="pre">venv</span></code> folder. Now type in:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> venv/bin/activate
+</pre></div>
+</div>
+<p>You should now see <code class="docutils literal notranslate"><span class="pre">venv</span></code> in front of your cli prompt.</p>
+<p>If you want to exit from the virtual environment then
+type <code class="docutils literal notranslate"><span class="pre">deactivate</span></code> at the prompt.</p>
+</section>
+<section id="create-a-separate-virtual-environment-for-windows">
+<h2>Create a separate virtual environment for windows<a class="headerlink" href="#create-a-separate-virtual-environment-for-windows" title="Permalink to this headline">¶</a></h2>
+<p>If you want to use a virtual environment for windows
+then you can create a separate virtual environment for windows.</p>
+<p>Use the command <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">virtualenv</span></code>.</p>
+<p>Now go to your project folder and type in, but
+do <strong>not</strong> use <code class="docutils literal notranslate"><span class="pre">venv</span></code> but a different fodername
+for this separate virtual environment
+(especially when working in a dropbox folder).</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>virtualenv venv_win
+</pre></div>
+</div>
+<p>This will create a virtual environment that you can use on your windows system.
+Before you are able to activate the environment you might have
+to change the policy settings so that you can start the skripts.</p>
+<p>Use the following command:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">Get-ExecutionPolicy</span></code> to check the policy settings.</p>
+<p>You have to activate the virtual environment by typing
+in <code class="docutils literal notranslate"><span class="pre">venv_win/Scripts/activate.ps1</span></code>. You should now see the modified prompt.</p>
+</section>
+<section id="psioniq-extension">
+<h2>psioniq Extension<a class="headerlink" href="#psioniq-extension" title="Permalink to this headline">¶</a></h2>
+<p>Load the psioniq Extension for VSCode and add the following
+configuration. To the <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> in <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> folder.</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;psi-header.config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;license&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dr. Rupert Rebentisch&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;psi-header.templates&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">              </span><span class="s2">&quot;&lt;&lt;filename&gt;&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="s2">&quot;Copyright (c) &lt;&lt;year&gt;&gt; &lt;&lt;author&gt;&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="s2">&quot;Licensed under the MIT license&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">],</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;changeLogCaption&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HISTORY:&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">],</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;psi-header.lang-config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;begin&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;prefix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;# &quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">]</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="enable-the-debugger">
+<h2>Enable the Debugger<a class="headerlink" href="#enable-the-debugger" title="Permalink to this headline">¶</a></h2>
+<p>In VS Code there are two debuggers.
+There is the pdb command line debugger which
+is accessible via the terminal and the VS-Code own debugger that is integrated
+in the environment.</p>
+<p>You have a special view for running tests and debugging them.</p>
+<img alt="_images/Lab2.jpg" src="_images/Lab2.jpg" />
+<p>You also can run and start individual tests from the source file.</p>
+<img alt="_images/lab.jpg" src="_images/lab.jpg" />
+<p>For this to work the setting of the debugger
+and the test engine have to be in sync.</p>
+<p>Start the detection of tests with
+<code class="docutils literal notranslate"><span class="pre">Python:</span> <span class="pre">Discover</span> <span class="pre">Tests</span></code> from the command palette.
+Specify <code class="docutils literal notranslate"><span class="pre">tests</span></code> as the test directory.</p>
+<p>For more information look at the <a class="reference external" href="https://code.visualstudio.com/docs/python/testing">VSCode Documentation</a></p>
+</section>
+<section id="install-the-module-locally">
+<h2>Install the module locally<a class="headerlink" href="#install-the-module-locally" title="Permalink to this headline">¶</a></h2>
+<p>Go to the project folder where you find the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file.
+Activate the virtual environment. To install the module locally type in:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install --editable .
+</pre></div>
+</div>
+<p>With the <code class="docutils literal notranslate"><span class="pre">--editable</span></code> flag or <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag
+the module will be installed in the virtual environment.</p>
+<p>You can uninstall the module with:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip uninstall -y tools4zettelkasten
+</pre></div>
+</div>
+<p>You should now be able to start the module
+with <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Setup the Dev Environment</a><ul>
+<li><a class="reference internal" href="#setup-a-virtual-environment-for-python">Setup a virtual environment for python</a></li>
+<li><a class="reference internal" href="#create-a-separate-virtual-environment-for-windows">Create a separate virtual environment for windows</a></li>
+<li><a class="reference internal" href="#psioniq-extension">psioniq Extension</a></li>
+<li><a class="reference internal" href="#enable-the-debugger">Enable the Debugger</a></li>
+<li><a class="reference internal" href="#install-the-module-locally">Install the module locally</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/setup_dev_environment.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Setup the Dev Environment</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Rupert Rebentisch.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>
