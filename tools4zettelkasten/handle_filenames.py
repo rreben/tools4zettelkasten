@@ -28,6 +28,7 @@ class Note:
         base_filename (str): The base of the filename
         id (str): The id of the note
     """
+
     ordering: str
     base_filename: str
     id: str

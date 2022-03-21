@@ -2,6 +2,7 @@
 
 # Copyright (c) 2021 Rupert Rebentisch
 # Licensed under the MIT license
+
 """The command line interface.
 
 Click is used as backbone for the cli.
