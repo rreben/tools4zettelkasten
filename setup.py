@@ -7,6 +7,7 @@ from setuptools import setup
 
 import re
 import io
+import importlib.util
 
 """See https://click.palletsprojects.com/en/8.0.x/
 setuptools/#setuptools-integration
@@ -26,7 +27,8 @@ questions/17583443/what-is-the-correct-way-to-share-package-version-
 with-setup-py-and-the-package
 for a discussion on this topic."""
 
-__version__ = re.search(
+
+version_from_module = re.search(
     r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
     io.open('tools4zettelkasten/__init__.py', encoding='utf_8_sig').read()
 ).group(1)
@@ -36,7 +38,7 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 
 setup(
     name='tools4zettelkasten',
-    version=__version__,
+    version=version_from_module,
     description=(
         'This project provides tools to setup' +
         'a Zettelkasten System based on simple interlinked markdown files'),
