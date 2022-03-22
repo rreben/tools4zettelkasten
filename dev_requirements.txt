@@ -2,3 +2,4 @@ doc8==0.10.1
 virtualenv==20.4.2
 pytest==7.1.1
 restructuredtext-lint==1.4.0
+twine==3.8.0

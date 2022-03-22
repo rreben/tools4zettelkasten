@@ -7,15 +7,37 @@
 # on how to use setuptools with the Click package.
 
 from setuptools import setup
+# import sys
+# import os
 
-import tools4zettelkasten
+import re
+import io
+
+__version__ = re.search(
+    r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
+    io.open('tools4zettelkasten/__init__.py', encoding='utf_8_sig').read()
+).group(1)
+
+
+setup(
+    version=__version__,
+    # ... etc.
+)
+# sys.path.insert(0, os.path.abspath(
+#     os.path.join(os.path.dirname(__file__), '.')))
+
+# import tools4zettelkasten  # noqa # pylint: disable=unused-import, wrong-import-position
+with open("README.rst", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 setup(
     name='tools4zettelkasten',
-    version=tools4zettelkasten.__version__,
+    version=__version__,
     description=(
         'This project provides tools to setup' +
         'a Zettelkasten System based on simple interlinked markdown files'),
+    long_description=long_description,
+    long_description_content_type='text/x-rst',
     author='Dr. Rupert Rebentisch',
     author_email='rupert.rebentisch@gmail.com',
     url='https://github.com/rreben/tools4zettelkasten',

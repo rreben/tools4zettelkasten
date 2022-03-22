@@ -143,3 +143,11 @@ You can uninstall the module with:
 
 You should now be able to start the module
 with ``tools4zettelkasten``.
+
+Install twine
+--------------
+
+.. code-block:: sh
+
+        pip install twine
+
