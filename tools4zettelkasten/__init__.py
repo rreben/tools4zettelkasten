@@ -1,6 +1,6 @@
 # __init__.py
 
-__version__ = '1.0a4'
+__version__ = '1.0a5'
 
 from .app import ZettelkastenTools
 from .handle_filenames import *
