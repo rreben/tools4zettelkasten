@@ -45,7 +45,6 @@ and to check your settings in ``setup.py`` and ``setup.cfg``:
 
     python setup.py register -r pypitest
 
-
 Prepare the package and publish on GitHub
 -----------------------------------------
 
