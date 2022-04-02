@@ -6,7 +6,8 @@ Setup a virtual environment for python
 
 First install virtualenv:
 
-I follow the routes in the flask tutorial https://www.tutorialspoint.com/flask/flask_environment.htm
+I follow the routes in the flask tutorial
+https://www.tutorialspoint.com/flask/flask_environment.htm
 
 .. code-block:: sh
 

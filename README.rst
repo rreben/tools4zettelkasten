@@ -5,6 +5,8 @@ tools4zettelkasten
 This project provides tools to setup a digital Zettelkasten System based on
 simple interlinked markdown files.
 
+.. start_marker_what_is_a_zettelkasten_do_not_remove
+
 What is a Zettelkasten?
 =======================
 A Zettelkasten is a structured collection of notes. The Zettelkasten is a tool
@@ -23,8 +25,9 @@ and contributed significantly to popularizing the concept. The book was
 translated into English under “How to take smart notes.“ Through this title,
 one can find numerous explanations of the methodology on the Internet.
 
-How Do I Use It?
-================
+How to set up a digital Zettelkasten?
+=====================================
+
 To use the system, you don't need any special software. Any Editor (e.g.
 VSCode, Atom, Vim, etc.) capable of editing Markdown can be used.
 
@@ -36,9 +39,12 @@ Just 5% is about organizing these notes with ``tools4zettelkasten``. Please
 refer to my "step by step guide" on how to setup a Zettelkasten.
 https://www.mycelium-of-knowledge.org/step-by-step-instructions-for-setup-and-use-of-the-zettelkasten/
 
+.. end_marker_what_is_a_zettelkasten_do_not_remove
 
-How does ``tools4zettelkasten`` work?
-=====================================
+.. start_marker_how_to_use_tools4zettelkasten_do_not_remove
+
+How to use ``tools4zettelkasten``?
+==================================
 
 Start ``tools4zettelkasten``
 ----------------------------
@@ -111,6 +117,9 @@ follows:
 This way you will always have a clean alphanumeric numbering of the Zettel /
 Markdown files.
 
+.. end_marker_how_to_use_tools4zettelkasten_do_not_remove
+
+.. start_marker_how_to_set_up_tools4zettelkasten_do_not_remove
 
 How to setup the tools4zettelkasten?
 ====================================
@@ -161,6 +170,8 @@ In MacOS you can use the following command to set the environment variables:
 Where ``/Users/me/Documents/zettelkasten/mycelium/``  is the directory of your
 zettelkasten and ``/Users/me/Documents/zettelkasten/input/`` is the directory
 of your input folder.
+
+.. end_marker_how_to_set_up_tools4zettelkasten_do_not_remove
 
 How to contribute?
 ==================
