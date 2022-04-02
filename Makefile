@@ -24,6 +24,6 @@ lint:
 	@bandit -r --ini setup.cfg
 
 clean:
-	rm -rf .pytest_cache .coverage .pytest_cache coverage.xml reports/ htmlcov/ dist/ build/
+	rm -rf .pytest_cache .coverage .pytest_cache coverage.xml reports/ htmlcov/ dist/ build/ tools4zettelkasten.egg-info//
 
 .PHONY: clean test
