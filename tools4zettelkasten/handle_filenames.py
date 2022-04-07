@@ -3,35 +3,10 @@
 # Copyright (c) 2021 Rupert Rebentisch
 # Licensed under the MIT license
 
-"""functions to handle filenames
-
-standard filenames have the form of
-2_03_04a_5_Some_Topic_fb134b00b
-
-The correct form of the filenames is
-important for listing, reorganizing the
-Zettelkasten etc.
-"""
-
 import re
 import hashlib
 from datetime import datetime
-from dataclasses import dataclass
-
-
-@dataclass
-class Note:
-    """A note
-
-    Attributes:
-        ordering (str): The ordering of the note
-        base_filename (str): The base of the filename
-        id (str): The id of the note
-    """
-
-    ordering: str
-    base_filename: str
-    id: str
+from . note import Note
 
 
 def is_valid_filename(filename) -> bool:
