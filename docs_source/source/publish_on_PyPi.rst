@@ -37,6 +37,9 @@ The file has the following format:
     username = __token__
     password = pypi-AgENdG...some...token..SlYKYg
 
+The file must not contain a repository entry. Because then twine will not
+default to the pypi server but will return a deprecated error. See
+https://packaging.python.org/guides/migrating-to-pypi-org/ for details.
 
 Use the following command to register your package
 and to check your settings in ``setup.py`` and ``setup.cfg``:
@@ -74,4 +77,6 @@ Make a release package
    können, die nur auf PyPi nicht jedoch auf testpipy verfügbar sind.
 6. Run the tests with ``python -m tools4zettelkasten``. Try the commands
    show, analyse and start.
+7. We use ``python -m twine upload --repository pypi dist/*``
+   to upload the package to pypi.
 
