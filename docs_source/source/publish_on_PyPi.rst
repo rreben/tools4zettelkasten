@@ -67,3 +67,11 @@ Make a release package
    You will now have a tar.gz file and a .whl file in the ``dist/`` directory.
 4. We use ``python -m twine upload --repository testpypi dist/*``
    to upload the package to testpypi.
+5. Create a new fresh virtualenv and install the package via ``python3 -m pip
+   install --index-url https://test.pypi.org/simple/ --extra-index-url
+   https://pypi.org/simple/ tools4zettelkasten``. Dabei ist der Parameter
+   ``--extra-index-url`` notwendig, damit auch Dependencies installiert werden
+   können, die nur auf PyPi nicht jedoch auf testpipy verfügbar sind.
+6. Run the tests with ``python -m tools4zettelkasten``. Try the commands
+   show, analyse and start.
+
