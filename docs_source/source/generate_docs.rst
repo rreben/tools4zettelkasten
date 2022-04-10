@@ -23,7 +23,7 @@ Create and edit the source files for the docs
 1. To generate the docs navigate to the docs_source folder
 2. Edit the rst files in the master branch as needed
 3. You might want to edit the release number
-   in ``tools4zettelkasten.__init__.py``
+   in the ``VERSION`` file of the python package.
 4. Use ``make html`` to generate the documentation
 5. Check the generated documentation by openening ``docs/index.html``
    in a browser

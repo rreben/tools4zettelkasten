@@ -2,20 +2,19 @@
 # Copyright (c) 2022 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
-# See https://click.palletsprojects.com/en/8.0.x/
-#     setuptools/#setuptools-integration
-# on how to use setuptools with the Click package.
 
 from setuptools import setup
 
-import tools4zettelkasten
+with open("README.rst", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 setup(
     name='tools4zettelkasten',
-    version=tools4zettelkasten.__version__,
     description=(
         'This project provides tools to setup' +
         'a Zettelkasten System based on simple interlinked markdown files'),
+    long_description=long_description,
+    long_description_content_type='text/x-rst',
     author='Dr. Rupert Rebentisch',
     author_email='rupert.rebentisch@gmail.com',
     url='https://github.com/rreben/tools4zettelkasten',
@@ -44,7 +43,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'tools4zettelkasten = tools4zettelkasten.cli:messages',
+            'tools4zettelkasten = tools4zettelkasten.cli:messages'
         ],
     },
 )

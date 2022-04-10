@@ -10,10 +10,18 @@ Welcome to zettelkasten_tools's documentation!
     :maxdepth: 2
     :caption: Contents:
 
-.. include:: why_zettelkasten_tools.rst
-.. include:: first_steps.rst
+.. include:: why_tools4zettelkasten.rst
+.. include:: ../../README.rst
+    :start-after: start_marker_what_is_a_zettelkasten_do_not_remove
+    :end-before: end_marker_what_is_a_zettelkasten_do_not_remove
+.. include:: ../../README.rst
+    :start-after: .. start_marker_how_to_use_tools4zettelkasten_do_not_remove
+    :end-before: .. end_marker_how_to_use_tools4zettelkasten_do_not_remove
+.. include:: ../../README.rst
+    :start-after: .. start_marker_how_to_set_up_tools4zettelkasten_do_not_remove
+    :end-before: .. end_marker_how_to_set_up_tools4zettelkasten_do_not_remove
 .. include:: license.rst
-.. include:: projectsetup.rst
+.. include:: layout_of_development_project.rst
 .. include:: setup_dev_environment.rst
 .. include:: publish_on_PyPi.rst
 .. include:: generate_docs.rst
