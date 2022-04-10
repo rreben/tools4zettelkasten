@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Welcome to zettelkasten_tools’s documentation! &#8212; tools4zettelkasten 1.0a4 documentation</title>
+    <title>Welcome to zettelkasten_tools’s documentation! &#8212; tools4zettelkasten 1.0a9 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="tools4zettelkasten.html" title="tools4zettelkasten package"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">tools4zettelkasten 1.0a9 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to zettelkasten_tools’s documentation!</a></li> 
       </ul>
     </div>  
@@ -51,58 +51,194 @@
 <div class="toctree-wrapper compound">
 </div>
 </section>
-<section id="why-zettelkasten-tools">
-<h1>Why zettelkasten_tools?<a class="headerlink" href="#why-zettelkasten-tools" title="Permalink to this headline">¶</a></h1>
-<p>The Zettelkasten method as used by Niklas Luhmann is a very effective method to organize your learning, writing and thinking (see <a class="reference external" href="https://www.mycelium-of-knowledge.org/luhmanns-zettelkasten/">https://www.mycelium-of-knowledge.org/luhmanns-zettelkasten/</a> and references therein).</p>
-<p>A digital zettelkasten can be setup with just some folders and markdown files and a good markdown editor. IMHO special database or cloud based systems are not necessary.</p>
-<p>zettelkasten_tools provide some tools to make handling of “markdown zettel files” easy:</p>
+<section id="why-tools4zettelkasten">
+<h1>Why tools4zettelkasten?<a class="headerlink" href="#why-tools4zettelkasten" title="Permalink to this headline">¶</a></h1>
+<p>tools4zettelkasten provides tools to setup a digital Zettelkasten System based
+on simple interlinked markdown files.</p>
+<p>A digital zettelkasten can be setup with just some folders and markdown files
+and a good markdown editor. IMHO special database or cloud based systems are
+not necessary.</p>
+<p>zettelkasten_tools provide some tools to make handling of “markdown zettel
+files” easy:</p>
 <ul class="simple">
 <li><p>helps to keep all files with a consistent naming convention</p></li>
 <li><p>helps reorganizing the file hierachy</p></li>
 <li><p>show your zettel notes in a browser as html</p></li>
+<li><p>creates graphical representation of your Zettelkasten, so that you can
+visualize your stem of thoughts</p></li>
 </ul>
 </section>
-<section id="first-steps">
-<h1>First Steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h1>
-<p>We first must specify in which folder we keep our notes.</p>
-<p>We do so by setting an environment variable. On MacOS we use:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ZETTELKASTEN</span><span class="o">=</span>/mypath/mydirectory
+<section id="what-is-a-zettelkasten">
+<h1>What is a Zettelkasten?<a class="headerlink" href="#what-is-a-zettelkasten" title="Permalink to this headline">¶</a></h1>
+<p>A Zettelkasten is a structured collection of notes. The Zettelkasten is a tool
+to approach complex ideas and concepts. It serves to support and structure
+one’s thinking about essential topics. Thus the note box can help to formulate
+and publish own thoughts.</p>
+<p>Zettel is the German word for a small piece of paper, and Kasten means box. So
+a Zettelkasten is a box full of small pieces of paper. Therefore a Zettelkasten
+is often referred to as a slip box.</p>
+<p>The idea of a slip box goes back to Niklas Luhmann (1927-1998) [1]. An
+exceptionally productive sociologist measured by his publications. Söhnke
+Ahrens explained Luhmann’s approach in his book “Das Zettelkasten-Prinzip” [2]
+and contributed significantly to popularizing the concept. The book was
+translated into English under “How to take smart notes.“ Through this title,
+one can find numerous explanations of the methodology on the Internet.</p>
+</section>
+<section id="how-to-set-up-a-digital-zettelkasten">
+<h1>How to set up a digital Zettelkasten?<a class="headerlink" href="#how-to-set-up-a-digital-zettelkasten" title="Permalink to this headline">¶</a></h1>
+<p>To use the system, you don’t need any special software. Any Editor (e.g.
+VSCode, Atom, Vim, etc.) capable of editing Markdown can be used.</p>
+<p>Every slip (zettel)  is a simple markdown file. These markdown files might
+contain images or mathematical formulas.</p>
+<p>Using the Zettelkasten is 95% about how to write notes and how to name them.
+Just 5% is about organizing these notes with <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code>. Please
+refer to my “step by step guide” on how to setup a Zettelkasten.
+<a class="reference external" href="https://www.mycelium-of-knowledge.org/step-by-step-instructions-for-setup-and-use-of-the-zettelkasten/">https://www.mycelium-of-knowledge.org/step-by-step-instructions-for-setup-and-use-of-the-zettelkasten/</a></p>
+</section>
+<section id="how-to-use-tools4zettelkasten">
+<h1>How to use <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code>?<a class="headerlink" href="#how-to-use-tools4zettelkasten" title="Permalink to this headline">¶</a></h1>
+<section id="start-tools4zettelkasten">
+<h2>Start <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code><a class="headerlink" href="#start-tools4zettelkasten" title="Permalink to this headline">¶</a></h2>
+<p>The Zettelkasten tools provide a set of tools to manipulate the markdown files
+to significantly improve the handling of a big number of zettel / markdown
+files. With Zettelkasten you can effortlessly change the hierachy as well as
+the interlinks of your Zettelkasten.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python -m tools4zettelkasten
 </pre></div>
 </div>
-<p>We can delete the environment variable with</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">unset</span> ZETTELKASTEN
+<p>Will open a help page with all available commands. You can get further
+information about a command (e.g. for the command <code class="docutils literal notranslate"><span class="pre">stage</span></code>) by typing:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python -m tools4zettelkasten stage --help
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">show</span></code> command will show the current value of the environment variable.</p>
+<p>The Zettelkasten shows the zettel files as html and provides a simple
+webeserver to do so. It uses flask, a markdown to html converter and bootstrap
+to do so in a responsive GUI.</p>
+</section>
+<section id="features-of-tools4zettelkasten">
+<h2>Features of <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code><a class="headerlink" href="#features-of-tools4zettelkasten" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code> provides a set of tools to manipulate the markdown files
+to significantly improve the handling of a big number of zettel / markdown
+files. With Zettelkasten you can effortlessly change the hierachy as well as
+the interlinks of your Zettelkasten.</p>
+<p>With the <code class="docutils literal notranslate"><span class="pre">stage</span></code> command you can rename all Zettel / Markdown files in the
+input directory, so that they conform to the naming convention. (have a look at
+my
+<a class="reference external" href="https://www.mycelium-of-knowledge.org/step-by-step-instructions-for-setup-and-use-of-the-zettelkasten/">https://www.mycelium-of-knowledge.org/step-by-step-instructions-for-setup-and-use-of-the-zettelkasten/</a>
+for more information on how and why (!) you should name the files accodring to
+the naming convention). The name will be formed from the title in the markdown
+file (e.g. <code class="docutils literal notranslate"><span class="pre">title</span></code> in <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">title</span></code>).</p>
+<p>With the <code class="docutils literal notranslate"><span class="pre">reorganize</span></code> command you can change the alphanumeric numbering of
+the Zettel / Markdown files in your Zettelkasten directory.</p>
+<p>Suppose you have a Zettelkasten with the following files:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>...
+01_12_Quality_of_notes_eccb21483.md
+01_12a_How_to_integrate_notes_into_the_note_box_e0d27e3ad.md
+01_12a_1_Integration_of_fleeting_notes_97a19382a.md
+01_12a_2_Integration_of_literature_notes_ec83f31a2.md
+01_12b_Working_with_alphanumeric_Ordering_en036a6bd.md
+01_13_How_to_revisit_notes_a161a7e7c.md
+...
+</pre></div>
+</div>
+<p>The after using the <code class="docutils literal notranslate"><span class="pre">reorganize</span></code> command, the files will be renamed as
+follows:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>...
+01_12_Quality_of_notes_eccb21483.md
+01_13_How_to_integrate_notes_into_the_fleeting_box_e0d27e3ad.md
+01_13_1_Integration_of_fleeting_notes_97a19382a.md
+01_13_2_Integration_of_literature_notes_ec83f31a2.md
+01_14_Working_with_alphanumeric_Ordering_en036a6bd.md
+01_15_How_to_revisit_notes_a161a7e7c.md
+...
+</pre></div>
+</div>
+<p>This way you will always have a clean alphanumeric numbering of the Zettel /
+Markdown files.</p>
+</section>
+</section>
+<section id="how-to-setup-the-tools4zettelkasten">
+<h1>How to setup the tools4zettelkasten?<a class="headerlink" href="#how-to-setup-the-tools4zettelkasten" title="Permalink to this headline">¶</a></h1>
+<p>Right now <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code> is still in alpha mode. You need to download
+or clone the repo. You can start the scripts via the command line:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python -m tools4zettelkasten
+</pre></div>
+</div>
+<p>You will have to install the missing dependencies via pip. So you may want to
+use a virtual environment. See <a class="reference external" href="https://rreben.github.io/tools4zettelkasten/">https://rreben.github.io/tools4zettelkasten/</a> for
+further information.</p>
+<p>I am planning to publish <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code> as a package on PyPI. So you
+can install it via pip.</p>
+<p>First of all you have to tell <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code> where to find the
+directory of your zettelkasten.</p>
+<p>You could use the following directory structure: We store the Markdown files in
+a simple folder with the following directory structure:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>├── input/
+│   └── images/
+└── mycelium/
+    └── images/
+</pre></div>
+</div>
+<p>Any other directory structure is possible, but you need to have the images in
+the <code class="docutils literal notranslate"><span class="pre">images/</span></code> directory, if you want to use the flask server.</p>
+<p>First of all use the <code class="docutils literal notranslate"><span class="pre">show</span></code> command to show the current configuration:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python -m tools4zettelkasten show
+</pre></div>
+</div>
+<p>In MacOS you can use the following command to set the environment variables:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ZETTELKASTEN</span><span class="o">=</span>/Users/me/Documents/zettelkasten/mycelium/
+<span class="nb">export</span> <span class="nv">ZETTELKASTEN_INPUT</span><span class="o">=</span>/Users/me/Documents/zettelkasten/input/
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">/Users/me/Documents/zettelkasten/mycelium/</span></code>  is the directory of your
+zettelkasten and <code class="docutils literal notranslate"><span class="pre">/Users/me/Documents/zettelkasten/input/</span></code> is the directory
+of your input folder.</p>
 </section>
 <section id="the-license">
 <h1>The License<a class="headerlink" href="#the-license" title="Permalink to this headline">¶</a></h1>
-<p>This project is licensed with the MIT License, the license text is included with the source code.
+<p>This project is licensed with the MIT License, the license text is included
+with the source code.
 <a class="reference external" href="https://github.com/rreben/zettelkasten_tools/blob/master/LICENSE">https://github.com/rreben/zettelkasten_tools/blob/master/LICENSE</a></p>
-<p>This is a simple and permissive license approved by the Open Source Initiative <a class="reference external" href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a></p>
+<p>This is a simple and permissive license approved by the Open Source Initiative
+<a class="reference external" href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a></p>
 </section>
-<section id="project-setup">
-<h1>Project Setup<a class="headerlink" href="#project-setup" title="Permalink to this headline">¶</a></h1>
+<section id="layout-of-the-development-project">
+<h1>Layout of the development project<a class="headerlink" href="#layout-of-the-development-project" title="Permalink to this headline">¶</a></h1>
 <p>The project layout follows a proposal from Martin Heinz [1].</p>
-<p><strong>.vscode/</strong> contains a json file that stores some settings for Visual Studio Code</p>
-<p><strong>ArbeitMitDemZettelkasten.code-workspace</strong> has some specific data for the Workspace in VSCode.</p>
-<p><strong>docs/</strong> contains the website with the project documentation on github pages. You have to change to the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch in order to view or change these files.</p>
-<p><strong>docs_source/</strong> contains all the source files of the documentation, to create the docs on gh-pages. I could not put these files in the docs folder, because this would collide with the structure that gh-pages are expecting. In order to use gh-pages, we have to provide an index.html file in the docs directory (together with all the other html files and ressources).</p>
-<p><strong>experiments/</strong> is a folder to try new libraries and python recipes. These experiments have a temporary value and are not part of the project.</p>
-<p><strong>flask_frontend/</strong> Contains all the templates, CSS files and static content that flask needs to generate the view of the Zettelkasten in the Browser</p>
-<p><strong>tests/</strong> contains everything to test the project, especially the python unittests</p>
-<p><strong>zettelkasten_tools/</strong> contains the source code of the tools and the backend of the flask</p>
-<p><strong>.gitignore</strong> holds the configuration which artefacts will NOT be put under version control</p>
+<p><strong>.vscode/</strong> contains a json file that stores some settings for Visual Studio
+Code</p>
+<p><strong>ArbeitMitDemZettelkasten.code-workspace</strong> has some specific data for the
+Workspace in VSCode.</p>
+<p><strong>docs/</strong> contains the website with the project documentation on github pages.
+You have to change to the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch in order to view or change these
+files.</p>
+<p><strong>docs_source/</strong> contains all the source files of the documentation, to create
+the docs on gh-pages. I could not put these files in the docs folder, because
+this would collide with the structure that gh-pages are expecting. In order to
+use gh-pages, we have to provide an index.html file in the docs directory
+(together with all the other html files and ressources).</p>
+<p><strong>experiments/</strong> is a folder to try new libraries and python recipes. These
+experiments have a temporary value and are not part of the project.</p>
+<p><strong>flask_frontend/</strong> Contains all the templates, CSS files and static content
+that flask needs to generate the view of the Zettelkasten in the Browser</p>
+<p><strong>tests/</strong> contains everything to test the project, especially the python
+unittests</p>
+<p><strong>zettelkasten_tools/</strong> contains the source code of the tools and the backend
+of the flask</p>
+<p><strong>.gitignore</strong> holds the configuration which artefacts will NOT be put under
+version control</p>
 <p><strong>LICENSE</strong> is the file with the project license (MIT-license)</p>
 <p><strong>README.rst</strong> is the file that is first shown on the repo on Github.</p>
-<p>[1]: Heinz, Martin, „Ultimate Setup for Your Next Python Project“, Martin Heinz  Personal Website &amp; Blog. <a class="reference external" href="https://martinheinz.dev/blog/14">https://martinheinz.dev/blog/14</a></p>
+<p>[1]: Heinz, Martin, „Ultimate Setup for Your Next Python Project“, Martin Heinz
+Personal Website &amp; Blog. <a class="reference external" href="https://martinheinz.dev/blog/14">https://martinheinz.dev/blog/14</a></p>
 </section>
 <section id="setup-the-dev-environment">
 <h1>Setup the Dev Environment<a class="headerlink" href="#setup-the-dev-environment" title="Permalink to this headline">¶</a></h1>
 <section id="setup-a-virtual-environment-for-python">
 <h2>Setup a virtual environment for python<a class="headerlink" href="#setup-a-virtual-environment-for-python" title="Permalink to this headline">¶</a></h2>
 <p>First install virtualenv:</p>
-<p>I follow the routes in the flask tutorial <a class="reference external" href="https://www.tutorialspoint.com/flask/flask_environment.htm">https://www.tutorialspoint.com/flask/flask_environment.htm</a></p>
+<p>I follow the routes in the flask tutorial
+<a class="reference external" href="https://www.tutorialspoint.com/flask/flask_environment.htm">https://www.tutorialspoint.com/flask/flask_environment.htm</a></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install virtualenv
 </pre></div>
 </div>
@@ -204,19 +340,29 @@ the module will be installed in the virtual environment.</p>
 <p>You should now be able to start the module
 with <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code>.</p>
 </section>
+<section id="install-twine">
+<h2>Install twine<a class="headerlink" href="#install-twine" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install twine
+</pre></div>
+</div>
+</section>
 </section>
 <section id="publish-on-pypi">
 <h1>Publish on PyPi<a class="headerlink" href="#publish-on-pypi" title="Permalink to this headline">¶</a></h1>
 <p>We follow the excellent advice in
 <a class="reference external" href="https://www.codementor.io/&#64;arpitbhayani/host-your-python-package-using-github-on-pypi-du107t7ku">https://www.codementor.io/&#64;arpitbhayani/host-your-python-package-using-github-on-pypi-du107t7ku</a></p>
+<section id="perparation">
+<h2>Perparation<a class="headerlink" href="#perparation" title="Permalink to this headline">¶</a></h2>
 <p>First we have to create an account on PyPi and on testpipy.
 Go to <a class="reference external" href="https://pypi.python.org">https://pypi.python.org</a> and <a class="reference external" href="https://testpypi.python.org">https://testpypi.python.org</a> respectively.</p>
+<p>Next get the API tokens from the account.</p>
 <p>We store the user names and password in a <code class="docutils literal notranslate"><span class="pre">~/.pypirc</span></code>
 file in our home directory (<strong>not</strong> the project directory).</p>
 <p>The file has the following format:</p>
 <div class="highlight-linux-config notranslate"><div class="highlight"><pre><span></span>[distutils]<span class="w"></span>
 index-servers<span class="w"> </span><span class="o">=</span><span class="w"></span>
 <span class="w">    </span>pypi<span class="w"></span>
+<span class="w">    </span>testpypi<span class="w"></span>
 <span class="w">    </span>testpypi<span class="w"></span>
 
 [pypi]<span class="w"></span>
@@ -226,13 +372,54 @@ password:&lt;password&gt;<span class="w"></span>
 [testpypi]<span class="w"></span>
 username:&lt;username&gt;<span class="w"></span>
 password:&lt;password&gt;<span class="w"></span>
+
+[testpypi]<span class="w"></span>
+username<span class="w"> </span><span class="o">=</span><span class="w"> </span>__token__<span class="w"></span>
+password<span class="w"> </span><span class="o">=</span><span class="w"> </span>pypi-AgENdG...some...token..SlYKYg<span class="w"></span>
 </pre></div>
 </div>
+<p>The file must not contain a repository entry. Because then twine will not
+default to the pypi server but will return a deprecated error. See
+<a class="reference external" href="https://packaging.python.org/guides/migrating-to-pypi-org/">https://packaging.python.org/guides/migrating-to-pypi-org/</a> for details.</p>
 <p>Use the following command to register your package
 and to check your settings in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> and <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python setup.py register -r pypitest
 </pre></div>
 </div>
+</section>
+<section id="prepare-the-package-and-publish-on-github">
+<h2>Prepare the package and publish on GitHub<a class="headerlink" href="#prepare-the-package-and-publish-on-github" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Change the version number in <code class="docutils literal notranslate"><span class="pre">tools4zettel/__init__.py</span></code></p></li>
+<li><p>Test tools4zettelkasten with all pytest testsuites.</p></li>
+<li><p>Update the documentation in the gh-pages branch.</p></li>
+<li><p>Commit everything an push to master.</p></li>
+<li><p>Use the “Create a new release” function in the github UI.</p></li>
+<li><p>Take version number as the release tag on the github UI.</p></li>
+<li><p>You will get a link to the assets (tar.gz) and (.zip) file.</p></li>
+</ol>
+</section>
+<section id="make-a-release-package">
+<h2>Make a release package<a class="headerlink" href="#make-a-release-package" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Right now we have to edit the release number also in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--editable</span> <span class="pre">.</span></code> to install the package locally.
+This is just a test. Use <code class="docutils literal notranslate"><span class="pre">uninstall</span></code> to remove the package.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">build</span></code> to build the package.
+You will now have a tar.gz file and a .whl file in the <code class="docutils literal notranslate"><span class="pre">dist/</span></code> directory.</p></li>
+<li><p>We use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">twine</span> <span class="pre">upload</span> <span class="pre">--repository</span> <span class="pre">testpypi</span> <span class="pre">dist/*</span></code>
+to upload the package to testpypi.</p></li>
+<li><p>Create a new fresh virtualenv and install the package via <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pip</span>
+<span class="pre">install</span> <span class="pre">--index-url</span> <span class="pre">https://test.pypi.org/simple/</span> <span class="pre">--extra-index-url</span>
+<span class="pre">https://pypi.org/simple/</span> <span class="pre">tools4zettelkasten</span></code>. Dabei ist der Parameter
+<code class="docutils literal notranslate"><span class="pre">--extra-index-url</span></code> notwendig, damit auch Dependencies installiert werden
+können, die nur auf PyPi nicht jedoch auf testpipy verfügbar sind.</p></li>
+<li><p>Run the tests with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">tools4zettelkasten</span></code>. Try the commands
+show, analyse and start.</p></li>
+<li><p>We use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">twine</span> <span class="pre">upload</span> <span class="pre">--repository</span> <span class="pre">pypi</span> <span class="pre">dist/*</span></code>
+to upload the package to pypi.</p></li>
+</ol>
+</section>
 </section>
 <section id="generate-the-docs">
 <h1>Generate the docs<a class="headerlink" href="#generate-the-docs" title="Permalink to this headline">¶</a></h1>
@@ -254,7 +441,7 @@ sphinx extensions in <code class="docutils literal notranslate"><span class="pre
 <li><p>To generate the docs navigate to the docs_source folder</p></li>
 <li><p>Edit the rst files in the master branch as needed</p></li>
 <li><p>You might want to edit the release number
-in <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten.__init__.py</span></code></p></li>
+in the <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> file of the python package.</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> to generate the documentation</p></li>
 <li><p>Check the generated documentation by openening <code class="docutils literal notranslate"><span class="pre">docs/index.html</span></code>
 in a browser</p></li>
@@ -301,8 +488,8 @@ all generated docs in this branch</p></li>
 </section>
 <section id="bug-reports-and-feature-requests">
 <h1>Bug Reports and Feature Requests<a class="headerlink" href="#bug-reports-and-feature-requests" title="Permalink to this headline">¶</a></h1>
-<p>If you find a bug or you want to request a feature go to <a class="reference external" href="https://github.com/rreben/zettelkasten_tools/issues">https://github.com/rreben/zettelkasten_tools/issues</a>
-and create an issue.</p>
+<p>If you find a bug or you want to request a feature go to
+<a class="reference external" href="https://github.com/rreben/zettelkasten_tools/issues">https://github.com/rreben/zettelkasten_tools/issues</a> and create an issue.</p>
 </section>
 <section id="tools4zettelkasten">
 <h1>tools4zettelkasten<a class="headerlink" href="#tools4zettelkasten" title="Permalink to this headline">¶</a></h1>
@@ -348,19 +535,32 @@ and create an issue.</p>
     <h3><a href="#">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Welcome to zettelkasten_tools’s documentation!</a></li>
-<li><a class="reference internal" href="#why-zettelkasten-tools">Why zettelkasten_tools?</a></li>
-<li><a class="reference internal" href="#first-steps">First Steps</a></li>
+<li><a class="reference internal" href="#why-tools4zettelkasten">Why tools4zettelkasten?</a></li>
+<li><a class="reference internal" href="#what-is-a-zettelkasten">What is a Zettelkasten?</a></li>
+<li><a class="reference internal" href="#how-to-set-up-a-digital-zettelkasten">How to set up a digital Zettelkasten?</a></li>
+<li><a class="reference internal" href="#how-to-use-tools4zettelkasten">How to use <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code>?</a><ul>
+<li><a class="reference internal" href="#start-tools4zettelkasten">Start <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code></a></li>
+<li><a class="reference internal" href="#features-of-tools4zettelkasten">Features of <code class="docutils literal notranslate"><span class="pre">tools4zettelkasten</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-to-setup-the-tools4zettelkasten">How to setup the tools4zettelkasten?</a></li>
 <li><a class="reference internal" href="#the-license">The License</a></li>
-<li><a class="reference internal" href="#project-setup">Project Setup</a></li>
+<li><a class="reference internal" href="#layout-of-the-development-project">Layout of the development project</a></li>
 <li><a class="reference internal" href="#setup-the-dev-environment">Setup the Dev Environment</a><ul>
 <li><a class="reference internal" href="#setup-a-virtual-environment-for-python">Setup a virtual environment for python</a></li>
 <li><a class="reference internal" href="#create-a-separate-virtual-environment-for-windows">Create a separate virtual environment for windows</a></li>
 <li><a class="reference internal" href="#psioniq-extension">psioniq Extension</a></li>
 <li><a class="reference internal" href="#enable-the-debugger">Enable the Debugger</a></li>
 <li><a class="reference internal" href="#install-the-module-locally">Install the module locally</a></li>
+<li><a class="reference internal" href="#install-twine">Install twine</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#publish-on-pypi">Publish on PyPi</a></li>
+<li><a class="reference internal" href="#publish-on-pypi">Publish on PyPi</a><ul>
+<li><a class="reference internal" href="#perparation">Perparation</a></li>
+<li><a class="reference internal" href="#prepare-the-package-and-publish-on-github">Prepare the package and publish on GitHub</a></li>
+<li><a class="reference internal" href="#make-a-release-package">Make a release package</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#generate-the-docs">Generate the docs</a><ul>
 <li><a class="reference internal" href="#create-and-edit-the-source-files-for-the-docs">Create and edit the source files for the docs</a></li>
 <li><a class="reference internal" href="#publish-the-documentation">Publish the documentation</a></li>
@@ -411,7 +611,7 @@ and create an issue.</p>
         <li class="right" >
           <a href="tools4zettelkasten.html" title="tools4zettelkasten package"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">tools4zettelkasten 1.0a9 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to zettelkasten_tools’s documentation!</a></li> 
       </ul>
     </div>

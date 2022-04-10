@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>First Steps &#8212; tools4zettelkasten 1.0a4 documentation</title>
+    <title>Layout of the development project &#8212; tools4zettelkasten 1.0a9 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
@@ -32,8 +32,8 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">First Steps</a></li> 
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Layout of the development project</a></li> 
       </ul>
     </div>  
 
@@ -42,18 +42,35 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="first-steps">
-<h1>First Steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h1>
-<p>We first must specify in which folder we keep our notes.</p>
-<p>We do so by setting an environment variable. On MacOS we use:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ZETTELKASTEN</span><span class="o">=</span>/mypath/mydirectory
-</pre></div>
-</div>
-<p>We can delete the environment variable with</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">unset</span> ZETTELKASTEN
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">show</span></code> command will show the current value of the environment variable.</p>
+  <section id="layout-of-the-development-project">
+<h1>Layout of the development project<a class="headerlink" href="#layout-of-the-development-project" title="Permalink to this headline">¶</a></h1>
+<p>The project layout follows a proposal from Martin Heinz [1].</p>
+<p><strong>.vscode/</strong> contains a json file that stores some settings for Visual Studio
+Code</p>
+<p><strong>ArbeitMitDemZettelkasten.code-workspace</strong> has some specific data for the
+Workspace in VSCode.</p>
+<p><strong>docs/</strong> contains the website with the project documentation on github pages.
+You have to change to the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch in order to view or change these
+files.</p>
+<p><strong>docs_source/</strong> contains all the source files of the documentation, to create
+the docs on gh-pages. I could not put these files in the docs folder, because
+this would collide with the structure that gh-pages are expecting. In order to
+use gh-pages, we have to provide an index.html file in the docs directory
+(together with all the other html files and ressources).</p>
+<p><strong>experiments/</strong> is a folder to try new libraries and python recipes. These
+experiments have a temporary value and are not part of the project.</p>
+<p><strong>flask_frontend/</strong> Contains all the templates, CSS files and static content
+that flask needs to generate the view of the Zettelkasten in the Browser</p>
+<p><strong>tests/</strong> contains everything to test the project, especially the python
+unittests</p>
+<p><strong>zettelkasten_tools/</strong> contains the source code of the tools and the backend
+of the flask</p>
+<p><strong>.gitignore</strong> holds the configuration which artefacts will NOT be put under
+version control</p>
+<p><strong>LICENSE</strong> is the file with the project license (MIT-license)</p>
+<p><strong>README.rst</strong> is the file that is first shown on the repo on Github.</p>
+<p>[1]: Heinz, Martin, „Ultimate Setup for Your Next Python Project“, Martin Heinz
+Personal Website &amp; Blog. <a class="reference external" href="https://martinheinz.dev/blog/14">https://martinheinz.dev/blog/14</a></p>
 </section>
 
 
@@ -66,7 +83,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/first_steps.rst.txt"
+      <li><a href="_sources/layout_of_development_project.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -93,8 +110,8 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a4 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">First Steps</a></li> 
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Layout of the development project</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
