@@ -1,0 +1,168 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Generate the docs &#8212; tools4zettelkasten 1.0a10 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Generate the docs</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="generate-the-docs">
+<h1>Generate the docs<a class="headerlink" href="#generate-the-docs" title="Permalink to this headline">¶</a></h1>
+<p>Sphix is used to generate the documentation.
+I use the VSCode extension <code class="docutils literal notranslate"><span class="pre">`Python</span> <span class="pre">Docstring</span> <span class="pre">Generator`</span></code> to
+generate the code from the docstrings.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> file in <code class="docutils literal notranslate"><span class="pre">.vscode/</span></code>
+add <code class="docutils literal notranslate"><span class="pre">&quot;autoDocstring.docstringFormat&quot;:</span> <span class="pre">&quot;sphinx&quot;</span></code>.</p>
+<p>The napoleon sphinx extension is used to
+enable google-styled docstrings for sphinx.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install sphinxcontrib-napoleon
+</pre></div>
+</div>
+<p>And add the <code class="docutils literal notranslate"><span class="pre">sphinxcontrib-napoleon</span></code> extension to the
+sphinx extensions in <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>.</p>
+<section id="create-and-edit-the-source-files-for-the-docs">
+<h2>Create and edit the source files for the docs<a class="headerlink" href="#create-and-edit-the-source-files-for-the-docs" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>To generate the docs navigate to the docs_source folder</p></li>
+<li><p>Edit the rst files in the master branch as needed</p></li>
+<li><p>You might want to edit the release number
+in the <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> file of the python package.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> to generate the documentation</p></li>
+<li><p>Check the generated documentation by openening <code class="docutils literal notranslate"><span class="pre">docs/index.html</span></code>
+in a browser</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clear</span></code> to remove the generated html documentation</p></li>
+<li><p>Comit and push the doc source files.</p></li>
+</ol>
+</section>
+<section id="publish-the-documentation">
+<h2>Publish the documentation<a class="headerlink" href="#publish-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>I use Github pages to host the documentation.
+The configuration can be done in the projects / repo settings under pages.</p>
+<p>Github pages expects the html files in the docs directory,
+with an <code class="docutils literal notranslate"><span class="pre">index.html</span></code> file as root. The Github pages are drawn
+from a special <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch (so there is now interference
+with day to day.</p>
+<p>There should be a <code class="docutils literal notranslate"><span class="pre">.nojkyll</span></code> file in the docs
+folder in order to stop the templating engine of Github pages
+to modify the html files. The <code class="docutils literal notranslate"><span class="pre">.nojkyll</span></code> is an empty file,
+just for signalling purposes, it will not be removed by <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clear</span></code></p>
+<p>The Makefile first creates the documentation in the build folder
+via <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> (target <code class="docutils literal notranslate"><span class="pre">html</span></code>). Then the html documentation is
+copied to the docs folder. This step is necessary, as <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>
+won’t create an <code class="docutils literal notranslate"><span class="pre">index.html</span></code> file in the root directory of the build
+folder, but in a <code class="docutils literal notranslate"><span class="pre">html</span></code> subfolder instead.</p>
+<p>There is an additional target <code class="docutils literal notranslate"><span class="pre">clear</span></code> in the
+Makefile, that will delete all files (except the <code class="docutils literal notranslate"><span class="pre">.nojekyll</span></code> file) from
+the docs directory.</p>
+<p>We will also delete all auto-generated files via the <code class="docutils literal notranslate"><span class="pre">clear</span></code> target.</p>
+<p>The autogeneration of the <code class="docutils literal notranslate"><span class="pre">modules.rst</span></code> file and
+a file for each module is done via the sphinx-apidoc command which is
+configured in the Makefile.</p>
+<ol class="arabic simple">
+<li><p>Now switch to the gh-pages branch with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">gh-pages</span></code></p></li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">Make</span> <span class="pre">clean</span></code> and a <code class="docutils literal notranslate"><span class="pre">Make</span> <span class="pre">Clear</span></code>  again to wipe out
+all generated docs in this branch</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">merge</span> <span class="pre">master</span></code> to fetch all the changes from the master</p></li>
+<li><p>Generate the docs and copy it to the docs folder with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code></p></li>
+<li><p>Commit the generated files to the gh-pages branch</p></li>
+<li><p>Push gh-pages to the remote repo on Github</p></li>
+<li><p>Go back to the master branch wit <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">master</span></code></p></li>
+<li><p>Check the Github pages.</p></li>
+</ol>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Generate the docs</a><ul>
+<li><a class="reference internal" href="#create-and-edit-the-source-files-for-the-docs">Create and edit the source files for the docs</a></li>
+<li><a class="reference internal" href="#publish-the-documentation">Publish the documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/generate_docs.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tools4zettelkasten 1.0a10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Generate the docs</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Rupert Rebentisch.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>
