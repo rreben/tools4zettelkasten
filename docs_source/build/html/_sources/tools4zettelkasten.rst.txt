@@ -44,6 +44,17 @@ tools4zettelkasten.handle\_filenames module
    :undoc-members:
    :show-inheritance:
 
+<<<<<<< HEAD
+=======
+tools4zettelkasten.note module
+------------------------------
+
+.. automodule:: tools4zettelkasten.note
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+>>>>>>> master
 tools4zettelkasten.persistency module
 -------------------------------------
 
