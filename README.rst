@@ -180,3 +180,6 @@ See https://rreben.github.io/tools4zettelkasten/ for more information on how to
 build and use this project.
 
 See https://www.mycelium-of-knowledge.org/ for a discussion of the project.
+
+The documentation can also be found at
+https://tools4zettelkasten.readthedocs.io/en/latest/
