@@ -24,6 +24,6 @@ build:
 #    - pdf
 
 # Optionally declare the Python requirements required to build your docs
-# python:
-install:
+python:
+  install:
   - requirements: requirements.txt
