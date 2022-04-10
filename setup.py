@@ -17,7 +17,6 @@ setup(
     long_description_content_type='text/x-rst',
     author='Dr. Rupert Rebentisch',
     author_email='rupert.rebentisch@gmail.com',
-    url='https://github.com/rreben/tools4zettelkasten',
     py_modules=['tools4zettelkasten'],
     install_requires=[
         'Click',
@@ -43,7 +42,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'tools4zettelkasten = tools4zettelkasten.cli:messages'
+            'tools4zettelkasten = tools4zettelkasten:ZettelkastenTools.run'
         ],
     },
 )
