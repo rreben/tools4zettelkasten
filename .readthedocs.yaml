@@ -25,5 +25,5 @@ build:
 
 # Optionally declare the Python requirements required to build your docs
 # python:
-  install:
+install:
   - requirements: requirements.txt
