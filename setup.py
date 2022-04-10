@@ -43,7 +43,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'tools4zettelkasten = tools4zettelkasten.cli:messages'
+            'tools4zettelkasten = tools4zettelkasten:ZettelkastenTools.run'
         ],
     },
 )
