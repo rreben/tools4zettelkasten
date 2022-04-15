@@ -66,7 +66,7 @@ Make a release package
 1. Right now we have to edit the release number also in ``setup.py``.
 2. Use ``pip install --editable .`` to install the package locally.
    This is just a test. Use ``uninstall`` to remove the package.
-3. Use ``python -m build`` to build the package.
+3. Use ``python setup.py sdist bdist_wheel`` to build the package.
    You will now have a tar.gz file and a .whl file in the ``dist/`` directory.
 4. We use ``python -m twine upload --repository testpypi dist/*``
    to upload the package to testpypi.
@@ -74,7 +74,14 @@ Make a release package
    install --extra-index-url https://pypi.org/simple/ --index-url
    https://test.pypi.org/simple/  tools4zettelkasten``. Dabei ist der Parameter
    ``--extra-index-url`` notwendig, damit auch Dependencies installiert werden
-   können, die nur auf PyPi nicht jedoch auf testpipy verfügbar sind.
+   können, die nur auf PyPi nicht jedoch auf testpipy verfügbar sind. Es kann
+   erforderlich sein, dass man statt ``tools4zettelkasten`` schreiben muss:
+   ``tools4zettelkasten==1.0a11`` also eine genaue Versionsnummer spezifizieren
+   muss. Das liegt daran, dass auf pypi bzw. testpypi nach der letzten stabilen
+   Version geschaut wird und wir vielleicht aber eine vorläufige Version im
+   alpha oder beta Status ausgrollt haben. Dann muss diese Version für die
+   Installation angegeben werden. Sonst erhält man ein "module not found
+   error".
 6. Run the tests with ``python -m tools4zettelkasten``. Try the commands
    show, analyse and start.
 7. We use ``python -m twine upload --repository pypi dist/*``

@@ -3,13 +3,14 @@
 # Licensed under the MIT license
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.rst", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name='tools4zettelkasten',
+    packages=find_packages(),
     description=(
         'This project provides tools to setup' +
         'a Zettelkasten System based on simple interlinked markdown files'),
@@ -17,7 +18,6 @@ setup(
     long_description_content_type='text/x-rst',
     author='Dr. Rupert Rebentisch',
     author_email='rupert.rebentisch@gmail.com',
-    py_modules=['tools4zettelkasten'],
     install_requires=[
         'Click',
         'colorama',
@@ -40,6 +40,8 @@ setup(
         'WTForms',
         'zipp'
     ],
+    include_package_data=True,
+    package_data={'': ['tools4zettelkasten/VERSION']},
     entry_points={
         'console_scripts': [
             'tools4zettelkasten = tools4zettelkasten:ZettelkastenTools.run'
