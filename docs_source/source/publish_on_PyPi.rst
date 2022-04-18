@@ -64,8 +64,13 @@ Make a release package
 ----------------------
 
 1. Right now we have to edit the release number also in ``setup.py``.
-2. Use ``pip install --editable .`` to install the package locally.
-   This is just a test. Use ``uninstall`` to remove the package.
+2. Use ``pip install --editable .`` to install the package locally. With the
+   ``--editable`` or just ``-e`` option, you tell pip to install the package as
+   a link to your source code. So you can call it like it would have been
+   installed but all changes in your source code are immediately effective.
+   This useful for testing entry points to your package. However you will not
+   find problems e.g. with including data files (like VERSION) in your package.
+   Use ``uninstall`` to remove this link to your package.
 3. Use ``python setup.py sdist bdist_wheel`` to build the package.
    You will now have a tar.gz file and a .whl file in the ``dist/`` directory.
 4. We use ``python -m twine upload --repository testpypi dist/*``
