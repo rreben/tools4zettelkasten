@@ -3,7 +3,9 @@ tools4zettelkasten
 ==================
 
 This project provides tools to setup a digital Zettelkasten System based on
-simple interlinked markdown files.
+simple interlinked markdown files. It supports managing an alphanumeric
+ordering of your Zettel-files (reordering of "Folgezettel") and analyse and
+display the structure of your Zettelkasten.
 
 .. start_marker_what_is_a_zettelkasten_do_not_remove
 

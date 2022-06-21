@@ -104,9 +104,23 @@ def show_banner():
 
 
 def overwrite_setting(environment_variable: str):
+    """overwrite the variables in the settings modules
+    with environment variables.
+
+    If not set, the a warning is printed.
+
+    There is an exec clause. When the value of the environment variable is
+    set to ZETTELKASTEN and the environment is set
+    to /somepath, the exec clause will be evaluated to
+    exec (st.Zettelkasten = "/somepath")
+
+    :param environment_variable: name of the environment variable"""
     try:
         if env[environment_variable]:
-            st.ZETTELKASTEN = env[environment_variable]
+            exec(
+                "%s = %s" % (
+                    "st." + environment_variable,
+                    '"' + env[environment_variable] + '"'))
     except KeyError:
         print(
             Style.BRIGHT + Fore.BLUE +
