@@ -15,15 +15,34 @@ def test_tree_command_in_help_message():
     return runner
 
 
-def test_start_goal_tree_command(tmp_path):
+def test_start_goal_tree_command():
     runner = CliRunner()
     result = runner.invoke(zt.cli.messages, ['tree'])
+    # Banner is shown
+    assert 'Rupert Rebentisch' in result.output
+
+
+def test_tree_directory_set_to_invalid_default(tmp_path):
+    # default directory does not exist
+    runner = CliRunner()
+    result = runner.invoke(zt.cli.messages, ['tree'])
+    assert 'TREE not set in environment' in result.output
+    assert 'will default to' in result.output
+    assert ('is not a directory, please set'
+            in result.output)
+    assert result.exit_code == 1
+
+
+def test_tree_directory_set_to_valid_default(tmp_path):
+    import os
+    # default directory exists
+    runner_new = CliRunner()
+    with runner_new.isolated_filesystem():
+        os.mkdir('tree')
+        result = runner_new.invoke(zt.cli.messages, ['tree'])
+    assert 'TREE not set in environment' in result.output
+    assert 'will default to' in result.output
     assert result.exit_code == 0
-    assert 'Initializing' in result.output
-
-
-def test_configure_goal_creation_tool(tmp_path):
-    assert False
 
 
 def test_goal_tree(tmp_path):
@@ -38,15 +57,19 @@ def test_goal_tree(tmp_path):
     test_tree_command_in_help_message()
 
     # He starts the tree command.
-    # And he will receive a message that a directory has to bee specified
-    test_start_goal_tree_command(tmp_path)
+    # And he will receive a message that the
+    # tree directory is set to the default
+    test_start_goal_tree_command()
 
     # Oliver configures the goal creation tool with
     # an evironment variable to specify the path to the tree directory.
 
     # When he omits the environment variable a default value
-    # is created if the directory there is an error message.
-    test_configure_goal_creation_tool(tmp_path)
+    # is created if this directory does not exist yet he gets an error message.
+    test_tree_directory_set_to_invalid_default(tmp_path)
+
+    # He can create the directory manually and the the program will work.
+    test_tree_directory_set_to_valid_default(tmp_path)
 
     # Oliver makes a mistake with environment variable.
     # Strating the tool will show an error message.

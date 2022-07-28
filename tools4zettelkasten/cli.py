@@ -164,9 +164,24 @@ def check_directories():
 def messages():
     show_banner()
     init(autoreset=True)
+    pass
+
+
+def initialize_zettelkasten():
     print('Initializing of tools4zettelkasten ...')
     overwrite_settings()
     check_directories()
+
+
+def check_tree_config():
+    overwrite_setting('TREE')
+    if not path.isdir(st.TREE):
+        print(
+            Style.BRIGHT + Fore.RED +
+            f"{st.TREE} is not a directory, " +
+            "please set GOAL_TREE to a valid directory."
+        )
+        exit(1)
     pass
 
 
@@ -178,6 +193,7 @@ def messages():
     show_default=True
 )
 def stage(fully):
+    initialize_zettelkasten()
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN_INPUT)
     stg.process_files_from_input(persistencyManager)
@@ -196,6 +212,7 @@ def stage(fully):
 
 @click.command(help='add ids, consecutive numbering, keep links alife')
 def reorganize():
+    initialize_zettelkasten()
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN)
     print('Searching for missing IDs')
@@ -225,6 +242,7 @@ def reorganize():
         show_default=True
     )
 def analyse(type):
+    initialize_zettelkasten()
     print(type)
     print("Analysing the Zettelkasten")
     persistencyManager = PersistencyManager(
@@ -244,13 +262,14 @@ def analyse(type):
 
 @click.command(help='start flask server')
 def start():
+    initialize_zettelkasten()
     print("starting flask server")
     fv.run_flask_server()
 
 
 @click.command(help='Create a tree for the logical thinking process')
 def tree():
-    pass
+    check_tree_config()
 
 
 @click.command(help='show version and settings')

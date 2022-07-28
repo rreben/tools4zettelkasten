@@ -6,7 +6,7 @@
 ZETTELKASTEN = '../zettelkasten/mycelium'
 ZETTELKASTEN_INPUT = '../zettelkasten/input'
 
-GOAL_TREE = '../zettelkasten/tree'
+TREE = 'tree'
 
 # Flask settings
 TEMPLATE_FOLDER = 'flask_frontend/templates'
