@@ -248,6 +248,11 @@ def start():
     fv.run_flask_server()
 
 
+@click.command(help='Create a tree for the logical thinking process')
+def tree():
+    pass
+
+
 @click.command(help='show version and settings')
 def show():
     print()
@@ -278,6 +283,7 @@ def show():
 
 messages.add_command(stage)
 messages.add_command(reorganize)
+messages.add_command(tree)
 messages.add_command(analyse)
 messages.add_command(start)
 messages.add_command(show)
