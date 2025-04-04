@@ -175,6 +175,39 @@ of your input folder.
 
 .. end_marker_how_to_set_up_tools4zettelkasten_do_not_remove
 
+How to use the tools4zettelkasten with Docker?
+==============================================
+
+A docker image is can be build with the following command:
+
+.. code-block:: sh
+
+    docker build -t tools4zettelkasten .
+
+The docker image can be started with the following command:
+
+.. code-block:: sh
+
+    docker run -it --rm tools4zettelkasten bash
+
+You should then see the container in Docker Desktop. You can then use the
+command line to run the tools4zettelkasten. in the terminal.
+
+.. code-block:: sh
+
+    python -m tools4zettelkasten stage
+
+The flask server can be started with the following command:
+
+.. code-block:: sh
+
+    run -it --rm -p 5000:5000 -v $(pwd)/zettelkasten:/app/zettelkasten tools4zettelkasten
+
+The flask server can be accessed via http://localhost:5000.
+
+
+
+
 How to contribute?
 ==================
 
