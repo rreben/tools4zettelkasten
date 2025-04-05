@@ -188,7 +188,7 @@ The docker image can be started with the following command:
 
 .. code-block:: sh
 
-    docker run -it --rm tools4zettelkasten bash
+    docker run -it -v $(pwd)/../zettelkasten:/app/zettelkasten --rm tools4zettelkasten bash
 
 You should then see the container in Docker Desktop. You can then use the
 command line to run the tools4zettelkasten. in the terminal.
@@ -201,7 +201,7 @@ The flask server can be started with the following command:
 
 .. code-block:: sh
 
-    run -it --rm -p 5000:5000 -v $(pwd)/zettelkasten:/app/zettelkasten tools4zettelkasten
+    run -it --rm -p 5000:5000 -v $(pwd)/../zettelkasten:/app/zettelkasten tools4zettelkasten
 
 The flask server can be accessed via http://localhost:5000.
 
