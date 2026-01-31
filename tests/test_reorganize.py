@@ -263,3 +263,71 @@ def test_get_list_of_links_from_file(tmpdir):
     assert links[3].source == "1_05_a_file_containinglinks_2af216153.md"
     assert links[3].description == 'a fourth link'
     assert links[3].target == '2_3_a_Thought_on_Second_Topic_176fb43ae.md'
+
+
+def test_generate_tokenized_list_with_alpha_in_middle():
+    """Test tokenization with alphanumeric orderings in middle positions"""
+    test_list = [
+        '14_35_08_Test_Existing_000000001.md',
+        '14_35_08a_Test_New_Main_000000002.md',
+        '14_35_08a_1_Test_Sub_One_000000003.md',
+        '14_35_08a_2_Test_Sub_Two_000000004.md',
+        '14_35_09_Test_Another_000000005.md'
+    ]
+    tokenized_list = zt.generate_tokenized_list(test_list)
+    # Verify tokenization splits correctly at underscores
+    assert tokenized_list[0][0] == ['14', '35', '08']
+    assert tokenized_list[1][0] == ['14', '35', '08a']
+    assert tokenized_list[2][0] == ['14', '35', '08a', '1']
+    assert tokenized_list[3][0] == ['14', '35', '08a', '2']
+    assert tokenized_list[4][0] == ['14', '35', '09']
+
+
+def test_reorganize_with_alpha_in_middle():
+    """Test full reorganization with alphanumeric orderings in middle positions"""
+    test_list = [
+        '14_35_08_Test_Existing_000000001.md',
+        '14_35_08a_Test_New_Main_000000002.md',
+        '14_35_08a_1_Test_Sub_One_000000003.md',
+        '14_35_08a_2_Test_Sub_Two_000000004.md',
+        '14_35_09_Test_Another_000000005.md'
+    ]
+    tokenized_list = zt.generate_tokenized_list(test_list)
+    tree = zt.generate_tree(tokenized_list)
+    changes = zt.reorganize_filenames(tree)
+    rename_commands = zt.create_rename_commands(changes)
+
+    # Verify tree structure is correctly built
+    assert len(tree) > 0
+
+    # Verify reorganization produces canonical orderings
+    # After reorganization:
+    # 14_35_08 stays as 1_1_1 (relative position)
+    # 14_35_08a becomes 1_1_2
+    # 14_35_08a_1 becomes 1_1_2_1
+    # 14_35_08a_2 becomes 1_1_2_2
+    # 14_35_09 becomes 1_1_3
+
+    # Check that changes are generated
+    assert len(changes) == 5
+
+    # The new orderings should be canonical (no alpha suffixes)
+    for change in changes:
+        new_ordering = change[0]
+        # Canonical orderings should only contain digits and underscores
+        assert re.match(r'^[0-9_]+$', new_ordering), \
+            f"Ordering '{new_ordering}' should be canonical (no letters)"
+
+
+def test_corrections_elements_with_alpha_keys():
+    """Test that corrections_elements handles alphanumeric keys correctly"""
+    # Simulates keys from a subtree with alpha suffixes
+    list_of_keys = ['08', '08a', '08a', '09']
+    # Remove duplicates as generate_tree does
+    list_of_keys = list(dict.fromkeys(list_of_keys))
+    corrections = zt.corrections_elements(list_of_keys)
+
+    # 08 -> 1, 08a -> 2, 09 -> 3
+    assert corrections['08'] == '1'
+    assert corrections['08a'] == '2'
+    assert corrections['09'] == '3'

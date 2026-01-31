@@ -66,7 +66,7 @@ def is_valid_ordering(ordering):
     Returns:
         bool: True if the ordering is valid
     """
-    if re.match(r'^[0-9_]+[a-zA-Z]*$', ordering):
+    if re.match(r'^([0-9]+[a-zA-Z]*_)*[0-9]+[a-zA-Z]*$', ordering):
         return True
     else:
         return False

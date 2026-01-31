@@ -124,3 +124,31 @@ def test_create_filename():
     assert (zt.handle_filenames.create_filename(
         "", "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC", "")
         == "Beispiel_fuer_eine_Core_Conflict_Cloud_CCC.md")
+
+
+def test_is_valid_ordering():
+    """Test is_valid_ordering with various ordering patterns"""
+    # Standard orderings (numbers only)
+    assert zt.handle_filenames.is_valid_ordering('14_35_08')
+    assert zt.handle_filenames.is_valid_ordering('1')
+    assert zt.handle_filenames.is_valid_ordering('01_02_03')
+
+    # Orderings with alphanumeric suffix at the end
+    assert zt.handle_filenames.is_valid_ordering('14_35_08a')
+    assert zt.handle_filenames.is_valid_ordering('14_35_08ab')
+    assert zt.handle_filenames.is_valid_ordering('2_1a')
+
+    # Orderings with alphanumeric segments in the middle
+    assert zt.handle_filenames.is_valid_ordering('14_35_08a_1')
+    assert zt.handle_filenames.is_valid_ordering('14_35_08a_2')
+    assert zt.handle_filenames.is_valid_ordering('01_12a_1')
+    assert zt.handle_filenames.is_valid_ordering('01_12a_1_1a')  # nested alpha suffix
+    assert zt.handle_filenames.is_valid_ordering('1_2a_3b_4')
+
+    # Invalid orderings
+    assert not zt.handle_filenames.is_valid_ordering('_14_35')  # leading underscore
+    assert not zt.handle_filenames.is_valid_ordering('14__35')  # double underscore
+    assert not zt.handle_filenames.is_valid_ordering('a_14_35')  # letter at start
+    assert not zt.handle_filenames.is_valid_ordering('14_35_')  # trailing underscore
+    assert not zt.handle_filenames.is_valid_ordering('')  # empty string
+    assert not zt.handle_filenames.is_valid_ordering('01_12a_1_a')  # segment with only letter
