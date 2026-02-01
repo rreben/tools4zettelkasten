@@ -35,7 +35,7 @@ pagedown = PageDown(app)
 
 class PageDownForm(FlaskForm):
     pagedown = PageDownField('Enter your markdown')
-    submit = SubmitField('Submit')
+    submit = SubmitField('Save')
 
 
 def run_flask_server():
@@ -140,7 +140,7 @@ def edit(filename):
             persistencyManager.overwrite_file_content(
                 filename, new_markdown_string)
             return redirect(url_for('show_md_file', file=filename))
-    return render_template('edit.html', form=form)
+    return render_template('edit.html', form=form, filename=filename)
 
 
 @app.route('/images/<path:filename>')

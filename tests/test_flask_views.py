@@ -279,3 +279,77 @@ def test_note_view_contains_keyboard_hint(client):
             response = client.get(note_url)
             html = response.data.decode('utf-8')
             assert 'keyboard-hint' in html or 'Tastatur' in html
+
+
+# Tests for edit view buttons
+
+def test_edit_view_has_save_button(client):
+    """TEST-1: Edit-Ansicht hat Save-Button."""
+    response = client.get('/')
+    if response.status_code == 200:
+        html = response.data.decode('utf-8')
+        import re
+        match = re.search(r'href="(/[^"]+\.md)"', html)
+        if match:
+            note_filename = match.group(1).lstrip('/')
+            response = client.get(f'/edit/{note_filename}')
+            html = response.data.decode('utf-8')
+            assert 'Save' in html
+
+
+def test_edit_view_has_cancel_button(client):
+    """TEST-2: Edit-Ansicht hat Cancel-Button."""
+    response = client.get('/')
+    if response.status_code == 200:
+        html = response.data.decode('utf-8')
+        import re
+        match = re.search(r'href="(/[^"]+\.md)"', html)
+        if match:
+            note_filename = match.group(1).lstrip('/')
+            response = client.get(f'/edit/{note_filename}')
+            html = response.data.decode('utf-8')
+            assert 'Cancel' in html
+
+
+def test_edit_cancel_links_to_note_view(client):
+    """TEST-3: Cancel-Button fuehrt zur Notiz-Ansicht."""
+    response = client.get('/')
+    if response.status_code == 200:
+        html = response.data.decode('utf-8')
+        import re
+        match = re.search(r'href="(/[^"]+\.md)"', html)
+        if match:
+            note_filename = match.group(1).lstrip('/')
+            response = client.get(f'/edit/{note_filename}')
+            html = response.data.decode('utf-8')
+            # Cancel-Link sollte zur Notiz zurueckfuehren
+            assert f'/{note_filename}' in html or 'show_md_file' in html
+
+
+def test_edit_no_submit_text(client):
+    """TEST-4: 'Submit'-Text ist nicht mehr als Button vorhanden."""
+    response = client.get('/')
+    if response.status_code == 200:
+        html = response.data.decode('utf-8')
+        import re
+        match = re.search(r'href="(/[^"]+\.md)"', html)
+        if match:
+            note_filename = match.group(1).lstrip('/')
+            response = client.get(f'/edit/{note_filename}')
+            html = response.data.decode('utf-8')
+            # Submit sollte nicht als alleinstehender Button-Text erscheinen
+            assert '>Submit<' not in html
+
+
+def test_edit_view_has_fixed_footer(client):
+    """TEST-5: Edit-Ansicht hat fixierte Footer-Leiste."""
+    response = client.get('/')
+    if response.status_code == 200:
+        html = response.data.decode('utf-8')
+        import re
+        match = re.search(r'href="(/[^"]+\.md)"', html)
+        if match:
+            note_filename = match.group(1).lstrip('/')
+            response = client.get(f'/edit/{note_filename}')
+            html = response.data.decode('utf-8')
+            assert 'edit-footer' in html or 'fixed' in html
