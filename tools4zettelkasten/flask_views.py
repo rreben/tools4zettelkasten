@@ -56,15 +56,41 @@ def url_for_file(filename) -> Str:
     return URL
 
 
+def get_adjacent_files(filename: str, sorted_list: list) -> tuple:
+    """Ermittelt vorherige und nächste Datei in der hierarchischen Liste.
+
+    :param filename: Aktuelle Datei
+    :param sorted_list: Hierarchisch sortierte Dateiliste
+    :return: Tuple (previous_file, next_file), None wenn nicht vorhanden
+    """
+    try:
+        current_index = sorted_list.index(filename)
+    except ValueError:
+        return (None, None)
+
+    previous_file = sorted_list[current_index - 1] if current_index > 0 else None
+    next_file = sorted_list[current_index + 1] if current_index < len(sorted_list) - 1 else None
+
+    return (previous_file, next_file)
+
+
+def get_sorted_zettelkasten_list(persistencyManager: PersistencyManager) -> list:
+    """Ermittelt die hierarchisch sortierte Liste aller Notizen.
+
+    :param persistencyManager: PersistencyManager Instanz
+    :return: Hierarchisch sortierte Liste der Dateinamen
+    """
+    zettelkasten_list = persistencyManager.get_list_of_filenames()
+    tokenized_list = ro.generate_tokenized_list(zettelkasten_list)
+    tree = ro.generate_tree(tokenized_list)
+    return ro.flatten_tree_to_list(tree)
+
+
 @app.route('/')
 def index():
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN)
-    zettelkasten_list = persistencyManager.get_list_of_filenames()
-    # Hierarchische Sortierung: Eltern-Notizen vor Kind-Notizen
-    tokenized_list = ro.generate_tokenized_list(zettelkasten_list)
-    tree = ro.generate_tree(tokenized_list)
-    zettelkasten_list = ro.flatten_tree_to_list(tree)
+    zettelkasten_list = get_sorted_zettelkasten_list(persistencyManager)
     return render_template('startpage.html', zettelkasten=zettelkasten_list)
 
 
@@ -73,6 +99,11 @@ def show_md_file(file):
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN)
     filename = file
+
+    # Hierarchisch sortierte Liste für Navigation ermitteln
+    sorted_list = get_sorted_zettelkasten_list(persistencyManager)
+    previous_file, next_file = get_adjacent_files(filename, sorted_list)
+
     input_file = persistencyManager.get_string_from_file_content(filename)
     htmlString = markdown.markdown(
         input_file, output_format='html5',
@@ -89,7 +120,9 @@ def show_md_file(file):
         "mainpage.html",
         codeCSSString="<style>" + css_string + "</style>",
         htmlString=htmlString,
-        filename=filename)
+        filename=filename,
+        previous_file=previous_file,
+        next_file=next_file)
 
 
 @app.route('/edit/<filename>', methods=['GET', 'POST'])

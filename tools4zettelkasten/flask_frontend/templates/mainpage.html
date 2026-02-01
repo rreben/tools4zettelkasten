@@ -21,6 +21,53 @@
     -->
   {{ codeCSSString|safe }}
 
+  <style>
+    /* Platz fuer die fixierte Navigation am Fuss */
+    body {
+      padding-bottom: 80px;
+    }
+
+    .nav-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    .nav-footer .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .nav-footer .btn {
+      min-width: 100px;
+    }
+
+    .keyboard-hint {
+      font-size: 11px;
+      color: #6c757d;
+      text-align: center;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 576px) {
+      .nav-footer .btn {
+        min-width: 70px;
+        font-size: 12px;
+        padding: 6px 8px;
+      }
+      .keyboard-hint {
+        display: none;
+      }
+    }
+  </style>
+
   </head>
    <body>
 
@@ -31,15 +78,71 @@
            </div>
            <div class="col col-12">
          {{ htmlString|safe }}
-
-         <a href="{{ url_for('edit', filename = filename) }}"> edit </a> <br>
-        <a href="{{ url_for('index') }}"> List of Notes </a>
        </div>
        <div class="col-3">
 
        </div>
        </div>
        </div>
+
+     <!-- Navigation am Fuss der Notiz -->
+     <nav class="nav-footer">
+       <div class="container">
+         <div class="btn-group" role="group" aria-label="Notiz-Navigation">
+           {% if previous_file %}
+             <a href="{{ url_for('show_md_file', file=previous_file) }}" class="btn btn-outline-primary">
+               Vorherige
+             </a>
+           {% else %}
+             <button class="btn btn-outline-secondary" disabled>Vorherige</button>
+           {% endif %}
+
+           <a href="{{ url_for('index') }}" class="btn btn-outline-primary">Liste</a>
+           <a href="{{ url_for('edit', filename=filename) }}" class="btn btn-outline-primary">Edit</a>
+
+           {% if next_file %}
+             <a href="{{ url_for('show_md_file', file=next_file) }}" class="btn btn-outline-primary">
+               Naechste
+             </a>
+           {% else %}
+             <button class="btn btn-outline-secondary" disabled>Naechste</button>
+           {% endif %}
+         </div>
+         <div class="keyboard-hint">
+           Tastatur: Pfeil-links Vorherige | Pfeil-rechts Naechste | L Liste | E Edit
+         </div>
+       </div>
+     </nav>
+
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+     <!-- JavaScript fuer Tastatur-Navigation -->
+     <script>
+       document.addEventListener('keydown', function(e) {
+         // Nicht reagieren wenn in Eingabefeld
+         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+         switch(e.key) {
+           case 'ArrowLeft':
+             {% if previous_file %}
+               window.location.href = "{{ url_for('show_md_file', file=previous_file) }}";
+             {% endif %}
+             break;
+           case 'ArrowRight':
+             {% if next_file %}
+               window.location.href = "{{ url_for('show_md_file', file=next_file) }}";
+             {% endif %}
+             break;
+           case 'l':
+           case 'L':
+             window.location.href = "{{ url_for('index') }}";
+             break;
+           case 'e':
+           case 'E':
+             window.location.href = "{{ url_for('edit', filename=filename) }}";
+             break;
+         }
+       });
+     </script>
    </body>
 </html>

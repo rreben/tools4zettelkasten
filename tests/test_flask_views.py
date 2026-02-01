@@ -172,3 +172,110 @@ def test_create_graph_of_zettelkasten_without_urls():
     # Graph should still be created
     assert dot is not None
     assert 'Test Note' in dot.source or 'abc12345' in dot.source
+
+
+# Tests for note navigation (get_adjacent_files)
+
+def test_get_adjacent_files_middle():
+    """TEST-1: Mittlere Datei hat Vorherige und Naechste."""
+    from tools4zettelkasten.flask_views import get_adjacent_files
+
+    sorted_list = ['a.md', 'b.md', 'c.md']
+    prev, next_f = get_adjacent_files('b.md', sorted_list)
+    assert prev == 'a.md'
+    assert next_f == 'c.md'
+
+
+def test_get_adjacent_files_first():
+    """TEST-2: Erste Datei hat keine Vorherige."""
+    from tools4zettelkasten.flask_views import get_adjacent_files
+
+    sorted_list = ['a.md', 'b.md', 'c.md']
+    prev, next_f = get_adjacent_files('a.md', sorted_list)
+    assert prev is None
+    assert next_f == 'b.md'
+
+
+def test_get_adjacent_files_last():
+    """TEST-3: Letzte Datei hat keine Naechste."""
+    from tools4zettelkasten.flask_views import get_adjacent_files
+
+    sorted_list = ['a.md', 'b.md', 'c.md']
+    prev, next_f = get_adjacent_files('c.md', sorted_list)
+    assert prev == 'b.md'
+    assert next_f is None
+
+
+def test_get_adjacent_files_single():
+    """TEST-4: Einzelne Datei hat weder Vorherige noch Naechste."""
+    from tools4zettelkasten.flask_views import get_adjacent_files
+
+    sorted_list = ['a.md']
+    prev, next_f = get_adjacent_files('a.md', sorted_list)
+    assert prev is None
+    assert next_f is None
+
+
+def test_get_adjacent_files_not_found():
+    """TEST-5: Nicht existierende Datei gibt None zurueck."""
+    from tools4zettelkasten.flask_views import get_adjacent_files
+
+    sorted_list = ['a.md', 'b.md']
+    prev, next_f = get_adjacent_files('x.md', sorted_list)
+    assert prev is None
+    assert next_f is None
+
+
+def test_navigation_uses_hierarchical_order():
+    """TEST-6: Navigation verwendet hierarchische Reihenfolge."""
+    from tools4zettelkasten.flask_views import get_adjacent_files
+    from tools4zettelkasten.reorganize import (
+        generate_tokenized_list, generate_tree, flatten_tree_to_list
+    )
+
+    # 12.md ist Eltern von 12_01.md
+    filenames = ['12_01_Child_abc12345.md', '12_Parent_def12345.md']
+    tokenized = generate_tokenized_list(filenames)
+    tree = generate_tree(tokenized)
+    sorted_list = flatten_tree_to_list(tree)
+
+    # Hierarchisch: Parent vor Child
+    assert sorted_list.index('12_Parent_def12345.md') < \
+        sorted_list.index('12_01_Child_abc12345.md')
+
+    prev, next_f = get_adjacent_files('12_01_Child_abc12345.md', sorted_list)
+    assert prev == '12_Parent_def12345.md'
+
+
+def test_note_view_contains_navigation_buttons(client):
+    """TEST-7: Die Notiz-Ansicht enthaelt Navigations-Buttons."""
+    # Hole eine beliebige Notiz aus dem Zettelkasten
+    response = client.get('/')
+    if response.status_code == 200:
+        html = response.data.decode('utf-8')
+        # Finde einen Link zu einer Notiz
+        import re
+        match = re.search(r'href="(/[^"]+\.md)"', html)
+        if match:
+            note_url = match.group(1)
+            response = client.get(note_url)
+            html = response.data.decode('utf-8')
+            # Navigation sollte vorhanden sein
+            assert 'Vorherige' in html or 'previous' in html.lower()
+            assert 'Naechste' in html or 'next' in html.lower()
+            assert 'Liste' in html
+            assert 'Edit' in html
+
+
+def test_note_view_contains_keyboard_hint(client):
+    """Die Notiz-Ansicht enthaelt Tastatur-Hinweis."""
+    response = client.get('/')
+    if response.status_code == 200:
+        html = response.data.decode('utf-8')
+        import re
+        match = re.search(r'href="(/[^"]+\.md)"', html)
+        if match:
+            note_url = match.group(1)
+            response = client.get(note_url)
+            html = response.data.decode('utf-8')
+            assert 'keyboard-hint' in html or 'Tastatur' in html
