@@ -156,11 +156,11 @@ a simple folder with the following directory structure:
 Any other directory structure is possible, but you need to have the images in
 the ``images/`` directory, if you want to use the flask server.
 
-First of all use the ``show`` command to show the current configuration:
+First of all use the ``settings`` command to show the current configuration:
 
 .. code-block:: sh
 
-    python -m tools4zettelkasten show
+    python -m tools4zettelkasten settings
 
 In MacOS you can use the following command to set the environment variables:
 
