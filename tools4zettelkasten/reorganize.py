@@ -414,6 +414,38 @@ def getChildNodesThatAreLeafs(node):
     return child_nodes
 
 
+def flatten_tree_to_list(tree: list) -> list:
+    """Wandelt einen hierarchischen Baum in eine flache, sortierte Liste um.
+
+    Der Baum hat die Form (Beispiel):
+    [['1', 'filename1.md', [['1', 'filename1_1.md'], ['2', 'filename1_2.md']]],
+     ['2', 'filename2.md']]
+
+    Die Ausgabe ist eine flache Liste in hierarchischer Reihenfolge:
+    ['filename1.md', 'filename1_1.md', 'filename1_2.md', 'filename2.md']
+
+    Eltern-Notizen erscheinen vor ihren Kind-Notizen.
+
+    :param tree: Der hierarchische Baum aus generate_tree()
+    :type tree: list
+    :return: Flache Liste der Dateinamen in hierarchischer Reihenfolge
+    :rtype: list
+    """
+    result = []
+    for node in tree:
+        if isLeaf(node):
+            # Knoten hat Form: ['ordering', 'filename']
+            result.append(node[1])
+        elif isLeafWithSubtree(node):
+            # Knoten hat Form: ['ordering', 'filename', [children]]
+            result.append(node[1])
+            result.extend(flatten_tree_to_list(node[2]))
+        elif isStructureNode(node):
+            # Knoten hat Form: ['ordering', [children]] - kein eigener Dateiname
+            result.extend(flatten_tree_to_list(node[1]))
+    return result
+
+
 def get_hierarchy_links(tree, hierarchy_links=None):
     if hierarchy_links is None:
         hierarchy_links = []

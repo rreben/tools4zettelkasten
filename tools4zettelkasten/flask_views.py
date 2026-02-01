@@ -7,6 +7,7 @@ from flask import (
     Flask, render_template, send_from_directory, redirect, url_for, request)
 from . import settings as st
 from . import analyse as an
+from . import reorganize as ro
 from .persistency import PersistencyManager
 import markdown
 from pygments.formatters import HtmlFormatter
@@ -60,7 +61,10 @@ def index():
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN)
     zettelkasten_list = persistencyManager.get_list_of_filenames()
-    zettelkasten_list.sort()
+    # Hierarchische Sortierung: Eltern-Notizen vor Kind-Notizen
+    tokenized_list = ro.generate_tokenized_list(zettelkasten_list)
+    tree = ro.generate_tree(tokenized_list)
+    zettelkasten_list = ro.flatten_tree_to_list(tree)
     return render_template('startpage.html', zettelkasten=zettelkasten_list)
 
 

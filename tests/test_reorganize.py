@@ -335,3 +335,108 @@ def test_corrections_elements_with_alpha_keys():
     assert corrections['08'] == '1'
     assert corrections['08a'] == '2'
     assert corrections['09'] == '3'
+
+
+# Tests for flatten_tree_to_list (hierarchical sorting)
+
+def test_flatten_tree_parent_before_children():
+    """TEST-1: Eltern-Notizen erscheinen vor Kind-Notizen."""
+    filenames = [
+        '12_01_01_Child_abc12345.md',
+        '12_01_Parent_def12345.md',
+        '12_Grandparent_ghi12345.md'
+    ]
+    tokenized_list = zt.generate_tokenized_list(filenames)
+    tree = zt.generate_tree(tokenized_list)
+    sorted_list = zt.flatten_tree_to_list(tree)
+
+    # Grandparent vor Parent vor Child
+    assert sorted_list.index('12_Grandparent_ghi12345.md') < \
+        sorted_list.index('12_01_Parent_def12345.md')
+    assert sorted_list.index('12_01_Parent_def12345.md') < \
+        sorted_list.index('12_01_01_Child_abc12345.md')
+
+
+def test_flatten_tree_siblings_sorted():
+    """TEST-2: Geschwister-Notizen werden sortiert (alphanumerisch).
+
+    Hinweis: Die Sortierung erfolgt alphanumerisch, nicht rein numerisch.
+    Dies ist konsistent mit dem gesamten System (auch Graph-Ansicht).
+    Bei Verwendung von führenden Nullen (z.B. 01, 02, 10) ist die
+    Sortierung korrekt numerisch.
+    """
+    filenames = [
+        '1_03_Topic_abc12345.md',
+        '1_02_Topic_def12345.md',
+        '1_01_Topic_ghi12345.md'
+    ]
+    tokenized_list = zt.generate_tokenized_list(filenames)
+    tree = zt.generate_tree(tokenized_list)
+    sorted_list = zt.flatten_tree_to_list(tree)
+
+    assert sorted_list == [
+        '1_01_Topic_ghi12345.md',
+        '1_02_Topic_def12345.md',
+        '1_03_Topic_abc12345.md'
+    ]
+
+
+def test_flatten_tree_alphanumeric_ordering():
+    """TEST-3: Alphanumerische Orderings werden korrekt behandelt."""
+    filenames = [
+        '1_2_Topic_abc12345.md',
+        '1_1a_Topic_def12345.md',
+        '1_1_Topic_ghi12345.md'
+    ]
+    tokenized_list = zt.generate_tokenized_list(filenames)
+    tree = zt.generate_tree(tokenized_list)
+    sorted_list = zt.flatten_tree_to_list(tree)
+
+    # 1_1 vor 1_1a vor 1_2
+    assert sorted_list.index('1_1_Topic_ghi12345.md') < \
+        sorted_list.index('1_1a_Topic_def12345.md')
+    assert sorted_list.index('1_1a_Topic_def12345.md') < \
+        sorted_list.index('1_2_Topic_abc12345.md')
+
+
+def test_flatten_tree_empty_list():
+    """TEST-4: Leere Listen werden korrekt behandelt."""
+    filenames = []
+    tokenized_list = zt.generate_tokenized_list(filenames)
+    tree = zt.generate_tree(tokenized_list)
+    sorted_list = zt.flatten_tree_to_list(tree)
+
+    assert sorted_list == []
+
+
+def test_flatten_tree_single_file():
+    """TEST-5: Einzelne Dateien werden korrekt behandelt."""
+    filenames = ['1_Topic_abc12345.md']
+    tokenized_list = zt.generate_tokenized_list(filenames)
+    tree = zt.generate_tree(tokenized_list)
+    sorted_list = zt.flatten_tree_to_list(tree)
+
+    assert sorted_list == ['1_Topic_abc12345.md']
+
+
+def test_flatten_tree_complex_hierarchy():
+    """TEST-6: Komplexe Hierarchien werden korrekt sortiert."""
+    filenames = [
+        '1_first_topic_41b4e4f8f.md',
+        '1_1_a_Thought_on_first_topic_2c3c34ff5.md',
+        '1_2_another_Thought_on_first_topic_2af216153.md',
+        '2_Second_Topic_cc6290ab7.md',
+        '2_1_a_Thought_on_Second_Topic_176fb43ae.md'
+    ]
+    tokenized_list = zt.generate_tokenized_list(filenames)
+    tree = zt.generate_tree(tokenized_list)
+    sorted_list = zt.flatten_tree_to_list(tree)
+
+    expected = [
+        '1_first_topic_41b4e4f8f.md',
+        '1_1_a_Thought_on_first_topic_2c3c34ff5.md',
+        '1_2_another_Thought_on_first_topic_2af216153.md',
+        '2_Second_Topic_cc6290ab7.md',
+        '2_1_a_Thought_on_Second_Topic_176fb43ae.md'
+    ]
+    assert sorted_list == expected
