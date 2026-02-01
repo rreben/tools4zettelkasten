@@ -142,6 +142,137 @@ def batch_rename(
                 command.old_filename, command.new_filename)
 
 
+def check_path_exists(path_to_check: str) -> bool:
+    """Check if a path exists (file or directory).
+
+    :param path_to_check: Path to check
+    :type path_to_check: str
+    :return: True if path exists, False otherwise
+    :rtype: bool
+    """
+    return path.isdir(path_to_check) or path.isfile(path_to_check)
+
+
+def get_env_var_status(var_name: str) -> tuple:
+    """Get environment variable status.
+
+    :param var_name: Name of the environment variable
+    :type var_name: str
+    :return: Tuple of (is_set, value or None)
+    :rtype: tuple
+    """
+    try:
+        value = env[var_name]
+        return (True, value)
+    except KeyError:
+        return (False, None)
+
+
+def format_settings_output():
+    """Format and display current settings in a structured box."""
+    # Collect all data for width calculation
+    paths_data = [
+        ("Zettelkasten:", st.ZETTELKASTEN),
+        ("Input:", st.ZETTELKASTEN_INPUT),
+        ("Images:", st.ZETTELKASTEN_IMAGES),
+    ]
+    flask_data = [
+        ("Templates:", st.TEMPLATE_FOLDER),
+        ("Static files:", st.STATIC_FOLDER),
+    ]
+    hierarchy_data = [
+        ("Sister Zettel:", st.DIRECT_SISTER_ZETTEL),
+        ("Daughter Zettel:", st.DIRECT_DAUGHTER_ZETTEL),
+    ]
+    env_vars = ["ZETTELKASTEN", "ZETTELKASTEN_INPUT", "ZETTELKASTEN_IMAGES"]
+
+    # Calculate box width
+    header = f"tools4zettelkasten v{__version__}"
+    max_label_len = 20
+    max_value_len = max(
+        max(len(str(v)) for _, v in paths_data),
+        max(len(str(v)) for _, v in flask_data),
+        max(len(str(v)) for _, v in hierarchy_data),
+        max(len(v) for v in env_vars) + 25,  # for status text
+    )
+    box_width = max(len(header) + 4, max_label_len + max_value_len + 10)
+
+    def print_box_line(content: str, color=Fore.WHITE):
+        """Print a line within the box."""
+        print(Fore.CYAN + "║" + color + content.ljust(box_width) +
+              Fore.CYAN + "║")
+
+    def print_section_header(title: str):
+        """Print a section header."""
+        print(Fore.CYAN + "╠" + "═" * box_width + "╣")
+        print_box_line(f"  {title}", Style.BRIGHT + Fore.WHITE)
+
+    def print_path_line(label: str, value: str):
+        """Print a path line with validation status."""
+        exists = check_path_exists(value)
+        status = Fore.GREEN + "✓" if exists else Fore.RED + "✗"
+        line = f"    {label:<18} {value}"
+        # Truncate if too long
+        max_val_width = box_width - 26
+        if len(value) > max_val_width:
+            display_val = "..." + value[-(max_val_width - 3):]
+        else:
+            display_val = value
+        line = f"    {label:<18} {display_val}"
+        padding = box_width - len(line) - 3
+        print(Fore.CYAN + "║" + Fore.WHITE + line +
+              " " * padding + status + " " + Fore.CYAN + "║")
+
+    def print_value_line(label: str, value: str):
+        """Print a simple label-value line."""
+        line = f"    {label:<18} {value}"
+        print_box_line(line)
+
+    def print_env_var_line(var_name: str):
+        """Print environment variable status line."""
+        is_set, _ = get_env_var_status(var_name)
+        if is_set:
+            status = Fore.GREEN + "✓ set"
+            line = f"    {var_name:<24} {status}"
+        else:
+            status = Fore.YELLOW + "✗ not set (using default)"
+            line = f"    {var_name:<24} "
+        print(Fore.CYAN + "║" + Fore.WHITE + f"    {var_name:<24} " +
+              (Fore.GREEN + "✓ set" if is_set else
+               Fore.YELLOW + "✗ not set (using default)") +
+              " " * (box_width - 30 - len(var_name) -
+                     (5 if is_set else 25)) + Fore.CYAN + "║")
+
+    # Print header
+    print(Fore.CYAN + "╔" + "═" * box_width + "╗")
+    print(Fore.CYAN + "║" + Style.BRIGHT + Fore.CYAN +
+          header.center(box_width) + Style.RESET_ALL + Fore.CYAN + "║")
+
+    # Working Directories section
+    print_section_header("WORKING DIRECTORIES")
+    for label, value in paths_data:
+        print_path_line(label, value)
+
+    # Flask Configuration section
+    print_section_header("FLASK CONFIGURATION")
+    for label, value in flask_data:
+        print_path_line(label, value)
+
+    # Hierarchy Links section
+    print_section_header("HIERARCHY LINKS")
+    for label, value in hierarchy_data:
+        print_value_line(label, value)
+
+    # Environment Variables section
+    print_section_header("ENVIRONMENT VARIABLES")
+    for var_name in env_vars:
+        print_env_var_line(var_name)
+
+    # Print footer
+    print(Fore.CYAN + "╚" + "═" * box_width + "╝")
+    print(Style.RESET_ALL)
+
+
 def show_banner():
     f = Figlet(font='slant')
     print(f.renderText('zettelkasten tools'))
@@ -171,7 +302,7 @@ def overwrite_setting(environment_variable: str):
             Style.BRIGHT + Fore.BLUE +
             f"{environment_variable} not set in environment, " +
             "tools4zettelkasten will default to built-in setting. " +
-            "Use the 'show' command to find out more."
+            "Use the 'settings' command to find out more."
         )
 
 
@@ -293,37 +424,15 @@ def start():
     fv.run_flask_server()
 
 
-@click.command(help='show version and settings')
-def show():
-    print()
-    print('Here is the configuration')
-    print('Working directories')
-    print(
-        'Path to the Zettelkasten: ',
-        st.ZETTELKASTEN,
-        ' can be set via ZETTELKASTEN environment variable')
-    print(
-        'Path to the Zettelkasten input: ',
-        st.ZETTELKASTEN_INPUT,
-        ' can be set via ZETTELKASTEN_INPUT environment variable')
-    print()
-    print('Flask configuration')
-    print('Path to templates: ', st.TEMPLATE_FOLDER)
-    print('Path to static files: ', st.STATIC_FOLDER)
-    print(
-        'Path to images for flask: ',
-        st.ZETTELKASTEN_IMAGES,
-        ' can be set via ZETTELKASTEN_IMAGES environment variable')
-    print()
-    print('What we write to automatically generated hierachy links')
-    print('comment for sister Zettel: ', st.DIRECT_SISTER_ZETTEL)
-    print('comment for daughter Zettel: ', st.DIRECT_DAUGHTER_ZETTEL)
-    print('Built-in settings can be changed in the settings.py file')
+@click.command(help='show version and current settings')
+def settings():
+    """Display version and current configuration settings."""
+    format_settings_output()
 
 
 messages.add_command(stage)
 messages.add_command(reorganize)
 messages.add_command(analyse)
 messages.add_command(start)
-messages.add_command(show)
+messages.add_command(settings)
 messages.no_args_is_help
