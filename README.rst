@@ -201,9 +201,9 @@ The flask server can be started with the following command:
 
 .. code-block:: sh
 
-    run -it --rm -p 5000:5000 -v $(pwd)/../zettelkasten:/app/zettelkasten tools4zettelkasten
+    run -it --rm -p 5001:5001 -v $(pwd)/../zettelkasten:/app/zettelkasten tools4zettelkasten
 
-The flask server can be accessed via http://localhost:5000.
+The flask server can be accessed via http://localhost:5001.
 
 
 

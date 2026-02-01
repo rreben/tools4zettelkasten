@@ -38,11 +38,16 @@ class PageDownForm(FlaskForm):
 
 
 def run_flask_server():
-    """Run the flask server"""
+    """Run the flask server on port 5001.
+
+    Port 5001 is used instead of the Flask default 5000
+    because macOS Monterey and later use port 5000 for AirPlay Receiver.
+    """
     SECRET_KEY = os.urandom(32)
     app.config['SECRET_KEY'] = SECRET_KEY
     app.debug = True
-    app.run()
+    print("Server running at http://127.0.0.1:5001/")
+    app.run(host='127.0.0.1', port=5001)
 
 
 def url_for_file(filename) -> Str:
