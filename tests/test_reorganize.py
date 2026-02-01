@@ -57,11 +57,11 @@ def test_attach_missing_orderings():
         '2_5_homebrew.md']
     command_list = zt.attach_missing_orderings(test_list)
     assert len(command_list) == 2
-    assert command_list[0][0] == 'rename'
+    assert isinstance(command_list[0], zt.cli.Rename_command)
     assert zt.handle_filenames.get_filename_components(
-        command_list[0][2])[0] == '0_0'
+        command_list[0].new_filename)[0] == '0_0'
     assert zt.handle_filenames.get_filename_components(
-        command_list[0][2])[1] == 'some_cloud_idea'
+        command_list[0].new_filename)[1] == 'some_cloud_idea'
 
 
 def test_attach_missing_ids():
@@ -73,18 +73,18 @@ def test_attach_missing_ids():
         'no_ordering.md']
     command_list = zt.attach_missing_ids(test_list)
     assert len(command_list) == 3
-    assert command_list[0][0] == 'rename'
+    assert isinstance(command_list[0], zt.cli.Rename_command)
     assert zt.handle_filenames.get_filename_components(
-        command_list[0][2])[0] == '1_2'
+        command_list[0].new_filename)[0] == '1_2'
     assert zt.handle_filenames.get_filename_components(
-        command_list[0][2])[1] == 'reframe_your_goal_as_a_learning_goal'
-    assert re.match(r'.*_[0-9a-f]{9}\.md$', command_list[0][2])
-    assert command_list[2][0] == 'rename'
+        command_list[0].new_filename)[1] == 'reframe_your_goal_as_a_learning_goal'
+    assert re.match(r'.*_[0-9a-f]{9}\.md$', command_list[0].new_filename)
+    assert isinstance(command_list[2], zt.cli.Rename_command)
     assert zt.handle_filenames.get_filename_components(
-        command_list[2][2])[0] == ''
+        command_list[2].new_filename)[0] == ''
     assert zt.handle_filenames.get_filename_components(
-        command_list[2][2])[1] == 'no_ordering'
-    assert re.match(r'.*_[0-9a-f]{9}\.md$', command_list[2][2])
+        command_list[2].new_filename)[1] == 'no_ordering'
+    assert re.match(r'.*_[0-9a-f]{9}\.md$', command_list[2].new_filename)
 
 
 def test_generate_tokenized_list():
@@ -220,13 +220,17 @@ def test_create_rename_commands():
         ['2', '2_Second_Topic_cc6290ab7.md'],
         ['2_1', '2_3_a_Thought_on_Second_Topic_176fb43ae.md']]
     command_list = zt.create_rename_commands(potential_changes)
-    assert command_list == [
-        ['rename',
-            '1_5_another_Thought_on_first_topic_2af216153.md',
-            '1_2_another_Thought_on_first_topic_2af216153.md'],
-        ['rename',
-            '2_3_a_Thought_on_Second_Topic_176fb43ae.md',
-            '2_1_a_Thought_on_Second_Topic_176fb43ae.md', ]]
+    assert len(command_list) == 2
+    assert isinstance(command_list[0], zt.cli.Rename_command)
+    assert command_list[0].old_filename == \
+        '1_5_another_Thought_on_first_topic_2af216153.md'
+    assert command_list[0].new_filename == \
+        '1_2_another_Thought_on_first_topic_2af216153.md'
+    assert isinstance(command_list[1], zt.cli.Rename_command)
+    assert command_list[1].old_filename == \
+        '2_3_a_Thought_on_Second_Topic_176fb43ae.md'
+    assert command_list[1].new_filename == \
+        '2_1_a_Thought_on_Second_Topic_176fb43ae.md'
 
 
 def test_get_list_of_links_from_file(tmpdir):

@@ -38,6 +38,12 @@ class Replace_command(Command):
     replace_with: str
 
 
+@dataclass()
+class Rename_command(Command):
+    old_filename: str
+    new_filename: str
+
+
 def batch_replace(
         command_list: list[Replace_command],
         persistencyManager: PersistencyManager):
@@ -62,21 +68,64 @@ def batch_replace(
                 command.filename, new_file_content)
 
 
-def batch_rename(command_list, persistencyManager: PersistencyManager):
-    """rename a bunch of file
+def format_rename_output(command_list: list[Rename_command]):
+    """Format and display planned rename operations.
 
-    prompt user to verify that rename should be done
+    :param command_list: List of Rename_command objects
+    :type command_list: list[Rename_command]
+    """
+    if not command_list:
+        print(Fore.YELLOW + "Keine Umbenennungen erforderlich.")
+        return
 
-    :param command_list: A list of rename commands.
-        Each command is a list with three entries.
-        name of command, must be rename.
-        oldfilename original name of file.
-        newfilename name of file after rename operation.
+    count = len(command_list)
+    header = f"Geplante Umbenennungen ({count})"
 
-    :type command_list: list
+    # Calculate box width based on longest filename
+    max_len = max(
+        max(len(cmd.old_filename), len(cmd.new_filename))
+        for cmd in command_list
+    )
+    box_width = max(len(header) + 4, max_len + 10)
+
+    # Print header
+    print(Fore.CYAN + "╔" + "═" * box_width + "╗")
+    print(Fore.CYAN + "║" + header.center(box_width) + "║")
+    print(Fore.CYAN + "╠" + "═" * box_width + "╣")
+
+    # Print each rename operation
+    for i, cmd in enumerate(command_list, 1):
+        line1 = f"  {i}. {cmd.old_filename}"
+        line2 = f"     → {cmd.new_filename}"
+        print(Fore.CYAN + "║" + Fore.WHITE + line1.ljust(box_width) +
+              Fore.CYAN + "║")
+        print(Fore.CYAN + "║" + Fore.GREEN + line2.ljust(box_width) +
+              Fore.CYAN + "║")
+
+    # Print footer
+    print(Fore.CYAN + "╚" + "═" * box_width + "╝")
+    print(Style.RESET_ALL)
+
+
+def batch_rename(
+        command_list: list[Rename_command],
+        persistencyManager: PersistencyManager):
+    """Rename a batch of files with single confirmation.
+
+    Displays all planned renames, asks for confirmation once,
+    then executes all renames in order.
+
+    :param command_list: A list of Rename_command objects.
+    :type command_list: list[Rename_command]
     :param persistencyManager: handler for manipulation of the file system
     :type persistencyManager: PersistencyManager
     """
+    if not command_list:
+        format_rename_output(command_list)
+        return
+
+    format_rename_output(command_list)
+
     questions = [
         {
             "type": "confirm",
@@ -85,16 +134,12 @@ def batch_rename(command_list, persistencyManager: PersistencyManager):
             "default": False
         }
     ]
-    for command in command_list:
-        if command[0] == 'rename':
-            oldfilename = command[1]
-            newfilename = command[2]
-            print('Rename ', oldfilename, ' --> ')
-            print(newfilename, '?')
-            result = prompt(questions)
-            if result["proceed"]:
-                persistencyManager.rename_file(
-                    oldfilename, newfilename)
+
+    result = prompt(questions)
+    if result["proceed"]:
+        for command in command_list:
+            persistencyManager.rename_file(
+                command.old_filename, command.new_filename)
 
 
 def show_banner():

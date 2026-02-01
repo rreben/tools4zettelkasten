@@ -139,7 +139,9 @@ def attach_missing_orderings(file_name_list):
         if note.ordering == '':
             newfilename = hf.create_filename(
                 '0_0', note.base_filename, note.id)
-            command_list.append(['rename', oldfilename, newfilename])
+            command_list.append(cli.Rename_command(
+                old_filename=oldfilename,
+                new_filename=newfilename))
     return command_list
 
 
@@ -153,11 +155,11 @@ def attach_missing_ids(file_name_list):
     '2_1a_render_md_files_with_python_and_flask_41e5a496c.md',
     '2_5_homebrew.md']
 
-    Then the following command_list will be retrurned:
+    Then the following command_list will be returned:
 
-    [['rename', '1_2_reframe_your_goal_as_a_learning_goal.md',
-    '1_2_reframe_your_goal_as_a_learning_goal_7ae870951.md'],
-    ['rename', '2_5_homebrew.md', '2_5_homebrew_fe38ebbaa.md']]
+    [Rename_command('1_2_reframe_your_goal_as_a_learning_goal.md',
+     '1_2_reframe_your_goal_as_a_learning_goal_7ae870951.md'),
+    Rename_command('2_5_homebrew.md', '2_5_homebrew_fe38ebbaa.md')]
 
     Remark: The Ids are seeded with the timestamp. So the Ids will
     change with every new run of the program or test.
@@ -165,9 +167,8 @@ def attach_missing_ids(file_name_list):
     :param file_name_list: List of files in a given directory which might
         contain filenames with missing ids.
     :type file_name_list: list of strings
-    :return: list of commands. Each command is a list with three components.
-        the command (i.e. rename), the old filename and the new filename.
-    :rtype: list of list of strings
+    :return: list of Rename_command objects.
+    :rtype: list[Rename_command]
 
     ToDo:
     *   Implement mechanism to resolve hash collisions
@@ -180,7 +181,9 @@ def attach_missing_ids(file_name_list):
             file_id = hf.generate_id(filename)
             newfilename = hf.create_filename(
                 note.ordering, note.base_filename, file_id)
-            command_list.append(['rename', oldfilename, newfilename])
+            command_list.append(cli.Rename_command(
+                old_filename=oldfilename,
+                new_filename=newfilename))
     return command_list
 
 
@@ -470,13 +473,15 @@ def reorganize_filenames(tree, path=None, final=None):
 
 def create_rename_commands(potential_changes_of_filenames):
     changes_of_filenames = [
-        ['rename', x[1],
-            x[0]
-            + '_'
-            + hf.get_filename_components(x[1])[1]
-            + '_'
-            + hf.get_filename_components(x[1])[2]
-            + '.md']
+        cli.Rename_command(
+            old_filename=x[1],
+            new_filename=(
+                x[0]
+                + '_'
+                + hf.get_filename_components(x[1])[1]
+                + '_'
+                + hf.get_filename_components(x[1])[2]
+                + '.md'))
         for x in potential_changes_of_filenames
         if x[0] != hf.get_filename_components(x[1])[0]]
     return changes_of_filenames
