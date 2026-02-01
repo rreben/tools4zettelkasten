@@ -1,12 +1,329 @@
 <!doctype html>
-<!-- resultdisplay.html -->
+<!-- visualzk.html - Interactive SVG Graph View -->
 <html>
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Visual representation of the Zettelkasten</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    Visual representation of the Zettelkasten
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #svg-container {
+            width: 100%;
+            height: 100%;
+            background-color: #f8f9fa;
+            cursor: grab;
+        }
+
+        #svg-container:active {
+            cursor: grabbing;
+        }
+
+        #svg-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1000;
+        }
+
+        .zoom-controls button {
+            width: 44px;
+            height: 44px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            background-color: #0d6efd;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.2s;
+        }
+
+        .zoom-controls button:hover {
+            background-color: #0b5ed7;
+        }
+
+        .zoom-controls button:active {
+            background-color: #0a58ca;
+        }
+
+        #zoom-level {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            background-color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-controls a, .nav-controls button {
+            padding: 8px 16px;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            background-color: #6c757d;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.2s;
+        }
+
+        .nav-controls a:hover, .nav-controls button:hover {
+            background-color: #5c636a;
+            color: white;
+        }
+
+        /* Hover effect for graph nodes */
+        #svg-container svg .node:hover {
+            filter: brightness(0.9);
+            cursor: pointer;
+        }
+
+        #svg-container svg .node polygon,
+        #svg-container svg .node ellipse,
+        #svg-container svg .node path {
+            transition: fill 0.2s, stroke-width 0.2s;
+        }
+
+        #svg-container svg .node:hover polygon,
+        #svg-container svg .node:hover ellipse,
+        #svg-container svg .node:hover path {
+            stroke-width: 3px;
+            stroke: #0d6efd;
+        }
+
+        /* Help text */
+        .help-text {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 12px;
+            color: #666;
+            background-color: rgba(255,255,255,0.9);
+            padding: 8px 12px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        @media (max-width: 576px) {
+            .help-text {
+                display: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <br>
-    {{chart_output|safe}}</body>
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <a href="{{ url_for('index') }}">Zurück zur Liste</a>
+    </div>
+
+    <!-- SVG Container -->
+    <div id="svg-container">
+        {{chart_output|safe}}
+    </div>
+
+    <!-- Zoom Controls -->
+    <div class="zoom-controls">
+        <button id="zoom-in" title="Zoom In">+</button>
+        <div id="zoom-level">100%</div>
+        <button id="zoom-out" title="Zoom Out">−</button>
+        <button id="zoom-reset" title="Reset View" style="font-size: 14px;">⟲</button>
+    </div>
+
+    <!-- Help Text -->
+    <div class="help-text">
+        Mausrad: Zoom | Ziehen: Verschieben | Klick auf Notiz: Öffnen
+    </div>
+
+    <!-- SVG Pan Zoom Library -->
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+
+    <!-- Hammer.js for touch gestures -->
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('svg-container');
+            const svgElement = container.querySelector('svg');
+
+            if (!svgElement) {
+                console.error('No SVG element found');
+                return;
+            }
+
+            // Ensure SVG has an ID for svg-pan-zoom
+            if (!svgElement.id) {
+                svgElement.id = 'zettelkasten-graph';
+            }
+
+            // Initialize svg-pan-zoom
+            const panZoom = svgPanZoom(svgElement, {
+                zoomEnabled: true,
+                controlIconsEnabled: false,
+                fit: true,
+                center: true,
+                minZoom: 0.1,
+                maxZoom: 10,
+                zoomScaleSensitivity: 0.3,
+                dblClickZoomEnabled: true,
+                mouseWheelZoomEnabled: true,
+                preventMouseEventsDefault: true,
+                eventsListenerElement: container,
+                beforePan: function(oldPan, newPan) {
+                    return newPan;
+                },
+                onZoom: function(scale) {
+                    updateZoomLevel(scale);
+                    saveState();
+                },
+                onPan: function(newPan) {
+                    saveState();
+                }
+            });
+
+            // Update zoom level display
+            function updateZoomLevel(scale) {
+                const percentage = Math.round(scale * 100);
+                document.getElementById('zoom-level').textContent = percentage + '%';
+            }
+
+            // Zoom controls
+            document.getElementById('zoom-in').addEventListener('click', function() {
+                panZoom.zoomIn();
+            });
+
+            document.getElementById('zoom-out').addEventListener('click', function() {
+                panZoom.zoomOut();
+            });
+
+            document.getElementById('zoom-reset').addEventListener('click', function() {
+                panZoom.resetZoom();
+                panZoom.resetPan();
+                panZoom.fit();
+                panZoom.center();
+                clearState();
+            });
+
+            // Touch gesture support with Hammer.js
+            if (typeof Hammer !== 'undefined') {
+                const hammer = new Hammer(container, {
+                    recognizers: [
+                        [Hammer.Pinch, { enable: true }],
+                        [Hammer.Pan, { direction: Hammer.DIRECTION_ALL }]
+                    ]
+                });
+
+                let lastScale = 1;
+
+                hammer.on('pinchstart', function(e) {
+                    lastScale = panZoom.getZoom();
+                });
+
+                hammer.on('pinch', function(e) {
+                    const newScale = lastScale * e.scale;
+                    panZoom.zoom(newScale);
+                });
+
+                hammer.on('panmove', function(e) {
+                    // Only pan with single finger when not pinching
+                    if (e.pointers.length === 1) {
+                        const currentPan = panZoom.getPan();
+                        panZoom.pan({
+                            x: currentPan.x + e.velocityX * 10,
+                            y: currentPan.y + e.velocityY * 10
+                        });
+                    }
+                });
+            }
+
+            // State persistence using sessionStorage
+            const STATE_KEY = 'svggraph_state';
+
+            function saveState() {
+                const state = {
+                    zoom: panZoom.getZoom(),
+                    pan: panZoom.getPan()
+                };
+                sessionStorage.setItem(STATE_KEY, JSON.stringify(state));
+            }
+
+            function restoreState() {
+                const stateStr = sessionStorage.getItem(STATE_KEY);
+                if (stateStr) {
+                    try {
+                        const state = JSON.parse(stateStr);
+                        if (state.zoom && state.pan) {
+                            panZoom.zoom(state.zoom);
+                            panZoom.pan(state.pan);
+                            updateZoomLevel(state.zoom);
+                            return true;
+                        }
+                    } catch (e) {
+                        console.warn('Could not restore state:', e);
+                    }
+                }
+                return false;
+            }
+
+            function clearState() {
+                sessionStorage.removeItem(STATE_KEY);
+            }
+
+            // Restore state on page load (for back navigation)
+            setTimeout(function() {
+                if (!restoreState()) {
+                    // Initial fit if no state to restore
+                    panZoom.fit();
+                    panZoom.center();
+                    updateZoomLevel(panZoom.getZoom());
+                }
+            }, 100);
+
+            // Handle clicks on nodes - ensure links work
+            svgElement.querySelectorAll('.node a').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    // Save state before navigation
+                    saveState();
+                });
+            });
+
+            // Initial zoom level display
+            updateZoomLevel(panZoom.getZoom());
+        });
+    </script>
+</body>
 </html>
