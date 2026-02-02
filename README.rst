@@ -39,7 +39,7 @@ contain images or mathematical formulas.
 Using the Zettelkasten is 95% about how to write notes and how to name them.
 Just 5% is about organizing these notes with ``tools4zettelkasten``. Please
 refer to my "step by step guide" on how to setup a Zettelkasten.
-https://www.mycelium-of-knowledge.org/step-by-step-instructions-for-setup-and-use-of-the-zettelkasten/
+https://www.mycelium-of-knowledge.org/building-your-thought-garden-a-step-by-step-guide-to-setting-up-and-using-a-zettelkasten/
 
 .. end_marker_what_is_a_zettelkasten_do_not_remove
 
