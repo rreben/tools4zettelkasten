@@ -40,6 +40,9 @@ setup(
         'WTForms',
         'zipp'
     ],
+    extras_require={
+        'mcp': ['mcp[cli]>=1.0.0'],
+    },
     include_package_data=True,
     package_data={'': ['tools4zettelkasten/VERSION']},
     entry_points={

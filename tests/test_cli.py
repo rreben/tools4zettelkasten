@@ -26,7 +26,7 @@ def test_batch_rename_executes_all_commands(tmp_path, monkeypatch):
     (test_dir / "old2.md").write_text("content2")
     (test_dir / "old3.md").write_text("content3")
 
-    persistency_manager = zt.PersistencyManager(test_dir)
+    persistency_manager = zt.persistency.PersistencyManager(test_dir)
 
     commands = [
         zt.cli.Rename_command('old1.md', 'new1.md'),
@@ -57,7 +57,7 @@ def test_batch_rename_preserves_order(tmp_path, monkeypatch):
     # Create initial file
     (test_dir / "file_a.md").write_text("content")
 
-    persistency_manager = zt.PersistencyManager(test_dir)
+    persistency_manager = zt.persistency.PersistencyManager(test_dir)
 
     # Track execution order
     execution_order = []
@@ -96,7 +96,7 @@ def test_batch_rename_aborts_on_decline(tmp_path, monkeypatch):
 
     (test_dir / "old.md").write_text("content")
 
-    persistency_manager = zt.PersistencyManager(test_dir)
+    persistency_manager = zt.persistency.PersistencyManager(test_dir)
 
     commands = [
         zt.cli.Rename_command('old.md', 'new.md'),
@@ -118,7 +118,7 @@ def test_batch_rename_empty_list(tmp_path, monkeypatch):
     test_dir = tmp_path / "subdir"
     test_dir.mkdir()
 
-    persistency_manager = zt.PersistencyManager(test_dir)
+    persistency_manager = zt.persistency.PersistencyManager(test_dir)
 
     # Track if prompt was called
     prompt_called = []

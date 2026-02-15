@@ -279,61 +279,6 @@ def show_banner():
     print("Copyright (c) 2021 Rupert Rebentisch, Version: ", __version__)
 
 
-def overwrite_setting(environment_variable: str):
-    """overwrite the variables in the settings modules
-    with environment variables.
-
-    If not set, the a warning is printed.
-
-    There is an exec clause. When the value of the environment variable is
-    set to ZETTELKASTEN and the environment is set
-    to /somepath, the exec clause will be evaluated to
-    exec (st.Zettelkasten = "/somepath")
-
-    :param environment_variable: name of the environment variable"""
-    try:
-        if env[environment_variable]:
-            exec(
-                "%s = %s" % (
-                    "st." + environment_variable,
-                    '"' + env[environment_variable] + '"'))
-    except KeyError:
-        print(
-            Style.BRIGHT + Fore.BLUE +
-            f"{environment_variable} not set in environment, " +
-            "tools4zettelkasten will default to built-in setting. " +
-            "Use the 'settings' command to find out more."
-        )
-
-
-def overwrite_settings():
-    overwrite_setting('ZETTELKASTEN')
-    overwrite_setting('ZETTELKASTEN_INPUT')
-    overwrite_setting('ZETTELKASTEN_IMAGES')
-
-
-def check_directories():
-    if not path.isdir(st.ZETTELKASTEN):
-        print(
-            Style.BRIGHT + Fore.RED +
-            f"{st.ZETTELKASTEN} is not a directory, " +
-            "please set ZETTELKASTEN to a valid directory."
-        )
-        exit(1)
-    if not path.isdir(st.ZETTELKASTEN_INPUT):
-        print(
-            Style.BRIGHT + Fore.RED +
-            f"{st.ZETTELKASTEN_INPUT} is not a directory, " +
-            "please set ZETTELKASTEN_INPUT to a valid directory."
-        )
-        exit(1)
-    if not path.isdir(st.ZETTELKASTEN_IMAGES):
-        print(
-            Style.BRIGHT + Fore.RED +
-            f"{st.ZETTELKASTEN_IMAGES} is not a directory, " +
-            "please set ZETTELKASTEN_IMAGES to a valid directory."
-        )
-        exit(1)
 
 
 @click.group()
@@ -341,8 +286,8 @@ def messages():
     show_banner()
     init(autoreset=True)
     print('Initializing of tools4zettelkasten ...')
-    overwrite_settings()
-    check_directories()
+    st.overwrite_settings()
+    st.check_directories(strict=True)
     pass
 
 
@@ -430,9 +375,20 @@ def settings():
     format_settings_output()
 
 
+@click.command(help='start MCP server for Claude integration')
+def mcp():
+    try:
+        from . import mcp_server
+        mcp_server.run_server()
+    except ImportError:
+        print(Fore.RED + "MCP dependencies not installed.")
+        print("Install with: pip install 'tools4zettelkasten[mcp]'")
+
+
 messages.add_command(stage)
 messages.add_command(reorganize)
 messages.add_command(analyse)
 messages.add_command(start)
 messages.add_command(settings)
+messages.add_command(mcp)
 messages.no_args_is_help

@@ -26,7 +26,7 @@ def test_get_list_of_invalid_links(tmp_path):
     more to come"""
     test_sub_dir = tmp_path / "subdir"
     test_sub_dir.mkdir()
-    persistency_manager = zt.PersistencyManager(test_sub_dir)
+    persistency_manager = zt.persistency.PersistencyManager(test_sub_dir)
     first_testfile = test_sub_dir / "1_05_a_file_containinglinks_2af216153.md"
     first_testfile.write_text(content)
     second_testfile = test_sub_dir / "1_07_a_target_176fb43ae.md"
@@ -40,8 +40,8 @@ def test_get_list_of_invalid_links(tmp_path):
     assert first_testfile.read_text() == content
     assert second_testfile.read_text() == "target 1"
     assert third_testfile.read_text() == "target 2"
-    assert len(zt.get_list_of_invalid_links(persistency_manager)) == 1
-    linklist = zt.get_list_of_invalid_links(persistency_manager)
+    assert len(zt.reorganize.get_list_of_invalid_links(persistency_manager)) == 1
+    linklist = zt.reorganize.get_list_of_invalid_links(persistency_manager)
     assert linklist[0].source == "1_05_a_file_containinglinks_2af216153.md"
     assert linklist[0].description == "a fourth link"
     assert linklist[0].target == "2_3_a_Thought_on_Second_Topic_176fb43ae.md"
@@ -55,7 +55,7 @@ def test_attach_missing_orderings():
         '2_1a_render_md_files_with_python_and_flask_41e5a496c.md',
         'some_other_cloud_idea_43e5a488c.md',
         '2_5_homebrew.md']
-    command_list = zt.attach_missing_orderings(test_list)
+    command_list = zt.reorganize.attach_missing_orderings(test_list)
     assert len(command_list) == 2
     assert isinstance(command_list[0], zt.cli.Rename_command)
     assert zt.handle_filenames.get_filename_components(
@@ -71,7 +71,7 @@ def test_attach_missing_ids():
         '2_1a_render_md_files_with_python_and_flask_41e5a496c.md',
         '2_5_homebrew.md',
         'no_ordering.md']
-    command_list = zt.attach_missing_ids(test_list)
+    command_list = zt.reorganize.attach_missing_ids(test_list)
     assert len(command_list) == 3
     assert isinstance(command_list[0], zt.cli.Rename_command)
     assert zt.handle_filenames.get_filename_components(
@@ -93,7 +93,7 @@ def test_generate_tokenized_list():
         '1_2_reframe_your_goal_as_a_learning_goal_ab9df245b.md',
         '2_1a_render_md_files_with_python_and_flask_ab9df245b.md',
         '2_5_homebrew_282f521b1.md']
-    tokenized_list = zt.generate_tokenized_list(test_list)
+    tokenized_list = zt.reorganize.generate_tokenized_list(test_list)
     assert tokenized_list[0][0][0] == '5'
     assert tokenized_list[1][0][1] == '2'
     assert tokenized_list[0][1] == '5_10_Senescent_cells_9e051e2c4.md'
@@ -101,7 +101,7 @@ def test_generate_tokenized_list():
 
 def test_corrections_elements():
     list_of_keys = ['1', '2', '4', '5', '5a', '6', '7', '8', '8a', '8b', '9']
-    corrections_elements = zt.corrections_elements(list_of_keys)
+    corrections_elements = zt.reorganize.corrections_elements(list_of_keys)
     assert corrections_elements['1'] == '01'
     assert corrections_elements['8b'] == '10'
 
@@ -109,7 +109,7 @@ def test_corrections_elements():
 def test_corrections_elements_shrink():
     # subtrees have been removed
     list_of_keys = ['01', '02', '10', '11']
-    corrections_elements = zt.corrections_elements(list_of_keys)
+    corrections_elements = zt.reorganize.corrections_elements(list_of_keys)
     assert corrections_elements['01'] == '1'
     assert corrections_elements['11'] == '4'
 
@@ -121,14 +121,14 @@ def test_generate_tree():
         '1_2_another_Thought_on_first_topic_2af216153.md',
         '2_Second_Topic_cc6290ab7.md',
         '2_1_a_Thought_on_Second_Topic_176fb43ae.md']
-    tokenized_list = zt.generate_tokenized_list(test_list)
+    tokenized_list = zt.reorganize.generate_tokenized_list(test_list)
     assert tokenized_list == [
         [['1'], '1_first_topic_41b4e4f8f.md'],
         [['1', '1'], '1_1_a_Thought_on_first_topic_2c3c34ff5.md'],
         [['1', '2'], '1_2_another_Thought_on_first_topic_2af216153.md'],
         [['2'], '2_Second_Topic_cc6290ab7.md'],
         [['2', '1'], '2_1_a_Thought_on_Second_Topic_176fb43ae.md']]
-    tree = zt.generate_tree(tokenized_list)
+    tree = zt.reorganize.generate_tree(tokenized_list)
     assert tree == [
         ['1', '1_first_topic_41b4e4f8f.md',
             [
@@ -148,7 +148,7 @@ def test_get_hierarchy_links():
         '1_3_One_Three_000000004.md',
         '2_Two_000000005.md'
     ]
-    tokenized_list = zt.generate_tokenized_list(test_filenames)
+    tokenized_list = zt.reorganize.generate_tokenized_list(test_filenames)
     # print(tokenized_list)
     assert tokenized_list == [
         [['1'], '1_One_000000001.md'],
@@ -158,7 +158,7 @@ def test_get_hierarchy_links():
         [['1', '2'], '1_2_One_Two_000000003.md'],
         [['1', '3'], '1_3_One_Three_000000004.md'],
         [['2'], '2_Two_000000005.md']]
-    tree = zt.generate_tree(tokenized_list)
+    tree = zt.reorganize.generate_tree(tokenized_list)
     # print(tree)
     assert tree == [
         ['1', '1_One_000000001.md',
@@ -169,27 +169,27 @@ def test_get_hierarchy_links():
                 ['2', '1_2_One_Two_000000003.md'],
                 ['3', '1_3_One_Three_000000004.md']]],
         ['2', '2_Two_000000005.md']]
-    hierarchy_links = zt.get_hierarchy_links(tree)
+    hierarchy_links = zt.reorganize.get_hierarchy_links(tree)
     print(hierarchy_links)
     assert len(hierarchy_links) == 5
     assert hierarchy_links == [
-        zt.Link(
+        zt.reorganize.Link(
             source='1_1_One_One_000000002.md',
             description='train of thoughts',
             target='1_2_One_Two_000000003.md'),
-        zt.Link(
+        zt.reorganize.Link(
             source='1_2_One_Two_000000003.md',
             description='train of thoughts',
             target='1_3_One_Three_000000004.md'),
-        zt.Link(
+        zt.reorganize.Link(
             source='1_One_000000001.md',
             description='detail / digression',
             target='1_1_One_One_000000002.md'),
-        zt.Link(
+        zt.reorganize.Link(
             source='1_1_1_One_One_One_000000006.md',
             description='train of thoughts',
             target='1_1_2_One_One_Two_000000007.md'),
-        zt.Link(
+        zt.reorganize.Link(
             source='1_1_One_One_000000002.md',
             description='detail / digression',
             target='1_1_1_One_One_One_000000006.md')]
@@ -203,7 +203,7 @@ def test_reorganize_filenames():
                 ['2', '1_2_another_Thought_on_first_topic_2af216153.md']]],
         ['2', '2_Second_Topic_cc6290ab7.md',
             [['1', '2_1_a_Thought_on_Second_Topic_176fb43ae.md']]]]
-    changes = zt.reorganize_filenames(tree)
+    changes = zt.reorganize.reorganize_filenames(tree)
     assert changes == [
         ['1', '1_first_topic_41b4e4f8f.md'],
         ['1_1', '1_1_a_Thought_on_first_topic_2c3c34ff5.md'],
@@ -219,7 +219,7 @@ def test_create_rename_commands():
         ['1_2', '1_5_another_Thought_on_first_topic_2af216153.md'],
         ['2', '2_Second_Topic_cc6290ab7.md'],
         ['2_1', '2_3_a_Thought_on_Second_Topic_176fb43ae.md']]
-    command_list = zt.create_rename_commands(potential_changes)
+    command_list = zt.reorganize.create_rename_commands(potential_changes)
     assert len(command_list) == 2
     assert isinstance(command_list[0], zt.cli.Rename_command)
     assert command_list[0].old_filename == \
@@ -252,7 +252,7 @@ def test_get_list_of_links_from_file(tmpdir):
     p.write(content)
     assert p.read() == content
     assert len(tmpdir.listdir()) == 1
-    links = zt.get_list_of_links_from_file(
+    links = zt.reorganize.get_list_of_links_from_file(
         "1_05_a_file_containinglinks_2af216153.md", p.readlines())
     assert len(links) == 4
     assert links[0].source == "1_05_a_file_containinglinks_2af216153.md"
@@ -278,7 +278,7 @@ def test_generate_tokenized_list_with_alpha_in_middle():
         '14_35_08a_2_Test_Sub_Two_000000004.md',
         '14_35_09_Test_Another_000000005.md'
     ]
-    tokenized_list = zt.generate_tokenized_list(test_list)
+    tokenized_list = zt.reorganize.generate_tokenized_list(test_list)
     # Verify tokenization splits correctly at underscores
     assert tokenized_list[0][0] == ['14', '35', '08']
     assert tokenized_list[1][0] == ['14', '35', '08a']
@@ -296,10 +296,10 @@ def test_reorganize_with_alpha_in_middle():
         '14_35_08a_2_Test_Sub_Two_000000004.md',
         '14_35_09_Test_Another_000000005.md'
     ]
-    tokenized_list = zt.generate_tokenized_list(test_list)
-    tree = zt.generate_tree(tokenized_list)
-    changes = zt.reorganize_filenames(tree)
-    rename_commands = zt.create_rename_commands(changes)
+    tokenized_list = zt.reorganize.generate_tokenized_list(test_list)
+    tree = zt.reorganize.generate_tree(tokenized_list)
+    changes = zt.reorganize.reorganize_filenames(tree)
+    rename_commands = zt.reorganize.create_rename_commands(changes)
 
     # Verify tree structure is correctly built
     assert len(tree) > 0
@@ -329,7 +329,7 @@ def test_corrections_elements_with_alpha_keys():
     list_of_keys = ['08', '08a', '08a', '09']
     # Remove duplicates as generate_tree does
     list_of_keys = list(dict.fromkeys(list_of_keys))
-    corrections = zt.corrections_elements(list_of_keys)
+    corrections = zt.reorganize.corrections_elements(list_of_keys)
 
     # 08 -> 1, 08a -> 2, 09 -> 3
     assert corrections['08'] == '1'
@@ -346,9 +346,9 @@ def test_flatten_tree_parent_before_children():
         '12_01_Parent_def12345.md',
         '12_Grandparent_ghi12345.md'
     ]
-    tokenized_list = zt.generate_tokenized_list(filenames)
-    tree = zt.generate_tree(tokenized_list)
-    sorted_list = zt.flatten_tree_to_list(tree)
+    tokenized_list = zt.reorganize.generate_tokenized_list(filenames)
+    tree = zt.reorganize.generate_tree(tokenized_list)
+    sorted_list = zt.reorganize.flatten_tree_to_list(tree)
 
     # Grandparent vor Parent vor Child
     assert sorted_list.index('12_Grandparent_ghi12345.md') < \
@@ -370,9 +370,9 @@ def test_flatten_tree_siblings_sorted():
         '1_02_Topic_def12345.md',
         '1_01_Topic_ghi12345.md'
     ]
-    tokenized_list = zt.generate_tokenized_list(filenames)
-    tree = zt.generate_tree(tokenized_list)
-    sorted_list = zt.flatten_tree_to_list(tree)
+    tokenized_list = zt.reorganize.generate_tokenized_list(filenames)
+    tree = zt.reorganize.generate_tree(tokenized_list)
+    sorted_list = zt.reorganize.flatten_tree_to_list(tree)
 
     assert sorted_list == [
         '1_01_Topic_ghi12345.md',
@@ -388,9 +388,9 @@ def test_flatten_tree_alphanumeric_ordering():
         '1_1a_Topic_def12345.md',
         '1_1_Topic_ghi12345.md'
     ]
-    tokenized_list = zt.generate_tokenized_list(filenames)
-    tree = zt.generate_tree(tokenized_list)
-    sorted_list = zt.flatten_tree_to_list(tree)
+    tokenized_list = zt.reorganize.generate_tokenized_list(filenames)
+    tree = zt.reorganize.generate_tree(tokenized_list)
+    sorted_list = zt.reorganize.flatten_tree_to_list(tree)
 
     # 1_1 vor 1_1a vor 1_2
     assert sorted_list.index('1_1_Topic_ghi12345.md') < \
@@ -402,9 +402,9 @@ def test_flatten_tree_alphanumeric_ordering():
 def test_flatten_tree_empty_list():
     """TEST-4: Leere Listen werden korrekt behandelt."""
     filenames = []
-    tokenized_list = zt.generate_tokenized_list(filenames)
-    tree = zt.generate_tree(tokenized_list)
-    sorted_list = zt.flatten_tree_to_list(tree)
+    tokenized_list = zt.reorganize.generate_tokenized_list(filenames)
+    tree = zt.reorganize.generate_tree(tokenized_list)
+    sorted_list = zt.reorganize.flatten_tree_to_list(tree)
 
     assert sorted_list == []
 
@@ -412,9 +412,9 @@ def test_flatten_tree_empty_list():
 def test_flatten_tree_single_file():
     """TEST-5: Einzelne Dateien werden korrekt behandelt."""
     filenames = ['1_Topic_abc12345.md']
-    tokenized_list = zt.generate_tokenized_list(filenames)
-    tree = zt.generate_tree(tokenized_list)
-    sorted_list = zt.flatten_tree_to_list(tree)
+    tokenized_list = zt.reorganize.generate_tokenized_list(filenames)
+    tree = zt.reorganize.generate_tree(tokenized_list)
+    sorted_list = zt.reorganize.flatten_tree_to_list(tree)
 
     assert sorted_list == ['1_Topic_abc12345.md']
 
@@ -428,9 +428,9 @@ def test_flatten_tree_complex_hierarchy():
         '2_Second_Topic_cc6290ab7.md',
         '2_1_a_Thought_on_Second_Topic_176fb43ae.md'
     ]
-    tokenized_list = zt.generate_tokenized_list(filenames)
-    tree = zt.generate_tree(tokenized_list)
-    sorted_list = zt.flatten_tree_to_list(tree)
+    tokenized_list = zt.reorganize.generate_tokenized_list(filenames)
+    tree = zt.reorganize.generate_tree(tokenized_list)
+    sorted_list = zt.reorganize.flatten_tree_to_list(tree)
 
     expected = [
         '1_first_topic_41b4e4f8f.md',

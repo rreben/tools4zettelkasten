@@ -8,7 +8,7 @@ from .context import tools4zettelkasten as zt
 def test_persistency_manager(tmp_path):
     test_sub_dir = tmp_path / "subdir"
     test_sub_dir.mkdir()
-    persistency_manager = zt.PersistencyManager(tmp_path / "subdir")
+    persistency_manager = zt.persistency.PersistencyManager(tmp_path / "subdir")
     first_testfile = test_sub_dir / "1_05_a_file_containinglinks_2af216153.md"
     first_testfile.write_text("source")
     second_testfile = test_sub_dir / "1_07_a_target_176fb43ae.md"
@@ -46,14 +46,14 @@ def test_is_file_existing(tmp_path):
     test_sub_dir.mkdir()
     testfile = test_sub_dir / "test.md"
     testfile.write_text("some info")
-    assert zt.is_file_existing(test_sub_dir, "test.md")
-    assert not zt.is_file_existing(test_sub_dir, "nonexiting.md")
+    assert zt.persistency.is_file_existing(test_sub_dir, "test.md")
+    assert not zt.persistency.is_file_existing(test_sub_dir, "nonexiting.md")
 
 
 def test_rename_file(tmp_path):
     test_dir = tmp_path / "subdir"
     test_dir.mkdir()
-    persistency_manager = zt.PersistencyManager(tmp_path / "subdir")
+    persistency_manager = zt.persistency.PersistencyManager(tmp_path / "subdir")
     testfile = test_dir / "test.md"
     testfile.write_text("some info")
     persistency_manager.rename_file("test.md", "new.md")
@@ -69,20 +69,20 @@ def test_list_of_filenames_from_directory(tmp_path):
     first_testfile.write_text("some info")
     second_testfile = test_sub_dir / "test_scnd.md"
     second_testfile.write_text("some other info")
-    list_of_filenames = zt.list_of_filenames_from_directory(str(test_sub_dir))
+    list_of_filenames = zt.persistency.list_of_filenames_from_directory(str(test_sub_dir))
     assert len(list_of_filenames) == 2
     assert list_of_filenames[1] == "test.md"
     assert list_of_filenames[0] == "test_scnd.md"
 
 
 def test_is_text_file():
-    assert zt.is_text_file("some.txt")
-    assert zt.is_text_file("some.jpg") is False
+    assert zt.persistency.is_text_file("some.txt")
+    assert zt.persistency.is_text_file("some.jpg") is False
 
 
 def test_is_markdown_file():
-    assert zt.is_markdown_file("some.md")
-    assert zt.is_markdown_file("some.jpg") is False
+    assert zt.persistency.is_markdown_file("some.md")
+    assert zt.persistency.is_markdown_file("some.jpg") is False
 
 
 def test_file_content(tmp_path):
@@ -93,7 +93,7 @@ def test_file_content(tmp_path):
 
     and some content"""
     testfile.write_text(content)
-    content = zt.file_content(test_dir, "test.md")
+    content = zt.persistency.file_content(test_dir, "test.md")
     assert len(content) == 3
     assert content[0][0] == "#"
 
@@ -106,7 +106,7 @@ def test_get_string_from_file_content(tmp_path):
 
     and some content"""
     testfile.write_text(content)
-    content_read = zt.get_string_from_file_content(test_dir, "test.md")
+    content_read = zt.persistency.get_string_from_file_content(test_dir, "test.md")
     assert content == content_read
 
 
@@ -116,6 +116,6 @@ def test_overwrite_file_content(tmp_path):
     testfile = test_dir / "test.md"
     content = "abc"
     testfile.write_text(content)
-    zt.overwrite_file_content(test_dir, "test.md", "def")
-    content_read = zt.get_string_from_file_content(test_dir, "test.md")
+    zt.persistency.overwrite_file_content(test_dir, "test.md", "def")
+    content_read = zt.persistency.get_string_from_file_content(test_dir, "test.md")
     assert content_read == "def"
