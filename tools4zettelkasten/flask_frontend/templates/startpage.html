@@ -11,6 +11,7 @@
   <main class="flex-shrink-0">
     <div class="container">
         <a href="{{ url_for('svggraph') }}" class="btn btn-primary">Zettelkasten as a Graphic</a>
+        <a href="{{ url_for('chat_view') }}" class="btn btn-success">Chat with Zettelkasten</a>
       <table border = 1>
         {% for file in zettelkasten %}
         <tr>

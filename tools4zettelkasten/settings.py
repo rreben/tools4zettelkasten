@@ -6,45 +6,35 @@
 import os
 import logging
 
+from dotenv import load_dotenv
+
+load_dotenv(override=False)
+
 logger = logging.getLogger(__name__)
 
-ZETTELKASTEN = '../zettelkasten/mycelium'
-ZETTELKASTEN_INPUT = '../zettelkasten/input'
+ZETTELKASTEN = os.environ.get('ZETTELKASTEN', '../zettelkasten/mycelium')
+ZETTELKASTEN_INPUT = os.environ.get('ZETTELKASTEN_INPUT',
+                                    '../zettelkasten/input')
 
 # Flask settings
 TEMPLATE_FOLDER = 'flask_frontend/templates'
 STATIC_FOLDER = 'flask_frontend/static'
-ZETTELKASTEN_IMAGES = (
+ZETTELKASTEN_IMAGES = os.environ.get(
+    'ZETTELKASTEN_IMAGES',
     '/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images')
 
 # Description of structural links in Zettelkasten
 DIRECT_SISTER_ZETTEL = "train of thoughts"
 DIRECT_DAUGHTER_ZETTEL = "detail / digression"
 
-
-def overwrite_setting(environment_variable: str):
-    """Overwrite a module-level setting with the value of an environment variable.
-
-    If the environment variable is not set, a log message is emitted.
-
-    :param environment_variable: name of the environment variable
-    """
-    value = os.environ.get(environment_variable)
-    if value:
-        globals()[environment_variable] = value
-    else:
-        logger.info(
-            f"{environment_variable} not set in environment, "
-            "tools4zettelkasten will default to built-in setting. "
-            "Use the 'settings' command to find out more."
-        )
-
-
-def overwrite_settings():
-    """Apply environment variable overrides to all configurable settings."""
-    overwrite_setting('ZETTELKASTEN')
-    overwrite_setting('ZETTELKASTEN_INPUT')
-    overwrite_setting('ZETTELKASTEN_IMAGES')
+# RAG settings
+CHROMA_DB_PATH = os.environ.get(
+    'CHROMA_DB_PATH',
+    os.path.expanduser('~/.tools4zettelkasten/chroma_db'))
+EMBEDDING_MODEL = os.environ.get(
+    'EMBEDDING_MODEL', 'paraphrase-multilingual-MiniLM-L12-v2')
+RAG_TOP_K = int(os.environ.get('RAG_TOP_K', '5'))
+LLM_MODEL = os.environ.get('LLM_MODEL', 'gpt-4o')
 
 
 def check_directories(strict: bool = True):

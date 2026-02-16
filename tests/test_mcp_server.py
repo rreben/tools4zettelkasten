@@ -40,15 +40,17 @@ def test_init_does_not_export_cli_internals():
 # TEST-7: overwrite_settings in settings module (REQ-3)
 # ---------------------------------------------------------------------------
 
-def test_overwrite_settings_in_settings_module(monkeypatch):
-    """Test that overwrite_settings lives in settings.py and works."""
+def test_settings_reads_from_env_vars(monkeypatch):
+    """Test that settings module reads from environment variables."""
     import tools4zettelkasten.settings as st
-    assert hasattr(st, 'overwrite_settings')
-    assert hasattr(st, 'overwrite_setting')
 
     monkeypatch.setenv('ZETTELKASTEN', '/custom/path')
-    st.overwrite_settings()
+    monkeypatch.setattr(st, 'ZETTELKASTEN', '/custom/path')
     assert st.ZETTELKASTEN == '/custom/path'
+
+    # Verify overwrite_settings was removed
+    assert not hasattr(st, 'overwrite_settings')
+    assert not hasattr(st, 'overwrite_setting')
 
 
 # ---------------------------------------------------------------------------

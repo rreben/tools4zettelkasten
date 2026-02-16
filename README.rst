@@ -121,6 +121,146 @@ Markdown files.
 
 .. end_marker_how_to_use_tools4zettelkasten_do_not_remove
 
+RAG: Chat with your Zettelkasten
+=================================
+
+``tools4zettelkasten`` includes a RAG (Retrieval-Augmented Generation) feature
+that lets you ask questions about your Zettelkasten and get answers grounded in
+your own notes. It uses a local vector database (ChromaDB) for semantic search
+and the OpenAI API (GPT) for generating answers.
+
+Installation
+------------
+
+RAG dependencies are optional. Install them with:
+
+.. code-block:: sh
+
+    pip install 'tools4zettelkasten[rag]'
+
+This installs ``chromadb``, ``sentence-transformers``, and ``openai``. All
+existing features work without these dependencies.
+
+Vectorizing your Zettelkasten
+-----------------------------
+
+Before you can chat, you need to build a vector database from your notes:
+
+.. code-block:: sh
+
+    python -m tools4zettelkasten vectorize
+
+This performs an incremental sync: new notes are added, changed notes are
+re-embedded, and deleted notes are removed. You can run this command after
+every editing session to keep the vector database up to date.
+
+.. code-block:: sh
+
+    Syncing vector database...
+      Added:     3 zettel
+      Updated:   1 zettel
+      Deleted:   0 zettel
+      Unchanged: 142 zettel
+      Metadata:  12 zettel updated (ordering/filename changes)
+    Done. 146 zettel in vector database.
+
+After a ``reorganize`` (which only changes ordering and filenames, not content),
+the sync will detect that no re-embedding is needed and only update metadata.
+This is achieved by normalizing markdown link targets to their stable Zettel IDs
+before computing content hashes.
+
+Additional options:
+
+- ``--stats``: Show vector database statistics without syncing
+
+Resetting the vector database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the vector database gets out of sync, or if you change the embedding model,
+you can reset and rebuild it from scratch:
+
+.. code-block:: sh
+
+    python -m tools4zettelkasten vectorize --full
+
+This deletes the entire vector database and re-embeds all notes. It is useful
+when:
+
+- You switched to a different embedding model (``EMBEDDING_MODEL``)
+- The database appears corrupted or inconsistent
+- You want a clean start after major changes to your Zettelkasten
+
+Chat via CLI
+------------
+
+Set your OpenAI API key in the ``.env`` file or as an environment variable:
+
+.. code-block:: sh
+
+    export OPENAI_API_KEY=sk-...
+
+Then start an interactive chat session:
+
+.. code-block:: sh
+
+    python -m tools4zettelkasten chat
+
+For each question, the system retrieves the most relevant notes via semantic
+search, sends them as context to the LLM, and displays the answer with source
+references. The chat supports multi-turn conversations -- follow-up questions
+take the previous context into account.
+
+.. code-block:: sh
+
+    Zettelkasten Chat (type 'quit' to exit)
+
+    You: What are the key principles for writing Zettelkasten notes?
+
+    Zettelkasten: Based on your notes, the key principles are:
+    1. Permanence: Notes should remain understandable years later.
+    2. Atomicity: One idea per note.
+    3. Autonomous formulation: Rephrase in your own words.
+
+    Quellen:
+      [01_005] Schritt fuer Schritt Anleitung (1b6058a3a)
+      [01_008] How to integrate notes (e0d27e3ad)
+
+    You: quit
+    Goodbye!
+
+Options:
+
+- ``--top-k N``: Number of notes to retrieve per question (default: 5)
+
+Chat via Flask Web UI
+---------------------
+
+The Flask web server also provides a chat interface at ``/chat``. Start the
+server with:
+
+.. code-block:: sh
+
+    python -m tools4zettelkasten start
+
+Then open http://localhost:5001/chat in your browser. Source notes are shown as
+clickable links that navigate directly to the note view.
+
+RAG Configuration
+-----------------
+
+All RAG settings can be configured in the ``.env`` file:
+
+- ``CHROMA_DB_PATH``: Path to the ChromaDB storage directory
+  (default: ``~/.tools4zettelkasten/chroma_db``)
+- ``EMBEDDING_MODEL``: Sentence-transformers model for local embeddings
+  (default: ``paraphrase-multilingual-MiniLM-L12-v2``)
+- ``RAG_TOP_K``: Number of notes to retrieve per query (default: ``5``)
+- ``LLM_MODEL``: OpenAI model for answer generation (default: ``gpt-4o``)
+- ``OPENAI_API_KEY``: Your OpenAI API key (required for chat)
+
+The embedding model runs locally and supports multiple languages (German and
+English). It is downloaded automatically on first use.
+
 .. start_marker_how_to_set_up_tools4zettelkasten_do_not_remove
 
 How to setup the tools4zettelkasten?
@@ -156,22 +296,49 @@ a simple folder with the following directory structure:
 Any other directory structure is possible, but you need to have the images in
 the ``images/`` directory, if you want to use the flask server.
 
-First of all use the ``settings`` command to show the current configuration:
+Configuration via ``.env`` file
+-------------------------------
+
+``tools4zettelkasten`` uses a ``.env`` file in the project root as the single
+source of configuration. Copy the provided example and adjust it to your setup:
+
+.. code-block:: sh
+
+    cp .env.example .env
+
+Then edit ``.env`` with your paths:
+
+.. code-block:: sh
+
+    ZETTELKASTEN=/Users/me/Documents/zettelkasten/mycelium/
+    ZETTELKASTEN_INPUT=/Users/me/Documents/zettelkasten/input/
+    ZETTELKASTEN_IMAGES=/Users/me/Documents/zettelkasten/mycelium/images
+
+    # RAG settings
+    CHROMA_DB_PATH=~/.tools4zettelkasten/chroma_db
+    EMBEDDING_MODEL=paraphrase-multilingual-MiniLM-L12-v2
+    RAG_TOP_K=5
+    LLM_MODEL=gpt-4o
+
+    # OpenAI API key (required for chat command)
+    # OPENAI_API_KEY=sk-...
+
+The ``.env`` file is listed in ``.gitignore`` and will not be committed to the
+repository.
+
+Environment variables override ``.env`` values. This is useful for temporary
+overrides or CI environments:
+
+.. code-block:: sh
+
+    ZETTELKASTEN=/tmp tools4zettelkasten settings
+
+Use the ``settings`` command to show the current configuration and verify which
+environment variables are set:
 
 .. code-block:: sh
 
     python -m tools4zettelkasten settings
-
-In MacOS you can use the following command to set the environment variables:
-
-.. code-block:: sh
-
-    export ZETTELKASTEN=/Users/me/Documents/zettelkasten/mycelium/
-    export ZETTELKASTEN_INPUT=/Users/me/Documents/zettelkasten/input/
-
-Where ``/Users/me/Documents/zettelkasten/mycelium/``  is the directory of your
-zettelkasten and ``/Users/me/Documents/zettelkasten/input/`` is the directory
-of your input folder.
 
 .. end_marker_how_to_set_up_tools4zettelkasten_do_not_remove
 

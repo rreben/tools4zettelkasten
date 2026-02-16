@@ -4,7 +4,8 @@
 
 from ast import Str
 from flask import (
-    Flask, render_template, send_from_directory, redirect, url_for, request)
+    Flask, render_template, send_from_directory, redirect, url_for, request,
+    session, jsonify)
 from . import settings as st
 from . import analyse as an
 from . import reorganize as ro
@@ -163,3 +164,69 @@ def svggraph():
     chart_output = dot.pipe(format='svg').decode('utf-8')
 
     return render_template('visualzk.html', chart_output=chart_output)
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat_view():
+    if 'chat_history' not in session:
+        session['chat_history'] = []
+
+    if request.method == 'POST':
+        query = request.form.get('query', '').strip()
+        if not query:
+            return redirect(url_for('chat_view'))
+
+        try:
+            from . import rag
+        except ImportError:
+            session['chat_history'].append({
+                'role': 'error',
+                'content': "RAG dependencies not installed. "
+                           "Install with: pip install 'tools4zettelkasten[rag]'"
+            })
+            return redirect(url_for('chat_view'))
+
+        try:
+            store = rag.VectorStore()
+            search_results = store.search(query)
+            conversation_history = []
+            for msg in session['chat_history']:
+                if msg['role'] in ('user', 'assistant'):
+                    conversation_history.append({
+                        'role': msg['role'],
+                        'content': msg['content']
+                    })
+            response = rag.chat_completion(
+                query, search_results, conversation_history)
+            sources = [
+                {
+                    'zettel_id': r.zettel_id,
+                    'title': r.title,
+                    'ordering': r.ordering,
+                    'filename': r.filename,
+                }
+                for r in search_results
+            ]
+            session['chat_history'].append({
+                'role': 'user', 'content': query})
+            session['chat_history'].append({
+                'role': 'assistant',
+                'content': response,
+                'sources': sources,
+            })
+            session.modified = True
+        except Exception as e:
+            session['chat_history'].append({
+                'role': 'error', 'content': str(e)})
+            session.modified = True
+
+        return redirect(url_for('chat_view'))
+
+    return render_template(
+        'chat.html', chat_history=session.get('chat_history', []))
+
+
+@app.route('/chat/reset', methods=['POST'])
+def chat_reset():
+    session.pop('chat_history', None)
+    return redirect(url_for('chat_view'))

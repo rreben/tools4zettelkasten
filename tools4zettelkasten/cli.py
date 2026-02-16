@@ -184,7 +184,16 @@ def format_settings_output():
         ("Sister Zettel:", st.DIRECT_SISTER_ZETTEL),
         ("Daughter Zettel:", st.DIRECT_DAUGHTER_ZETTEL),
     ]
-    env_vars = ["ZETTELKASTEN", "ZETTELKASTEN_INPUT", "ZETTELKASTEN_IMAGES"]
+    rag_data = [
+        ("ChromaDB path:", st.CHROMA_DB_PATH),
+        ("Embedding model:", st.EMBEDDING_MODEL),
+        ("Top K results:", str(st.RAG_TOP_K)),
+        ("LLM model:", st.LLM_MODEL),
+    ]
+    env_vars = [
+        "ZETTELKASTEN", "ZETTELKASTEN_INPUT", "ZETTELKASTEN_IMAGES",
+        "CHROMA_DB_PATH", "EMBEDDING_MODEL", "RAG_TOP_K", "LLM_MODEL",
+    ]
 
     # Calculate box width
     header = f"tools4zettelkasten v{__version__}"
@@ -193,6 +202,7 @@ def format_settings_output():
         max(len(str(v)) for _, v in paths_data),
         max(len(str(v)) for _, v in flask_data),
         max(len(str(v)) for _, v in hierarchy_data),
+        max(len(str(v)) for _, v in rag_data),
         max(len(v) for v in env_vars) + 25,  # for status text
     )
     box_width = max(len(header) + 4, max_label_len + max_value_len + 10)
@@ -243,6 +253,15 @@ def format_settings_output():
               " " * (box_width - 30 - len(var_name) -
                      (5 if is_set else 25)) + Fore.CYAN + "║")
 
+    def print_secret_var_line(var_name: str):
+        """Print secret environment variable status (never show value)."""
+        is_set, _ = get_env_var_status(var_name)
+        print(Fore.CYAN + "║" + Fore.WHITE + f"    {var_name:<24} " +
+              (Fore.GREEN + "✓ set" if is_set else
+               Fore.RED + "✗ not set") +
+              " " * (box_width - 30 - len(var_name) -
+                     (5 if is_set else 9)) + Fore.CYAN + "║")
+
     # Print header
     print(Fore.CYAN + "╔" + "═" * box_width + "╗")
     print(Fore.CYAN + "║" + Style.BRIGHT + Fore.CYAN +
@@ -263,10 +282,16 @@ def format_settings_output():
     for label, value in hierarchy_data:
         print_value_line(label, value)
 
+    # RAG Configuration section
+    print_section_header("RAG CONFIGURATION")
+    for label, value in rag_data:
+        print_value_line(label, value)
+
     # Environment Variables section
     print_section_header("ENVIRONMENT VARIABLES")
     for var_name in env_vars:
         print_env_var_line(var_name)
+    print_secret_var_line("OPENAI_API_KEY")
 
     # Print footer
     print(Fore.CYAN + "╚" + "═" * box_width + "╝")
@@ -286,7 +311,6 @@ def messages():
     show_banner()
     init(autoreset=True)
     print('Initializing of tools4zettelkasten ...')
-    st.overwrite_settings()
     st.check_directories(strict=True)
     pass
 
@@ -385,10 +409,120 @@ def mcp():
         print("Install with: pip install 'tools4zettelkasten[mcp]'")
 
 
+@click.command(help='sync zettelkasten into vector database')
+@click.option('--full', is_flag=True, default=False,
+              help='rebuild vector database from scratch')
+@click.option('--stats', is_flag=True, default=False,
+              help='show vector database statistics only')
+def vectorize(full, stats):
+    try:
+        from . import rag
+    except ImportError:
+        print(Fore.RED + "RAG dependencies not installed.")
+        print("Install with: pip install 'tools4zettelkasten[rag]'")
+        return
+
+    if stats:
+        try:
+            store = rag.VectorStore()
+            s = store.get_stats()
+            print(f"Total documents: {s['total_documents']}")
+            print(f"ChromaDB path:   {s['chroma_path']}")
+            print(f"Embedding model: {s['embedding_model']}")
+        except Exception as e:
+            print(Fore.RED + f"Error: {e}")
+        return
+
+    persistencyManager = PersistencyManager(st.ZETTELKASTEN)
+
+    if full:
+        import chromadb
+        import os
+        print("Rebuilding vector database from scratch...")
+        client = chromadb.PersistentClient(path=st.CHROMA_DB_PATH)
+        try:
+            client.delete_collection('zettelkasten')
+        except ValueError:
+            pass
+
+    print("Syncing vector database...")
+    store = rag.VectorStore()
+    result = store.sync(persistencyManager)
+    print(f"  Added:     {result.added} zettel")
+    print(f"  Updated:   {result.updated} zettel")
+    print(f"  Deleted:   {result.deleted} zettel")
+    print(f"  Unchanged: {result.unchanged} zettel")
+    print(f"  Metadata:  {result.metadata_updated} zettel updated "
+          "(ordering/filename changes)")
+    total = store.get_stats()['total_documents']
+    print(f"Done. {total} zettel in vector database.")
+
+
+@click.command(help='chat with your zettelkasten (RAG)')
+@click.option('--top-k', default=None, type=int,
+              help='number of zettel to retrieve per question')
+def chat(top_k):
+    try:
+        from . import rag
+    except ImportError:
+        print(Fore.RED + "RAG dependencies not installed.")
+        print("Install with: pip install 'tools4zettelkasten[rag]'")
+        return
+
+    import os
+    if not os.environ.get('OPENAI_API_KEY'):
+        print(Fore.RED + "OPENAI_API_KEY environment variable is not set.")
+        print("Please set it to your OpenAI API key.")
+        return
+
+    store = rag.VectorStore()
+    if store.get_stats()['total_documents'] == 0:
+        print(Fore.YELLOW + "Vector database is empty. "
+              "Run 'vectorize' first.")
+        return
+
+    print("Zettelkasten Chat (type 'quit' to exit)\n")
+    conversation_history = []
+
+    while True:
+        try:
+            query = input(Fore.CYAN + "You: " + Style.RESET_ALL)
+        except (EOFError, KeyboardInterrupt):
+            print("\nGoodbye!")
+            break
+
+        if query.strip().lower() in ('quit', 'exit', 'q'):
+            print("Goodbye!")
+            break
+
+        if not query.strip():
+            continue
+
+        search_results = store.search(query, top_k=top_k)
+        try:
+            response = rag.chat_completion(
+                query, search_results, conversation_history)
+        except Exception as e:
+            print(Fore.RED + f"Error: {e}")
+            continue
+
+        print(f"\n{Fore.GREEN}Zettelkasten:{Style.RESET_ALL} {response}\n")
+
+        print(Fore.YELLOW + "Quellen:" + Style.RESET_ALL)
+        for r in search_results:
+            print(f"  [{r.ordering}] {r.title} ({r.zettel_id})")
+        print()
+
+        conversation_history.append({'role': 'user', 'content': query})
+        conversation_history.append({'role': 'assistant', 'content': response})
+
+
 messages.add_command(stage)
 messages.add_command(reorganize)
 messages.add_command(analyse)
 messages.add_command(start)
 messages.add_command(settings)
 messages.add_command(mcp)
+messages.add_command(vectorize)
+messages.add_command(chat)
 messages.no_args_is_help

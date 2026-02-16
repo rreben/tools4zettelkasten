@@ -711,7 +711,6 @@ def execute_reorganize(confirm: bool = False) -> dict[str, Any]:
 
 def run_server():
     """Initialize settings and run the MCP server."""
-    st.overwrite_settings()
     st.check_directories(strict=False)
     mcp.run()
 

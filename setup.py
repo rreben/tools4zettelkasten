@@ -34,6 +34,7 @@ setup(
         'pfzy',
         'prompt-toolkit',
         'pyfiglet',
+        'python-dotenv',
         'Pygments',
         'wcwidth',
         'Werkzeug',
@@ -42,6 +43,11 @@ setup(
     ],
     extras_require={
         'mcp': ['mcp[cli]>=1.0.0'],
+        'rag': [
+            'chromadb>=0.4.0',
+            'sentence-transformers>=2.2.0',
+            'openai>=1.0.0',
+        ],
     },
     include_package_data=True,
     package_data={'': ['tools4zettelkasten/VERSION']},

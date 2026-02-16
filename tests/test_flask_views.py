@@ -9,14 +9,28 @@ from .context import tools4zettelkasten as zt
 
 
 @pytest.fixture
-def client():
-    """Create a test client for the Flask app."""
+def zettelkasten_dir(tmp_path):
+    """Create a temporary Zettelkasten directory with sample files."""
+    note1 = tmp_path / '01_Test_Note_abc123456.md'
+    note1.write_text('# Test Note\n\nThis is a test note.\n')
+    note2 = tmp_path / '01_01_Sub_Note_def123456.md'
+    note2.write_text('# Sub Note\n\nA sub note with [link](01_Test_Note_abc123456.md).\n')
+    return tmp_path
+
+
+@pytest.fixture
+def client(zettelkasten_dir):
+    """Create a test client for the Flask app with isolated Zettelkasten."""
     from tools4zettelkasten.flask_views import app
+    from tools4zettelkasten import settings as st
+    original_zettelkasten = st.ZETTELKASTEN
+    st.ZETTELKASTEN = str(zettelkasten_dir)
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
     app.config['SECRET_KEY'] = 'test-secret-key'
     with app.test_client() as client:
         yield client
+    st.ZETTELKASTEN = original_zettelkasten
 
 
 @pytest.fixture
