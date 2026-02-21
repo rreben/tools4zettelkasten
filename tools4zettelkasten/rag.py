@@ -13,6 +13,10 @@ from .persistency import PersistencyManager
 
 logger = logging.getLogger(__name__)
 
+# Suppress noisy debug logs from third-party libraries
+for _lib in ('chromadb', 'urllib3', 'sentence_transformers', 'httpx', 'posthog'):
+    logging.getLogger(_lib).setLevel(logging.WARNING)
+
 
 SYSTEM_PROMPT = (
     "Du bist ein Assistent, der Fragen basierend auf einem persönlichen "
