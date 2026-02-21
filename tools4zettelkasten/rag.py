@@ -352,14 +352,16 @@ def chat_completion(
     query: str,
     search_results: list,
     conversation_history: list = None,
-) -> str:
+    stream: bool = False,
+):
     """Send a query with RAG context to the OpenAI API.
 
     :param query: user question
     :param search_results: relevant zettel from vector search
     :param conversation_history: list of previous messages
            [{'role': 'user', 'content': ...}, {'role': 'assistant', ...}]
-    :return: assistant response text
+    :param stream: if True, return a generator yielding text chunks
+    :return: assistant response text, or generator of text chunks if stream=True
     """
     try:
         from openai import OpenAI
@@ -389,6 +391,21 @@ def chat_completion(
         f"Frage: {query}"
     )
     messages.append({'role': 'user', 'content': user_message})
+
+    if stream:
+        response_stream = client.chat.completions.create(
+            model=st.LLM_MODEL,
+            messages=messages,
+            stream=True,
+        )
+
+        def _generate():
+            for chunk in response_stream:
+                delta = chunk.choices[0].delta
+                if delta.content:
+                    yield delta.content
+
+        return _generate()
 
     response = client.chat.completions.create(
         model=st.LLM_MODEL,

@@ -527,13 +527,19 @@ def chat(top_k):
 
         search_results = store.search(query, top_k=top_k)
         try:
-            response = rag.chat_completion(
-                query, search_results, conversation_history)
+            print(f"\n{Fore.GREEN}Zettelkasten:{Style.RESET_ALL} ", end="",
+                  flush=True)
+            response_chunks = []
+            for chunk in rag.chat_completion(
+                    query, search_results, conversation_history,
+                    stream=True):
+                print(chunk, end="", flush=True)
+                response_chunks.append(chunk)
+            response = "".join(response_chunks)
+            print("\n")
         except Exception as e:
-            print(Fore.RED + f"Error: {e}")
+            print(Fore.RED + f"\nError: {e}")
             continue
-
-        print(f"\n{Fore.GREEN}Zettelkasten:{Style.RESET_ALL} {response}\n")
 
         print(Fore.YELLOW + "Quellen:" + Style.RESET_ALL)
         for r in search_results:
