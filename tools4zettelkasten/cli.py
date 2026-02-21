@@ -424,6 +424,7 @@ def vectorize(full, stats):
 
     if stats:
         try:
+            click.echo("Loading embedding model...")
             store = rag.VectorStore()
             s = store.get_stats()
             print(f"Total documents: {s['total_documents']}")
@@ -437,7 +438,6 @@ def vectorize(full, stats):
 
     if full:
         import chromadb
-        import os
         print("Rebuilding vector database from scratch...")
         client = chromadb.PersistentClient(path=st.CHROMA_DB_PATH)
         try:
@@ -445,9 +445,34 @@ def vectorize(full, stats):
         except Exception:
             pass
 
-    print("Syncing vector database...")
+    click.echo("Loading embedding model...")
     store = rag.VectorStore()
-    result = store.sync(persistencyManager)
+
+    # Progress bar state for sync callback
+    _bar_ctx = {'bar': None, 'phase': None}
+
+    def _on_progress(phase, current, total):
+        if phase != _bar_ctx['phase']:
+            # Close previous bar
+            if _bar_ctx['bar'] is not None:
+                _bar_ctx['bar'].update(_bar_ctx['bar'].length
+                                       - _bar_ctx['bar'].pos)
+                _bar_ctx['bar'].render_finish()
+            _bar_ctx['phase'] = phase
+            _bar_ctx['bar'] = click.progressbar(
+                length=total, label=phase, show_pos=True)
+            _bar_ctx['bar'].render_progress()
+        bar = _bar_ctx['bar']
+        increment = current - bar.pos
+        if increment > 0:
+            bar.update(increment)
+
+    click.echo("Syncing vector database...")
+    result = store.sync(persistencyManager, progress_callback=_on_progress)
+    # Close final progress bar
+    if _bar_ctx['bar'] is not None:
+        _bar_ctx['bar'].render_finish()
+
     print(f"  Added:     {result.added} zettel")
     print(f"  Updated:   {result.updated} zettel")
     print(f"  Deleted:   {result.deleted} zettel")

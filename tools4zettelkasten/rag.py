@@ -140,21 +140,31 @@ class VectorStore:
             metadata={'hnsw:space': 'cosine'}
         )
 
-    def sync(self, persistency_manager: PersistencyManager) -> SyncResult:
+    def sync(self, persistency_manager: PersistencyManager,
+             progress_callback=None) -> SyncResult:
         """Incrementally sync zettelkasten files into the vector database.
 
         - New files are added
         - Changed files (different content hash) are updated
         - Deleted files are removed
         - Metadata (filename, ordering) is always updated
+
+        :param progress_callback: Optional callback(phase, current, total)
+            for reporting progress to the caller.
         """
+        def _progress(phase, current, total):
+            if progress_callback:
+                progress_callback(phase, current, total)
+
         result = SyncResult()
         filenames = persistency_manager.get_list_of_filenames()
         md_files = [f for f in filenames if f.endswith('.md')]
 
         # Build current state from filesystem
         current_zettel = {}
-        for filename in md_files:
+        total_files = len(md_files)
+        for i, filename in enumerate(md_files):
+            _progress('Reading files', i + 1, total_files)
             components = hf.get_filename_components(filename)
             zettel_id = components[2]
             if not zettel_id:
@@ -197,6 +207,7 @@ class VectorStore:
 
         # Add new zettel
         if to_add:
+            _progress('Embedding new zettel', 0, len(to_add))
             add_ids = list(to_add)
             add_docs = [current_zettel[zid]['content'] for zid in add_ids]
             add_metas = [
@@ -209,6 +220,7 @@ class VectorStore:
                 for zid in add_ids
             ]
             add_embeddings = self._embedder.embed_documents(add_docs)
+            _progress('Embedding new zettel', len(to_add), len(to_add))
             self._collection.add(
                 ids=add_ids,
                 documents=add_docs,
@@ -225,7 +237,9 @@ class VectorStore:
         metadata_only_ids = []
         metadata_only_metas = []
 
-        for zid in to_check:
+        total_check = len(to_check)
+        for i, zid in enumerate(to_check):
+            _progress('Checking changes', i + 1, total_check)
             current = current_zettel[zid]
             old_hash = existing_hashes.get(zid, '')
             new_hash = current['content_hash']
@@ -254,8 +268,11 @@ class VectorStore:
 
         # Apply content updates (with new embeddings)
         if to_update_ids:
+            _progress('Embedding updates', 0, len(to_update_ids))
             to_update_embeddings = self._embedder.embed_documents(
                 to_update_docs)
+            _progress('Embedding updates', len(to_update_ids),
+                      len(to_update_ids))
             self._collection.update(
                 ids=to_update_ids,
                 documents=to_update_docs,
