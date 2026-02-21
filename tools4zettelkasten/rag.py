@@ -27,7 +27,9 @@ SYSTEM_PROMPT = (
     "- Antworte ausschließlich basierend auf den bereitgestellten Zetteln.\n"
     "- Wenn die Zettel keine Antwort auf die Frage hergeben, sage das "
     "ehrlich.\n"
-    "- Verweise auf die Quell-Zettel mit deren ID und Titel.\n"
+    "- Du darfst im Fließtext auf Zettel-Titel verweisen, aber liste "
+    "KEINE Quellenangaben am Ende der Antwort auf. Die Quellen werden "
+    "automatisch vom System angezeigt.\n"
     "- Antworte in der Sprache der Frage (Deutsch oder Englisch).\n"
     "- Berücksichtige den bisherigen Konversationsverlauf bei Folgefragen."
 )
