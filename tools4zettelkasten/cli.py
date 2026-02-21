@@ -529,12 +529,40 @@ def chat(top_k):
         try:
             print(f"\n{Fore.GREEN}Zettelkasten:{Style.RESET_ALL} ", end="",
                   flush=True)
+            spinner_chars = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+            spinner_idx = [0]
+            first_token = [False]
+
+            import threading
+            stop_spinner = threading.Event()
+
+            def _spin():
+                import time
+                while not stop_spinner.is_set():
+                    print(f"\r{Fore.GREEN}Zettelkasten:{Style.RESET_ALL} "
+                          f"{spinner_chars[spinner_idx[0] % len(spinner_chars)]}",
+                          end="", flush=True)
+                    spinner_idx[0] += 1
+                    time.sleep(0.1)
+
+            spinner_thread = threading.Thread(target=_spin, daemon=True)
+            spinner_thread.start()
+
             response_chunks = []
             for chunk in rag.chat_completion(
                     query, search_results, conversation_history,
                     stream=True):
+                if not first_token[0]:
+                    stop_spinner.set()
+                    spinner_thread.join()
+                    print(f"\r{Fore.GREEN}Zettelkasten:{Style.RESET_ALL} ",
+                          end="", flush=True)
+                    first_token[0] = True
                 print(chunk, end="", flush=True)
                 response_chunks.append(chunk)
+            if not first_token[0]:
+                stop_spinner.set()
+                spinner_thread.join()
             response = "".join(response_chunks)
             print("\n")
         except Exception as e:
