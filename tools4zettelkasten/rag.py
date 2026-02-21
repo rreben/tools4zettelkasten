@@ -14,7 +14,8 @@ from .persistency import PersistencyManager
 logger = logging.getLogger(__name__)
 
 # Suppress noisy debug logs from third-party libraries
-for _lib in ('chromadb', 'urllib3', 'sentence_transformers', 'httpx', 'posthog'):
+for _lib in ('chromadb', 'urllib3', 'sentence_transformers', 'httpx',
+             'httpcore', 'openai', 'posthog'):
     logging.getLogger(_lib).setLevel(logging.WARNING)
 
 
