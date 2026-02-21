@@ -485,7 +485,9 @@ def vectorize(full, stats):
 
 @click.command(help='chat with your zettelkasten (RAG)')
 @click.option('--top-k', default=None, type=int,
-              help='number of zettel to retrieve per question')
+              help='number of zettel to retrieve per question '
+                   '(default: RAG_TOP_K setting, currently '
+                   f'{st.RAG_TOP_K})')
 def chat(top_k):
     try:
         from . import rag
