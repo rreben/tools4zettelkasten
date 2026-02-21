@@ -34,7 +34,7 @@ CHROMA_DB_PATH = os.environ.get(
 EMBEDDING_MODEL = os.environ.get(
     'EMBEDDING_MODEL', 'paraphrase-multilingual-MiniLM-L12-v2')
 RAG_TOP_K = int(os.environ.get('RAG_TOP_K', '5'))
-LLM_MODEL = os.environ.get('LLM_MODEL', 'gpt-4o')
+LLM_MODEL = os.environ.get('LLM_MODEL', 'gpt-5')
 
 
 def check_directories(strict: bool = True):
