@@ -442,7 +442,7 @@ def vectorize(full, stats):
         client = chromadb.PersistentClient(path=st.CHROMA_DB_PATH)
         try:
             client.delete_collection('zettelkasten')
-        except ValueError:
+        except Exception:
             pass
 
     print("Syncing vector database...")
