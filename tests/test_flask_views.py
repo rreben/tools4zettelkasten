@@ -4,8 +4,16 @@
 
 """Tests for Flask views including the SVG graph visualization."""
 
+import shutil
+
 import pytest
 from .context import tools4zettelkasten as zt
+
+# The /svggraph route renders the graph through Graphviz, which shells out to
+# the system `dot` binary. Skip those tests cleanly when it is not installed.
+requires_dot = pytest.mark.skipif(
+    shutil.which('dot') is None,
+    reason="Graphviz 'dot' binary not installed (brew install graphviz)")
 
 
 @pytest.fixture
@@ -45,18 +53,21 @@ def app_context():
 
 # Tests for SVG Graph View
 
+@requires_dot
 def test_svggraph_route_exists(client):
     """Test that /svggraph route exists and returns 200."""
     response = client.get('/svggraph')
     assert response.status_code == 200
 
 
+@requires_dot
 def test_svggraph_returns_html(client):
     """Test that /svggraph returns HTML content."""
     response = client.get('/svggraph')
     assert response.content_type.startswith('text/html')
 
 
+@requires_dot
 def test_svggraph_contains_svg(client):
     """Test that /svggraph response contains SVG element."""
     response = client.get('/svggraph')
@@ -64,6 +75,7 @@ def test_svggraph_contains_svg(client):
     assert '<svg' in html.lower()
 
 
+@requires_dot
 def test_svggraph_contains_svg_pan_zoom_library(client):
     """Test that svg-pan-zoom library is included."""
     response = client.get('/svggraph')
@@ -71,6 +83,7 @@ def test_svggraph_contains_svg_pan_zoom_library(client):
     assert 'svg-pan-zoom' in html
 
 
+@requires_dot
 def test_svggraph_contains_hammer_js_library(client):
     """Test that Hammer.js library is included for touch support."""
     response = client.get('/svggraph')
@@ -78,6 +91,7 @@ def test_svggraph_contains_hammer_js_library(client):
     assert 'hammerjs' in html.lower() or 'hammer.min.js' in html.lower()
 
 
+@requires_dot
 def test_svggraph_contains_zoom_controls(client):
     """Test that zoom control buttons are present."""
     response = client.get('/svggraph')
@@ -87,6 +101,7 @@ def test_svggraph_contains_zoom_controls(client):
     assert 'zoom-reset' in html
 
 
+@requires_dot
 def test_svggraph_contains_zoom_level_display(client):
     """Test that zoom level indicator is present."""
     response = client.get('/svggraph')
@@ -94,6 +109,7 @@ def test_svggraph_contains_zoom_level_display(client):
     assert 'zoom-level' in html
 
 
+@requires_dot
 def test_svggraph_contains_navigation_back_link(client):
     """Test that navigation link back to list is present."""
     response = client.get('/svggraph')
@@ -101,6 +117,7 @@ def test_svggraph_contains_navigation_back_link(client):
     assert 'Zurück zur Liste' in html or 'url_for' in html
 
 
+@requires_dot
 def test_svggraph_contains_svg_container(client):
     """Test that SVG container element is present."""
     response = client.get('/svggraph')
@@ -108,6 +125,7 @@ def test_svggraph_contains_svg_container(client):
     assert 'svg-container' in html
 
 
+@requires_dot
 def test_svggraph_contains_state_persistence_code(client):
     """Test that session storage state persistence is implemented."""
     response = client.get('/svggraph')
@@ -116,6 +134,7 @@ def test_svggraph_contains_state_persistence_code(client):
     assert 'svggraph_state' in html
 
 
+@requires_dot
 def test_svggraph_contains_help_text(client):
     """Test that help text for user interactions is present."""
     response = client.get('/svggraph')

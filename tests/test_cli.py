@@ -163,17 +163,16 @@ def test_format_rename_output_empty_list(capsys):
 
 # Tests for settings command (TEST-1 through TEST-7)
 
-def test_settings_command_exists():
+def test_settings_command_exists(monkeypatch):
     """TEST-1: Test that settings command is registered"""
     from click.testing import CliRunner
     runner = CliRunner()
-    # We need to mock the environment and directories to avoid early exit
-    import os
-    env = os.environ.copy()
-    env['ZETTELKASTEN'] = '/tmp'
-    env['ZETTELKASTEN_INPUT'] = '/tmp'
-    env['ZETTELKASTEN_IMAGES'] = '/tmp'
-    result = runner.invoke(zt.cli.messages, ['settings'], env=env)
+    # Mock the directory check to avoid early exit on this machine's config.
+    # check_directories reads the settings module globals (not os.environ),
+    # so patching os.path.isdir is the reliable way to keep the group's
+    # strict directory validation from exiting.
+    monkeypatch.setattr('os.path.isdir', lambda x: True)
+    result = runner.invoke(zt.cli.messages, ['settings'])
     assert result.exit_code == 0
 
 
