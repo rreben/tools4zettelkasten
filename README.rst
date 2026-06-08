@@ -277,6 +277,18 @@ You will have to install the missing dependencies via pip. So you may want to
 use a virtual environment. See https://rreben.github.io/tools4zettelkasten/ for
 further information.
 
+The graph visualization (the Flask ``/svggraph`` view) renders through
+Graphviz, which requires the system ``dot`` binary in addition to the
+``graphviz`` Python package. Install it with your system package manager, e.g.
+on macOS:
+
+.. code-block:: sh
+
+    brew install graphviz
+
+On Debian/Ubuntu use ``sudo apt-get install graphviz``. Without it, all other
+features work, but the graph view (and its tests) are unavailable.
+
 I am planning to publish ``tools4zettelkasten`` as a package on PyPI. So you
 can install it via pip.
 
