@@ -73,10 +73,19 @@ def list_input_files() -> list[dict[str, Any]]:
 
 
 @mcp.tool()
-def preview_staging() -> list[dict[str, str]]:
+def preview_staging(fully: bool = True) -> list[dict[str, str]]:
     """Preview what staging would do without making changes.
 
-    Shows the planned rename operations for files in the input folder.
+    Shows the planned rename operations for files in the input folder,
+    mirroring stage_file. With fully=True (default) the preview reflects the
+    full target name including a preliminary '0_0' ordering and an '<id>'
+    placeholder, since the real ID is timestamp-seeded and generated only at
+    staging time.
+
+    Args:
+        fully: If True (default) preview the full target name with '0_0'
+               ordering and an '<id>' placeholder, mirroring
+               `tools4zettelkasten stage --fully`.
     """
     manager = get_input_manager()
     files = manager.get_list_of_filenames()
@@ -92,13 +101,28 @@ def preview_staging() -> list[dict[str, str]]:
                     ordering = note.ordering
                     file_id = note.id
 
+                    note_for_id = file_id  # remember whether an ID is generated
+                    if fully:
+                        # Mirror attach_missing_ids / attach_missing_orderings:
+                        # only fill what is missing.
+                        if file_id == '':
+                            file_id = '<id>'
+                        if ordering == '':
+                            ordering = '0_0'
+
                     new_filename = hf.create_filename(ordering, new_base, file_id)
 
                     if new_filename != filename:
-                        changes.append({
+                        change = {
                             "old_name": filename,
                             "new_name": new_filename
-                        })
+                        }
+                        if fully and note_for_id == '':
+                            change["note"] = (
+                                "A new ID will be generated at staging time; "
+                                "'<id>' is a placeholder."
+                            )
+                        changes.append(change)
             except Exception as e:
                 changes.append({
                     "old_name": filename,
@@ -109,14 +133,18 @@ def preview_staging() -> list[dict[str, str]]:
 
 
 @mcp.tool()
-def stage_file(filename: str) -> dict[str, Any]:
+def stage_file(filename: str, fully: bool = True) -> dict[str, Any]:
     """Stage a single file from the input folder.
 
-    This renames the file to have a proper base filename derived from its title.
-    Does NOT add ID or ordering - those should be added manually or through reorganize.
+    Renames the file to conform to the naming convention. With fully=True
+    (default, matching the CLI `stage` command) it additionally attaches a
+    generated ID and a preliminary '0_0' ordering, yielding
+    0_0_{Title}_{id}.md.
 
     Args:
         filename: Name of the file in the input folder
+        fully: If True (default) also add ID and preliminary ordering,
+               mirroring `tools4zettelkasten stage --fully`.
     """
     manager = get_input_manager()
 
@@ -128,26 +156,49 @@ def stage_file(filename: str) -> dict[str, Any]:
         if not content or not content[0].startswith("#"):
             return {"success": False, "error": "File has no valid markdown header"}
 
+        original = filename
+
+        # Step 1: base filename from title (existing behaviour)
         new_base = hf.create_base_filename_from_title(content[0][2:])
         note = hf.create_Note(filename)
-        new_filename = hf.create_filename(note.ordering, new_base, note.id)
+        current = hf.create_filename(note.ordering, new_base, note.id)
+        if current != filename:
+            manager.rename_file(filename, current)
 
-        if new_filename != filename:
-            manager.rename_file(filename, new_filename)
-            return {
-                "success": True,
-                "old_name": filename,
-                "new_name": new_filename
-            }
-        else:
-            return {
-                "success": True,
-                "old_name": filename,
-                "new_name": filename,
-                "message": "No rename needed"
-            }
+        if fully:
+            # Step 2: attach missing ID (reuse CLI/reorganize logic)
+            for cmd in ro.attach_missing_ids([current]):
+                manager.rename_file(cmd.old_filename, cmd.new_filename)
+                current = cmd.new_filename
+            # Step 3: attach missing preliminary ordering ('0_0')
+            for cmd in ro.attach_missing_orderings([current]):
+                manager.rename_file(cmd.old_filename, cmd.new_filename)
+                current = cmd.new_filename
+
+        return {
+            "success": True,
+            "old_name": original,
+            "new_name": current,
+            "message": "No rename needed" if current == original else "Staged"
+        }
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+
+@mcp.tool()
+def stage_all(fully: bool = True) -> list[dict[str, Any]]:
+    """Stage all markdown/text files in the input folder (mirrors CLI `stage`).
+
+    Args:
+        fully: If True (default) also add ID and preliminary ordering to each
+               file, mirroring `tools4zettelkasten stage --fully`.
+    """
+    manager = get_input_manager()
+    results = []
+    for fn in list(manager.get_list_of_filenames()):
+        if manager.is_markdown_file(fn) or manager.is_text_file(fn):
+            results.append(stage_file(fn, fully=fully))
+    return results
 
 
 # =============================================================================
@@ -615,9 +666,9 @@ def preview_reorganize() -> dict[str, Any]:
     link_commands = ro.generate_list_of_link_correction_commands(manager)
 
     return {
-        "add_ids": [{"old": cmd[1], "new": cmd[2]} for cmd in id_commands],
-        "add_orderings": [{"old": cmd[1], "new": cmd[2]} for cmd in ordering_commands],
-        "rename_for_ordering": [{"old": cmd[1], "new": cmd[2]} for cmd in rename_commands],
+        "add_ids": [{"old": cmd.old_filename, "new": cmd.new_filename} for cmd in id_commands],
+        "add_orderings": [{"old": cmd.old_filename, "new": cmd.new_filename} for cmd in ordering_commands],
+        "rename_for_ordering": [{"old": cmd.old_filename, "new": cmd.new_filename} for cmd in rename_commands],
         "fix_links": [{
             "file": cmd.filename,
             "old_link": cmd.to_be_replaced,
@@ -665,10 +716,10 @@ def execute_reorganize(confirm: bool = False) -> dict[str, Any]:
         id_commands = ro.attach_missing_ids(files)
         for cmd in id_commands:
             try:
-                manager.rename_file(cmd[1], cmd[2])
+                manager.rename_file(cmd.old_filename, cmd.new_filename)
                 results["ids_added"] += 1
             except Exception as e:
-                results["errors"].append(f"Failed to add ID to {cmd[1]}: {e}")
+                results["errors"].append(f"Failed to add ID to {cmd.old_filename}: {e}")
 
         # Refresh file list after ID changes
         files = manager.get_list_of_filenames()
@@ -681,10 +732,10 @@ def execute_reorganize(confirm: bool = False) -> dict[str, Any]:
 
         for cmd in rename_commands:
             try:
-                manager.rename_file(cmd[1], cmd[2])
+                manager.rename_file(cmd.old_filename, cmd.new_filename)
                 results["files_renamed"] += 1
             except Exception as e:
-                results["errors"].append(f"Failed to rename {cmd[1]}: {e}")
+                results["errors"].append(f"Failed to rename {cmd.old_filename}: {e}")
 
         # Refresh file list after renames
         files = manager.get_list_of_filenames()
