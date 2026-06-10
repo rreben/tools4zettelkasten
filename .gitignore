@@ -121,3 +121,9 @@ venvonwindows/
 ENV/
 env.bak/
 venv.bak/
+
+# Local Claude Desktop MCP config snippet (machine-specific paths)
+claude_desktop_config.snippet.json
+
+# Accidental literal "~" dir from unexpanded CHROMA_DB_PATH (~/...)
+/~/
