@@ -386,3 +386,67 @@ def test_edit_view_has_fixed_footer(client):
             response = client.get(f'/edit/{note_filename}')
             html = response.data.decode('utf-8')
             assert 'edit-footer' in html or 'fixed' in html
+
+
+# Tests for read-only mode (requirements_read_only_web_ui.md)
+
+NOTE = '01_Test_Note_abc123456.md'
+
+
+@pytest.fixture
+def read_only(monkeypatch):
+    from tools4zettelkasten import settings as st
+    monkeypatch.setattr(st, 'READ_ONLY', True)
+
+
+@pytest.mark.parametrize('value, expected', [
+    ('true', True), ('TRUE', True), ('1', True), ('yes', True), ('on', True),
+    ('false', False), ('0', False), ('', False), ('no', False),
+])
+def test_parse_bool(value, expected):
+    from tools4zettelkasten import settings as st
+    assert st.parse_bool(value) is expected
+
+
+def test_read_only_edit_button_disabled(client, read_only):
+    """Read-only: Edit button stays visible but is disabled."""
+    response = client.get('/' + NOTE)
+    html = response.data.decode('utf-8')
+    assert response.status_code == 200
+    assert 'disabled title="Read-only mode' in html
+    assert '>Edit</button>' in html
+    assert '/edit/' not in html
+
+
+def test_read_only_edit_get_forbidden(client, read_only):
+    response = client.get('/edit/' + NOTE)
+    assert response.status_code == 403
+
+
+def test_read_only_edit_post_forbidden(client, read_only, zettelkasten_dir):
+    before = (zettelkasten_dir / NOTE).read_text()
+    response = client.post('/edit/' + NOTE, data={'pagedown': '# Changed'})
+    assert response.status_code == 403
+    assert (zettelkasten_dir / NOTE).read_text() == before
+
+
+def test_read_write_edit_link_active(client):
+    response = client.get('/' + NOTE)
+    html = response.data.decode('utf-8')
+    assert '/edit/' + NOTE in html
+    assert 'Read-only mode' not in html
+
+
+def test_read_write_edit_post_saves(client, zettelkasten_dir):
+    response = client.post('/edit/' + NOTE, data={'pagedown': '# Changed\n'})
+    assert response.status_code == 302
+    assert (zettelkasten_dir / NOTE).read_text() == '# Changed\n'
+
+
+def test_templates_do_not_use_polyfill_io():
+    import pathlib
+    import tools4zettelkasten
+    templates = (pathlib.Path(tools4zettelkasten.__file__).parent
+                 / 'flask_frontend' / 'templates')
+    for template in templates.glob('*.html'):
+        assert 'polyfill.io' not in template.read_text(), template.name

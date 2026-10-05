@@ -380,12 +380,41 @@ The flask server can be started with the following command:
 
 .. code-block:: sh
 
-    run -it --rm -p 5001:5001 -v $(pwd)/../zettelkasten:/app/zettelkasten tools4zettelkasten
+    docker run -it --rm -p 5001:5001 -v $(pwd)/../zettelkasten:/app/zettelkasten tools4zettelkasten
 
 The flask server can be accessed via http://localhost:5001.
 
 
 
+
+Running the web UI on a server (read-only)
+==========================================
+
+The web UI can also run on a server, e.g. to browse a mirrored Zettelkasten
+from a phone or tablet. Two settings in ``.env`` (or the environment) support
+this:
+
+- ``READ_ONLY=true``: disables editing. The Edit button stays visible but is
+  greyed out, the ``E`` shortcut is inactive, and ``/edit/<file>`` returns
+  HTTP 403. Use this whenever the Zettelkasten on the server is only a
+  read-only copy (e.g. a one-way sync), where edits would fail or be
+  overwritten by the next sync.
+- ``FLASK_SECRET_KEY``: a stable secret key for sessions and CSRF tokens. Set
+  it when running behind a WSGI server with several workers; locally it can
+  stay unset (a random key is generated per process).
+
+Do not use the ``start`` command on a server: it runs the Flask development
+server in debug mode. Use a WSGI server instead:
+
+.. code-block:: sh
+
+    pip install gunicorn
+    READ_ONLY=true FLASK_SECRET_KEY=... \
+        gunicorn --bind 127.0.0.1:5001 --workers 2 \
+        tools4zettelkasten.flask_views:app
+
+Keep the port bound to localhost and expose it through an authenticated
+channel (e.g. ``tailscale serve`` within a private tailnet).
 
 How to contribute?
 ==================

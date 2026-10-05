@@ -179,6 +179,7 @@ def format_settings_output():
     flask_data = [
         ("Templates:", st.TEMPLATE_FOLDER),
         ("Static files:", st.STATIC_FOLDER),
+        ("Read-only:", str(st.READ_ONLY)),
     ]
     hierarchy_data = [
         ("Sister Zettel:", st.DIRECT_SISTER_ZETTEL),
@@ -193,6 +194,7 @@ def format_settings_output():
     env_vars = [
         "ZETTELKASTEN", "ZETTELKASTEN_INPUT", "ZETTELKASTEN_IMAGES",
         "CHROMA_DB_PATH", "EMBEDDING_MODEL", "RAG_TOP_K", "LLM_MODEL",
+        "READ_ONLY",
     ]
 
     # Calculate box width
@@ -275,7 +277,10 @@ def format_settings_output():
     # Flask Configuration section
     print_section_header("FLASK CONFIGURATION")
     for label, value in flask_data:
-        print_path_line(label, value)
+        if label == "Read-only:":
+            print_value_line(label, value)
+        else:
+            print_path_line(label, value)
 
     # Hierarchy Links section
     print_section_header("HIERARCHY LINKS")
@@ -292,6 +297,7 @@ def format_settings_output():
     for var_name in env_vars:
         print_env_var_line(var_name)
     print_secret_var_line("OPENAI_API_KEY")
+    print_secret_var_line("FLASK_SECRET_KEY")
 
     # Print footer
     print(Fore.CYAN + "╚" + "═" * box_width + "╝")

@@ -23,6 +23,19 @@ ZETTELKASTEN_IMAGES = os.environ.get(
     'ZETTELKASTEN_IMAGES',
     '/Users/rupertrebentisch/Dropbox/zettelkasten/mycelium/images')
 
+
+def parse_bool(value: str) -> bool:
+    """Interpret an environment variable string as boolean."""
+    return str(value).strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+# Read-only mode disables editing in the web UI (e.g. on a server that only
+# holds a read-only mirror of the Zettelkasten).
+READ_ONLY = parse_bool(os.environ.get('READ_ONLY', 'false'))
+# Stable secret key for sessions/CSRF when running behind a WSGI server.
+# If unset, flask_views generates a random key at import time.
+FLASK_SECRET_KEY = os.environ.get('FLASK_SECRET_KEY', '')
+
 # Description of structural links in Zettelkasten
 DIRECT_SISTER_ZETTEL = "train of thoughts"
 DIRECT_DAUGHTER_ZETTEL = "detail / digression"

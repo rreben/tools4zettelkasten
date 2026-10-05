@@ -10,7 +10,6 @@
         }
       }
     </script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -98,7 +97,11 @@
            {% endif %}
 
            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">Liste</a>
-           <a href="{{ url_for('edit', filename=filename) }}" class="btn btn-outline-primary">Edit</a>
+           {% if read_only %}
+             <button class="btn btn-outline-secondary" disabled title="Read-only mode: editing is disabled">Edit</button>
+           {% else %}
+             <a href="{{ url_for('edit', filename=filename) }}" class="btn btn-outline-primary">Edit</a>
+           {% endif %}
 
            {% if next_file %}
              <a href="{{ url_for('show_md_file', file=next_file) }}" class="btn btn-outline-primary">
@@ -109,7 +112,7 @@
            {% endif %}
          </div>
          <div class="keyboard-hint">
-           Tastatur: Pfeil-links Vorherige | Pfeil-rechts Naechste | L Liste | E Edit
+           Tastatur: Pfeil-links Vorherige | Pfeil-rechts Naechste | L Liste{% if not read_only %} | E Edit{% endif %}
          </div>
        </div>
      </nav>
@@ -139,7 +142,9 @@
              break;
            case 'e':
            case 'E':
-             window.location.href = "{{ url_for('edit', filename=filename) }}";
+             {% if not read_only %}
+               window.location.href = "{{ url_for('edit', filename=filename) }}";
+             {% endif %}
              break;
          }
        });

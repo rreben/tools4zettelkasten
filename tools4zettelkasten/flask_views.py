@@ -5,7 +5,7 @@
 from ast import Str
 from flask import (
     Flask, render_template, send_from_directory, redirect, url_for, request,
-    session, jsonify)
+    session, jsonify, abort)
 from . import settings as st
 from . import analyse as an
 from . import reorganize as ro
@@ -33,6 +33,15 @@ app = Flask(
 
 pagedown = PageDown(app)
 
+# A configured key keeps sessions and CSRF tokens valid across WSGI workers
+# and restarts; otherwise fall back to a random key per process.
+app.config['SECRET_KEY'] = st.FLASK_SECRET_KEY or os.urandom(32)
+
+
+@app.context_processor
+def inject_read_only():
+    return {'read_only': st.READ_ONLY}
+
 
 class PageDownForm(FlaskForm):
     pagedown = PageDownField('Enter your markdown')
@@ -45,8 +54,6 @@ def run_flask_server():
     Port 5001 is used instead of the Flask default 5000
     because macOS Monterey and later use port 5000 for AirPlay Receiver.
     """
-    SECRET_KEY = os.urandom(32)
-    app.config['SECRET_KEY'] = SECRET_KEY
     app.debug = True
     print("Server running at http://127.0.0.1:5001/")
     app.run(host='127.0.0.1', port=5001)
@@ -128,6 +135,8 @@ def show_md_file(file):
 
 @app.route('/edit/<filename>', methods=['GET', 'POST'])
 def edit(filename):
+    if st.READ_ONLY:
+        abort(403, description='Editing is disabled (read-only mode).')
     persistencyManager = PersistencyManager(
         st.ZETTELKASTEN)
     input_file = persistencyManager.get_string_from_file_content(filename)

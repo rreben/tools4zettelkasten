@@ -277,3 +277,18 @@ def test_get_env_var_status_not_set(monkeypatch):
     is_set, value = zt.cli.get_env_var_status('NONEXISTENT_VAR')
     assert is_set is False
     assert value is None
+
+
+def test_settings_shows_read_only_and_secret_key(capsys, monkeypatch):
+    """Settings shows READ_ONLY and FLASK_SECRET_KEY status, never the key."""
+    monkeypatch.setattr('os.path.isdir', lambda x: True)
+    monkeypatch.setattr('os.path.isfile', lambda x: False)
+    monkeypatch.setenv('FLASK_SECRET_KEY', 'super-secret-value')
+
+    zt.cli.format_settings_output()
+
+    captured = capsys.readouterr()
+    assert 'Read-only:' in captured.out
+    assert 'READ_ONLY' in captured.out
+    assert 'FLASK_SECRET_KEY' in captured.out
+    assert 'super-secret-value' not in captured.out
