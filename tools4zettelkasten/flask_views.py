@@ -100,6 +100,9 @@ MARKDOWN_EXTENSIONS = [
     "fenced_code",
     'codehilite',
     'attr_list',
+    # Pipe tables are not part of core markdown; without this extension a
+    # table is rendered as literal | ... | text.
+    'tables',
     'pymdownx.arithmatex',
 ]
 
@@ -291,6 +294,12 @@ def show_md_file(file):
         st.ZETTELKASTEN)
     filename = file
 
+    # This route also catches requests that are not notes at all, for
+    # example /favicon.ico or an image that a note references without the
+    # images/ prefix. Those must not raise a FileNotFoundError (HTTP 500).
+    if not persistencyManager.is_file_existing(filename):
+        abort(404, description='No such note: ' + filename)
+
     # Hierarchisch sortierte Liste für Navigation ermitteln
     sorted_list = get_sorted_zettelkasten_list(persistencyManager)
     previous_file, next_file = get_adjacent_files(filename, sorted_list)
@@ -453,6 +462,7 @@ def collection_print():
         notes.append({
             'filename': filename,
             'title': title,
+            'ordering': hf.get_filename_components(filename)[0],
             'anchor': anchor_for_filename(filename),
             'html': html_string,
         })

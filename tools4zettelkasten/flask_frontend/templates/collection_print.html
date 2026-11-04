@@ -32,6 +32,34 @@
       height: auto;
     }
 
+    /* Markdown tables: Bootstrap does not style a bare <table>. */
+    .zettel table {
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    .zettel th,
+    .zettel td {
+      border: 1px solid #dee2e6;
+      padding: 0.4rem 0.6rem;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .zettel th {
+      background-color: #f8f9fa;
+    }
+
+
+    .toc-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .toc-list li {
+      margin-bottom: 0.5rem;
+    }
+
     @media print {
       .no-print {
         display: none !important;
@@ -48,8 +76,17 @@
 
       figure,
       img,
-      pre,
-      table {
+      pre {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      /* A long table may break, but repeat its header on each page. */
+      thead {
+        display: table-header-group;
+      }
+
+      tr {
         break-inside: avoid;
         page-break-inside: avoid;
       }
@@ -95,11 +132,14 @@
     {% if options.toc %}
     <nav class="mb-5{% if options.title %} page-break{% endif %}">
       <h2>Contents</h2>
-      <ol>
+      <ul class="toc-list">
         {% for note in notes %}
-        <li><a href="#{{ note.anchor }}">{{ note.title }}</a></li>
+        <li>
+          <a href="#{{ note.anchor }}">{% if note.ordering %}{{ note.ordering }} &middot; {% endif %}{{ note.title }}</a>
+          <div class="zettel-source">{{ note.filename }}</div>
+        </li>
         {% endfor %}
-      </ol>
+      </ul>
     </nav>
     {% endif %}
 

@@ -26,6 +26,24 @@
       padding-bottom: 80px;
     }
 
+    /* Markdown tables: Bootstrap does not style a bare <table>. */
+    table {
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #dee2e6;
+      padding: 0.4rem 0.6rem;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8f9fa;
+    }
+
     .nav-footer {
       position: fixed;
       bottom: 0;

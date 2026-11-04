@@ -209,6 +209,15 @@ def test_print_export_toc_option(client):
     assert 'Contents' not in without_toc
 
 
+def test_print_export_toc_shows_ordering_and_filename(client):
+    html = get_html(client.post(
+        '/collection/print', data={'files': [PARENT, CHILD], 'toc': '1'}))
+    assert '01 &middot; Parent' in html
+    assert '01_01 &middot; Child' in html
+    assert PARENT in html
+    assert CHILD in html
+
+
 def test_print_export_title_option(client):
     html = get_html(client.post(
         '/collection/print',
@@ -319,3 +328,26 @@ def test_exports_work_in_read_only_mode(client, read_only):
 def test_collection_controls_available_in_read_only_mode(client, read_only):
     assert 'data-collection-toggle' in get_html(client.get('/'))
     assert 'data-collection-toggle' in get_html(client.get('/' + PARENT))
+
+
+# Markdown features
+
+def test_markdown_tables_are_rendered(client, zettelkasten_dir):
+    """Pipe tables must become real tables, in the note view and the export."""
+    table_note = '03_Table_ddddddddd.md'
+    (zettelkasten_dir / table_note).write_text(
+        '# Table\n'
+        '\n'
+        '| Column A | Column B |\n'
+        '| -------- | -------- |\n'
+        '| one      | two      |\n')
+
+    html = get_html(client.get('/' + table_note))
+    assert '<table>' in html
+    assert '<th>Column A</th>' in html
+    assert '<td>one</td>' in html
+
+    export = get_html(client.post(
+        '/collection/print', data={'files': [table_note]}))
+    assert '<table>' in export
+    assert '<th>Column A</th>' in export

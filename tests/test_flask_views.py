@@ -480,3 +480,15 @@ def test_send_image_with_relative_directory(client, tmp_path, monkeypatch):
     response = client.get('/images/picture.png')
     assert response.status_code == 200
     assert response.data == b'PNG-DATA'
+
+
+def test_unknown_note_returns_404(client):
+    """A request that is not a note must not raise a server error.
+
+    Browsers ask for /favicon.ico, and a note that references an image
+    without the images/ prefix produces a request like /picture.png. Both
+    used to end in a FileNotFoundError (HTTP 500).
+    """
+    assert client.get('/favicon.ico').status_code == 404
+    assert client.get('/LogicalFeatureStore.png').status_code == 404
+    assert client.get('/99_Does_Not_Exist_000000000.md').status_code == 404
