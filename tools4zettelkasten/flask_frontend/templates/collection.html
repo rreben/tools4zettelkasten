@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collection</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+  <main class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="h3 mb-0">
+        Collection
+        <span class="badge bg-secondary" data-collection-count>0</span>
+      </h1>
+      <a href="{{ url_for('index') }}" class="btn btn-outline-primary">List</a>
+    </div>
+
+    <div id="collection-empty" hidden>
+      <p class="lead">The collection is empty.</p>
+      <p>
+        Add notes from the <a href="{{ url_for('index') }}">list</a> or while
+        reading a note, then come back here to put them in order and export
+        them as PDF or Markdown.
+      </p>
+    </div>
+
+    <table class="table table-sm align-middle">
+      <tbody id="collection-entries"></tbody>
+    </table>
+
+    <div id="collection-controls" hidden>
+
+      <form id="collection-form" method="post" class="border rounded p-3">
+        <div id="collection-files"></div>
+
+        <div class="mb-3">
+          <label for="collection-title" class="form-label">
+            Title page (leave empty for no title page)
+          </label>
+          <input type="text" class="form-control" id="collection-title"
+                 name="title" placeholder="Title of the export">
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="1"
+                 id="option-toc" name="toc" checked>
+          <label class="form-check-label" for="option-toc">
+            Table of contents
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="1"
+                 id="option-page-breaks" name="page_breaks" checked>
+          <label class="form-check-label" for="option-page-breaks">
+            Start each note on a new page
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="1"
+                 id="option-show-sources" name="show_sources" checked>
+          <label class="form-check-label" for="option-show-sources">
+            Show the filename of each note
+          </label>
+        </div>
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" value="1"
+                 id="option-demote-headings" name="demote_headings">
+          <label class="form-check-label" for="option-demote-headings">
+            Demote headings by one level
+          </label>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <button type="submit" class="btn btn-primary"
+                  formaction="{{ url_for('collection_print') }}">
+            Print / Save as PDF
+          </button>
+          <button type="submit" class="btn btn-outline-primary"
+                  formaction="{{ url_for('collection_markdown') }}">
+            Download Markdown
+          </button>
+          <button type="button" class="btn btn-outline-danger ms-auto"
+                  data-collection-clear>
+            Clear all
+          </button>
+        </div>
+      </form>
+
+    </div>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='js/collection.js') }}"></script>
+</body>
+</html>

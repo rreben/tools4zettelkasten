@@ -119,6 +119,37 @@ follows:
 This way you will always have a clean alphanumeric numbering of the Zettel /
 Markdown files.
 
+Collection: export an excerpt as PDF or Markdown
+------------------------------------------------
+
+The web UI (``start``) lets you collect notes and export them as one document.
+This turns a train of thoughts into something you can read away from the
+screen or process further.
+
+How it works:
+
+* In the note list, every row has a ``+ Collection`` button. Notes that have
+  descendants additionally offer ``+ Subtree``, which adds the note together
+  with all of its descendants in hierarchical order.
+* While reading a note you can add it with the ``+ Sammlung`` button in the
+  footer, or with the keyboard shortcut ``S``. ``C`` opens the collection.
+* The collection page (``/collection``) shows the collected notes. You can
+  move each note up or down, remove it, or clear the whole collection.
+* The export options are: a title page, a table of contents, a page break per
+  note, the filename of each note as a source reference, and demoting all
+  headings by one level.
+* ``Print / Save as PDF`` opens a print view containing all collected notes.
+  Use the browser's print dialog and choose "Save as PDF". Formulas (MathJax),
+  syntax highlighting and images are rendered exactly as in the web UI. Links
+  between notes that are both part of the collection become links inside the
+  document.
+* ``Download Markdown`` returns the markdown sources of the collected notes as
+  a single file, for further processing with Pandoc, Word or a blog engine.
+
+The collection is stored in your browser (``localStorage``). It survives a
+restart of the server, is not shared between browsers, and needs no write
+access to the Zettelkasten, so the export also works in read-only mode.
+
 .. end_marker_how_to_use_tools4zettelkasten_do_not_remove
 
 RAG: Chat with your Zettelkasten

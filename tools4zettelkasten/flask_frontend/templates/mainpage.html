@@ -97,6 +97,16 @@
            {% endif %}
 
            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">Liste</a>
+
+           <button type="button" class="btn btn-outline-primary"
+                   data-collection-toggle
+                   data-filename="{{ filename }}"
+                   data-labels="+ Sammlung|&check; In Sammlung"
+                   aria-pressed="false">+ Sammlung</button>
+
+           <a href="{{ url_for('collection') }}" class="btn btn-outline-primary">
+             Sammlung <span class="badge bg-secondary" data-collection-count>0</span>
+           </a>
            {% if read_only %}
              <button class="btn btn-outline-secondary" disabled title="Read-only mode: editing is disabled">Edit</button>
            {% else %}
@@ -112,12 +122,14 @@
            {% endif %}
          </div>
          <div class="keyboard-hint">
-           Tastatur: Pfeil-links Vorherige | Pfeil-rechts Naechste | L Liste{% if not read_only %} | E Edit{% endif %}
+           Tastatur: Pfeil-links Vorherige | Pfeil-rechts Naechste | L Liste | S Sammeln | C Sammlung{% if not read_only %} | E Edit{% endif %}
          </div>
        </div>
      </nav>
 
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+     <script src="{{ url_for('static', filename='js/collection.js') }}"></script>
 
      <!-- JavaScript fuer Tastatur-Navigation -->
      <script>
@@ -145,6 +157,16 @@
              {% if not read_only %}
                window.location.href = "{{ url_for('edit', filename=filename) }}";
              {% endif %}
+             break;
+           case 's':
+           case 'S':
+             if (window.t4zCollection) {
+               window.t4zCollection.toggle("{{ filename }}");
+             }
+             break;
+           case 'c':
+           case 'C':
+             window.location.href = "{{ url_for('collection') }}";
              break;
          }
        });

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Notes reference their images with relative paths (images/x.png). This
+       base element makes them resolve against the /images/ route, even
+       though this view lives at /collection/print. -->
+  <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ options.title if options.title else 'Collection' }}</title>
+  <script type="text/x-mathjax-config">
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ["\\(", "\\)"]],
+        processEscapes: true,
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  {{ codeCSSString|safe }}
+
+  <style>
+    .zettel-source {
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .zettel img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        padding-top: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      figure,
+      img,
+      pre,
+      table {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      h1, h2, h3, h4 {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+      {% if options.page_breaks %}
+      .page-break {
+        break-before: page;
+        page-break-before: always;
+      }
+      {% endif %}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print bg-light border-bottom py-2 mb-4">
+    <div class="container d-flex flex-wrap gap-2 align-items-center">
+      <button type="button" class="btn btn-primary"
+              onclick="window.print()">
+        Print / Save as PDF
+      </button>
+      <a href="{{ url_for('collection') }}" class="btn btn-outline-primary">
+        Back to collection
+      </a>
+      <span class="text-muted ms-auto">
+        {{ notes|length }} note{{ '' if notes|length == 1 else 's' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    {% if options.title %}
+    <header class="mb-5">
+      <h1>{{ options.title }}</h1>
+    </header>
+    {% endif %}
+
+    {% if options.toc %}
+    <nav class="mb-5{% if options.title %} page-break{% endif %}">
+      <h2>Contents</h2>
+      <ol>
+        {% for note in notes %}
+        <li><a href="#{{ note.anchor }}">{{ note.title }}</a></li>
+        {% endfor %}
+      </ol>
+    </nav>
+    {% endif %}
+
+    {% for note in notes %}
+    <article class="zettel{% if not loop.first or options.title or options.toc %} page-break{% endif %}"
+             id="{{ note.anchor }}">
+      {% if options.show_sources %}
+      <p class="zettel-source">{{ note.filename }}</p>
+      {% endif %}
+      {{ note.html|safe }}
+    </article>
+    {% endfor %}
+
+  </div>
+
+</body>
+</html>

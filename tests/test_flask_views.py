@@ -450,3 +450,33 @@ def test_templates_do_not_use_polyfill_io():
                  / 'flask_frontend' / 'templates')
     for template in templates.glob('*.html'):
         assert 'polyfill.io' not in template.read_text(), template.name
+
+
+# Tests for the image route
+
+def test_send_image_with_absolute_directory(client, tmp_path, monkeypatch):
+    """Images are served from an absolute ZETTELKASTEN_IMAGES directory."""
+    from tools4zettelkasten import settings as st
+    images_dir = tmp_path / 'images'
+    images_dir.mkdir()
+    (images_dir / 'picture.png').write_bytes(b'PNG-DATA')
+    monkeypatch.setattr(st, 'ZETTELKASTEN_IMAGES', str(images_dir))
+
+    response = client.get('/images/picture.png')
+    assert response.status_code == 200
+    assert response.data == b'PNG-DATA'
+
+
+def test_send_image_with_relative_directory(client, tmp_path, monkeypatch):
+    """A relative ZETTELKASTEN_IMAGES is resolved against the working
+    directory, not against the Flask app root."""
+    from tools4zettelkasten import settings as st
+    images_dir = tmp_path / 'images'
+    images_dir.mkdir()
+    (images_dir / 'picture.png').write_bytes(b'PNG-DATA')
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(st, 'ZETTELKASTEN_IMAGES', 'images')
+
+    response = client.get('/images/picture.png')
+    assert response.status_code == 200
+    assert response.data == b'PNG-DATA'
